@@ -53,10 +53,10 @@ export function AISuggestions() {
   };
 
   const categoryIcons = {
-    productivity: <TrendingUp className="h-4 w-4" />,
-    wellness: <Sparkles className="h-4 w-4" />,
-    routine: <Clock className="h-4 w-4" />,
-    planning: <Lightbulb className="h-4 w-4" />,
+    productivity: <TrendingUp className="w-4 h-4" />,
+    wellness: <Sparkles className="w-4 h-4" />,
+    routine: <Clock className="w-4 h-4" />,
+    planning: <Lightbulb className="w-4 h-4" />,
   };
 
   const categoryColors = {
@@ -71,10 +71,10 @@ export function AISuggestions() {
       <Button
         variant="ghost"
         size="sm"
-        className="fixed bottom-4 right-4 z-50"
+        className="fixed z-50 bottom-4 right-4"
         onClick={() => setShowSuggestions(true)}
       >
-        <Lightbulb className="h-4 w-4 mr-2" />
+        <Lightbulb className="w-4 h-4 mr-2" />
         AI Insights
       </Button>
     );
@@ -82,18 +82,18 @@ export function AISuggestions() {
 
   return (
     <Card className="fixed bottom-4 right-4 w-96 max-h-[600px] overflow-hidden shadow-lg z-50 bg-background/95 backdrop-blur-sm border-border">
-      <div className="p-4 border-b flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center space-x-2">
-          <Lightbulb className="h-5 w-5 text-yellow-500" />
+          <Lightbulb className="w-5 h-5 text-yellow-500" />
           <h3 className="font-semibold text-foreground">AI Assistant</h3>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6"
+          className="w-6 h-6"
           onClick={() => setShowSuggestions(false)}
         >
-          <X className="h-4 w-4" />
+          <X className="w-4 h-4" />
         </Button>
       </div>
 
@@ -101,15 +101,15 @@ export function AISuggestions() {
         {/* Analytics Section */}
         {analytics && (
           <div className="p-4 border-b">
-            <h4 className="text-sm font-medium mb-3 text-foreground">Your Productivity Insights</h4>
+            <h4 className="mb-3 text-sm font-medium text-foreground">Your Productivity Insights</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="bg-muted/30 dark:bg-muted/20 rounded p-2">
+              <div className="p-2 rounded bg-muted/30 dark:bg-muted/20">
                 <div className="text-xs text-muted-foreground">Completion Rate</div>
                 <div className="font-semibold text-foreground">
                   {analytics.completionRate.toFixed(0)}%
                 </div>
               </div>
-              <div className="bg-muted/30 dark:bg-muted/20 rounded p-2">
+              <div className="p-2 rounded bg-muted/30 dark:bg-muted/20">
                 <div className="text-xs text-muted-foreground">Most Productive</div>
                 <div className="font-semibold text-foreground">{analytics.mostProductiveTime}</div>
               </div>
@@ -120,7 +120,7 @@ export function AISuggestions() {
         {/* Contextual Tips */}
         {tips.length > 0 && (
           <div className="p-4 border-b">
-            <h4 className="text-sm font-medium mb-2 text-foreground">Tips for You</h4>
+            <h4 className="mb-2 text-sm font-medium text-foreground">Tips for You</h4>
             <div className="space-y-2">
               {tips.map((tip, index) => (
                 <div key={index} className="text-sm text-muted-foreground">
@@ -133,7 +133,7 @@ export function AISuggestions() {
 
         {/* Task Suggestions */}
         <div className="p-4">
-          <h4 className="text-sm font-medium mb-3 text-foreground">Suggested Tasks</h4>
+          <h4 className="mb-3 text-sm font-medium text-foreground">Suggested Tasks</h4>
           <div className="space-y-2">
             {suggestions.length === 0 ? (
               <p className="text-sm text-muted-foreground">
@@ -143,22 +143,22 @@ export function AISuggestions() {
               suggestions.slice(0, 5).map((suggestion, index) => (
                 <div
                   key={index}
-                  className="p-3 rounded-lg border bg-card/50 dark:bg-card/30 hover:bg-accent/50 transition-colors"
+                  className="p-3 transition-colors border rounded-lg bg-card/50 dark:bg-card/30 hover:bg-accent/50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
+                      <div className="flex items-center mb-1 space-x-2">
                         <span className={cn('p-1 rounded', categoryColors[suggestion.category])}>
                           {categoryIcons[suggestion.category]}
                         </span>
                         <span className="text-sm font-medium">{suggestion.title}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">{suggestion.reason}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{suggestion.reason}</p>
                     </div>
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-7 text-xs"
+                      className="text-xs h-7"
                       onClick={() => handleAddSuggestion(suggestion)}
                     >
                       Add
@@ -172,7 +172,7 @@ export function AISuggestions() {
 
         {/* Smart Scheduling */}
         <div className="p-4 border-t">
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-center text-muted-foreground">
             AI suggestions update based on your patterns and time of day
           </p>
         </div>
