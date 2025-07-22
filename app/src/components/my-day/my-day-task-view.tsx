@@ -9,6 +9,10 @@ import { useAppStoreRQ } from '../../store/app-store-rq';
 import { useAuthStore } from '../../store/auth-store';
 import { useTasks, useCreateTask, useUpdateTask } from '../../hooks/use-tasks';
 import { categorizeTask } from '../../utils/eisenhower-logic';
+import { CompletionAnimation } from '../animations/completion-animation';
+import { ProgressCelebration } from '../animations/progress-celebrations';
+import { gamificationService } from '../../services/gamification-service';
+import { soundService } from '../../services/sound-service';
 import type { Task, EisenhowerQuadrant } from '../../types';
 
 const quadrantConfig = {
@@ -58,6 +62,20 @@ export function MyDayTaskView() {
   const { user } = useAuthStore();
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [showEisenhowerGroups, setShowEisenhowerGroups] = useState(true);
+  const [completionAnimations, setCompletionAnimations] = useState<
+    Array<{ id: string; position: { x: number; y: number } }>
+  >([]);
+  const [celebrationData, setCelebrationData] = useState<{
+    visible: boolean;
+    type: 'streak' | 'milestone' | 'perfect-day' | 'level-up' | 'achievement';
+    data: {
+      title: string;
+      description: string;
+      value?: number;
+      level?: number;
+      streak?: number;
+    };
+  } | null>(null);
 
   // React Query hooks
   const { data: tasks = [] } = useTasks();
@@ -178,14 +196,103 @@ export function MyDayTaskView() {
     });
   };
 
-  const handleToggleComplete = (task: Task) => {
+  const handleToggleComplete = (task: Task, event?: React.MouseEvent) => {
+    const isCompleting = !task.completed;
+
+    // Add completion animation if completing task
+    if (isCompleting && event) {
+      const rect = (event.target as HTMLElement).getBoundingClientRect();
+      const animationId = `${task.id}-${Date.now()}`;
+      setCompletionAnimations(prev => [...prev, {
+        id: animationId,
+        position: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        }
+      }]);
+
+      // Play completion sound
+      soundService.playTaskComplete();
+
+      // Remove animation after completion
+      setTimeout(() => {
+        setCompletionAnimations(prev => prev.filter(anim => anim.id !== animationId));
+      }, 1000);
+    }
+
     updateTaskMutation.mutate({
       id: task.id,
       updates: {
-        completed: !task.completed,
-        completedAt: !task.completed ? new Date() : undefined
+        completed: isCompleting,
+        completedAt: isCompleting ? new Date() : undefined
       }
     });
+
+    // Handle gamification when completing task
+    if (isCompleting) {
+      setTimeout(() => {
+        const updatedTasks = tasks.map(t => 
+          t.id === task.id ? { ...t, completed: true } : t
+        );
+        
+        const gamificationResult = gamificationService.onTaskCompleted(updatedTasks, task.id);
+        
+        // Show level up celebration
+        if (gamificationResult.levelUp) {
+          setCelebrationData({
+            visible: true,
+            type: 'level-up',
+            data: {
+              title: 'Level Up!',
+              description: `You reached level ${gamificationResult.stats.level}!`,
+              level: gamificationResult.stats.level
+            }
+          });
+          soundService.playLevelUp();
+        }
+        // Show perfect day celebration
+        else if (gamificationResult.perfectDay) {
+          setCelebrationData({
+            visible: true,
+            type: 'perfect-day',
+            data: {
+              title: 'Perfect Day!',
+              description: 'You completed all your planned tasks today!',
+              value: 1
+            }
+          });
+          soundService.playSuccess();
+        }
+        // Show achievement celebrations
+        else if (gamificationResult.newAchievements.length > 0) {
+          const achievement = gamificationResult.newAchievements[0];
+          setCelebrationData({
+            visible: true,
+            type: 'achievement',
+            data: {
+              title: achievement.title,
+              description: achievement.description,
+              value: achievement.requirement.value
+            }
+          });
+          soundService.playAchievement();
+        }
+        // Show streak celebration for significant streaks
+        else if (gamificationResult.stats.currentStreak > 0 && 
+                 gamificationResult.stats.currentStreak % 7 === 0) {
+          setCelebrationData({
+            visible: true,
+            type: 'streak',
+            data: {
+              title: 'Streak Master!',
+              description: `You're on a ${gamificationResult.stats.currentStreak}-day streak!`,
+              streak: gamificationResult.stats.currentStreak
+            }
+          });
+          soundService.playSuccess();
+        }
+      }, 500); // Delay to allow UI to update first
+    }
   };
 
   const handleToggleImportant = (task: Task) => {
@@ -219,11 +326,19 @@ export function MyDayTaskView() {
         onClick={() => setSelectedTask(task)}
       >
         <div className="flex items-center space-x-3 flex-1">
-          <Checkbox
-            checked={task.completed}
-            onCheckedChange={() => handleToggleComplete(task)}
-            onClick={(e) => e.stopPropagation()}
-          />
+          <div 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleComplete(task, e);
+            }}
+            className="cursor-pointer"
+          >
+            <Checkbox
+              checked={task.completed}
+              onCheckedChange={() => {}} // Handled by parent div
+              className="transition-all duration-200 hover:scale-110 active:scale-95 pointer-events-none"
+            />
+          </div>
           
           {showQuadrant && (
             <div className={cn('p-1 rounded', config.bgColor)}>
@@ -446,6 +561,28 @@ export function MyDayTaskView() {
         )}
       </div>
 
+      {/* Completion Animations */}
+      {completionAnimations.map((animation) => (
+        <CompletionAnimation
+          key={animation.id}
+          isVisible={true}
+          onAnimationComplete={() => {
+            setCompletionAnimations(prev => prev.filter(a => a.id !== animation.id));
+          }}
+          position={animation.position}
+          type="tick"
+        />
+      ))}
+
+      {/* Celebration Modal */}
+      {celebrationData && (
+        <ProgressCelebration
+          isVisible={celebrationData.visible}
+          onClose={() => setCelebrationData(null)}
+          type={celebrationData.type}
+          data={celebrationData.data}
+        />
+      )}
     </div>
   );
 }
