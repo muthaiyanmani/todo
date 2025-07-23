@@ -19,6 +19,7 @@ import { Planned } from './pages/planned';
 import { Tasks } from './pages/tasks';
 import { Calendar } from './pages/calendar';
 import { CustomList } from './pages/custom-list';
+import { Habits } from './pages/habits';
 
 // Settings Pages
 import { Settings } from './pages/settings/settings';
@@ -173,6 +174,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Calendar />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/habits"
+          element={
+            <ProtectedRoute>
+              <Habits />
             </ProtectedRoute>
           }
         />

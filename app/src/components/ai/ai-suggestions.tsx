@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Lightbulb, Sparkles, TrendingUp, Clock, X } from 'lucide-react';
+import { Lightbulb, Sparkles, TrendingUp, Clock, Minus, Bot } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 // import { useAppStoreRQ } from '../../store/app-store-rq';
@@ -16,7 +16,7 @@ export function AISuggestions() {
     ReturnType<typeof aiService.generateTaskSuggestions>
   >([]);
   const [tips, setTips] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [analytics, setAnalytics] = useState<ReturnType<
     typeof aiService.analyzeTaskPatterns
   > | null>(null);
@@ -69,39 +69,42 @@ export function AISuggestions() {
   if (!showSuggestions) {
     return (
       <Button
-        variant="ghost"
-        size="sm"
-        className="fixed z-50 bottom-4 right-4"
+        variant="default"
+        size="icon"
+        className="fixed z-50 bottom-24 right-4 sm:bottom-6 sm:right-6 w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-2 border-white dark:border-gray-800"
         onClick={() => setShowSuggestions(true)}
+        title="AI Assistant"
       >
-        <Lightbulb className="w-4 h-4 mr-2" />
-        AI Insights
+        <Bot className="w-6 h-6 text-white" />
       </Button>
     );
   }
 
   return (
-    <Card className="fixed bottom-4 right-4 w-96 max-h-[600px] overflow-hidden shadow-lg z-50 bg-background/95 backdrop-blur-sm border-border">
-      <div className="flex items-center justify-between p-4 border-b">
+    <Card className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 w-80 sm:w-96 max-h-[500px] sm:max-h-[600px] overflow-hidden shadow-xl z-50 bg-background/95 backdrop-blur-sm border-border">
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b">
         <div className="flex items-center space-x-2">
-          <Lightbulb className="w-5 h-5 text-yellow-500" />
-          <h3 className="font-semibold text-foreground">AI Assistant</h3>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+            <Bot className="w-4 h-4 text-white" />
+          </div>
+          <h3 className="font-semibold text-foreground text-sm sm:text-base">AI Assistant</h3>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="w-6 h-6"
+          className="w-6 h-6 hover:bg-destructive/10"
           onClick={() => setShowSuggestions(false)}
+          title="Close"
         >
-          <X className="w-4 h-4" />
+          <Minus className="w-4 h-4" />
         </Button>
       </div>
 
-      <div className="overflow-y-auto max-h-[500px]">
+      <div className="overflow-y-auto max-h-[400px] sm:max-h-[500px]">
         {/* Analytics Section */}
         {analytics && (
-          <div className="p-4 border-b">
-            <h4 className="mb-3 text-sm font-medium text-foreground">Your Productivity Insights</h4>
+          <div className="p-3 sm:p-4 border-b">
+            <h4 className="mb-2 sm:mb-3 text-xs sm:text-sm font-medium text-foreground">Your Productivity Insights</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="p-2 rounded bg-muted/30 dark:bg-muted/20">
                 <div className="text-xs text-muted-foreground">Completion Rate</div>
@@ -119,8 +122,8 @@ export function AISuggestions() {
 
         {/* Contextual Tips */}
         {tips.length > 0 && (
-          <div className="p-4 border-b">
-            <h4 className="mb-2 text-sm font-medium text-foreground">Tips for You</h4>
+          <div className="p-3 sm:p-4 border-b">
+            <h4 className="mb-2 text-xs sm:text-sm font-medium text-foreground">Tips for You</h4>
             <div className="space-y-2">
               {tips.map((tip, index) => (
                 <div key={index} className="text-sm text-muted-foreground">
@@ -132,8 +135,8 @@ export function AISuggestions() {
         )}
 
         {/* Task Suggestions */}
-        <div className="p-4">
-          <h4 className="mb-3 text-sm font-medium text-foreground">Suggested Tasks</h4>
+        <div className="p-3 sm:p-4">
+          <h4 className="mb-2 sm:mb-3 text-xs sm:text-sm font-medium text-foreground">Suggested Tasks</h4>
           <div className="space-y-2">
             {suggestions.length === 0 ? (
               <p className="text-sm text-muted-foreground">
@@ -171,7 +174,7 @@ export function AISuggestions() {
         </div>
 
         {/* Smart Scheduling */}
-        <div className="p-4 border-t">
+        <div className="p-3 sm:p-4 border-t">
           <p className="text-xs text-center text-muted-foreground">
             AI suggestions update based on your patterns and time of day
           </p>

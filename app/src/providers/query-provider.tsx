@@ -30,7 +30,7 @@ export function QueryProvider({ children }: QueryProviderProps) {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         {children}
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools  initialIsOpen={false}  /> */}
       </QueryClientProvider>
     </ErrorBoundary>
   );

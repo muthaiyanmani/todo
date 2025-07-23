@@ -60,7 +60,7 @@ export function SignUp() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Create an account</CardTitle>
-          <CardDescription className="text-center">Get started with Smart Todo Pro</CardDescription>
+          <CardDescription className="text-center">Get started with Todo Pro</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -20,20 +20,22 @@ export function MyDayView() {
       <div className="flex flex-col h-full">
         {/* Header with Tabs */}
         <div className="flex-none border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h1 className="text-2xl font-semibold">My Day</h1>
-              <p className="text-sm text-muted-foreground">
-                {activeView === 'list'
-                  ? 'Focus on what matters today'
-                  : 'Prioritize tasks using the Eisenhower Matrix'}
-              </p>
+          <div className="p-4 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-xl sm:text-2xl font-semibold">My Day</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {activeView === 'list'
+                    ? 'Focus on what matters today'
+                    : 'Prioritize tasks using the Eisenhower Matrix'}
+                </p>
+              </div>
+              <MyDayTabs
+                activeView={activeView}
+                onViewChange={setActiveView}
+                taskCount={taskCount}
+              />
             </div>
-            <MyDayTabs
-              activeView={activeView}
-              onViewChange={setActiveView}
-              taskCount={taskCount}
-            />
           </div>
         </div>
 

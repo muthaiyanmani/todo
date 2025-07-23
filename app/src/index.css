@@ -6,6 +6,97 @@
   border-width: 0;
 }
 
+/* Mobile PWA optimizations */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch optimizations */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Line clamp utility */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Safe area padding for PWA */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Mobile bottom navigation improvements */
+@media (max-width: 640px) {
+  /* Ensure content is never hidden behind bottom nav */
+  .mobile-bottom-nav {
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+  
+  /* Additional padding for scrollable content */
+  .pb-20 {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+  
+  /* Utility class for mobile bottom spacing */
+  .mobile-bottom-safe {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Enhanced checkbox touch targets for mobile */
+@media (pointer: coarse) {
+  [role="checkbox"] {
+    min-width: 18px !important;
+    min-height: 18px !important;
+  }
+  
+  /* Increase touch area around checkboxes */
+  [role="checkbox"]::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+  }
+}
+
+/* Mobile button optimizations */
+@media (max-width: 640px) {
+  /* Ensure buttons don't get too small */
+  button {
+    min-height: 32px;
+  }
+  
+  /* Compact text in small buttons */
+  .text-xs {
+    font-size: 11px;
+  }
+}
+
 @layer utilities {
   /* Background utilities */
   .bg-background {

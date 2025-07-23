@@ -49,7 +49,7 @@ export function Preferences() {
   return (
     <div className="space-y-6">
       {success && (
-        <div className="p-3 rounded-md bg-green-50 border border-green-200 text-green-800 text-sm">
+        <div className="p-3 text-sm text-green-800 border border-green-200 rounded-md bg-green-50">
           Preferences saved successfully!
         </div>
       )}
@@ -59,7 +59,7 @@ export function Preferences() {
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
           <CardDescription>
-            Customize how Smart Todo Pro looks and feels
+            Customize how Todo Pro looks and feels
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -73,7 +73,7 @@ export function Preferences() {
                   className="flex flex-col h-20 space-y-2"
                   onClick={() => setTheme(option.value as 'light' | 'dark' | 'system')}
                 >
-                  <option.icon className="h-5 w-5" />
+                  <option.icon className="w-5 h-5" />
                   <span className="text-xs">{option.label}</span>
                 </Button>
               ))}

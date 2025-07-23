@@ -1,4 +1,4 @@
-# Smart Todo Pro
+# Todo Pro
 
 An advanced, intelligent task management application built with modern web technologies.
 

@@ -1,4 +1,4 @@
-import { Sun, Star, Calendar, CheckSquare, CalendarRange, Plus, Settings } from 'lucide-react';
+import { Sun, Star, Calendar, CheckSquare, CalendarRange, Plus, Settings, Target } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
@@ -66,8 +66,8 @@ export function MobileBottomNav() {
   return (
     <>
       {/* Mobile Bottom Navigation - Only visible on mobile screens */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border sm:hidden mobile-bottom-nav">
-        <div className="flex items-center justify-around px-2 py-1">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border sm:hidden mobile-bottom-nav safe-area-bottom">
+        <div className="flex items-center justify-around px-2 py-2">
           {/* Main nav items */}
           {navItems.slice(0, 4).map((item) => {
             const Icon = item.icon;
@@ -147,6 +147,14 @@ export function MobileBottomNav() {
                   <span>Calendar</span>
                 </Button>
 
+                <Button
+                  variant={location.pathname === '/dashboard/habits' ? 'secondary' : 'ghost'}
+                  className="flex items-center justify-start h-12 cursor-pointer"
+                  onClick={() => handleNavClick('/dashboard/habits')}
+                >
+                  <Target className="h-5 w-5 mr-3 text-emerald-600" />
+                  <span>Habits</span>
+                </Button>
 
                 <Button
                   variant={
@@ -165,7 +173,7 @@ export function MobileBottomNav() {
       )}
 
       {/* Bottom padding to prevent content from being hidden behind nav */}
-      <div className="h-16 sm:hidden" />
+      <div className="h-20 sm:hidden safe-area-bottom" />
     </>
   );
 }

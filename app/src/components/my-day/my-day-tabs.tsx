@@ -41,7 +41,7 @@ export function MyDayTabs({ activeView, onViewChange, taskCount = 0 }: MyDayTabs
             size="sm"
             onClick={() => onViewChange(tab.id)}
             className={cn(
-              'flex items-center space-x-2 transition-all cursor-pointer',
+              'flex items-center space-x-1 sm:space-x-2 transition-all cursor-pointer px-2 sm:px-3',
               isActive
                 ? 'bg-background shadow-sm'
                 : 'hover:bg-background/50'

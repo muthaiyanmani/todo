@@ -1,6 +1,6 @@
-# Contributing to Smart Todo Pro
+# Contributing to Todo Pro
 
-Thank you for your interest in contributing to Smart Todo Pro! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to Todo Pro! This document provides guidelines for contributing to the project.
 
 ## Development Setup
 
@@ -184,4 +184,4 @@ If you have questions about contributing, feel free to:
 - Check existing documentation
 - Ask in pull request comments
 
-Thank you for contributing to Smart Todo Pro!
+Thank you for contributing to Todo Pro!

@@ -50,7 +50,7 @@ export function TodoLayoutRQ() {
               // On mobile, full width. On desktop, adjust based on task details panel
               selectedTaskId && view !== 'calendar' ? 'lg:flex-[2]' : 'flex-1',
               // Add bottom padding on mobile to account for bottom nav
-              isMobile ? 'pb-16' : 'pb-0'
+              isMobile ? 'pb-20' : 'pb-0'
             )}
           >
             {view === 'calendar' ? <CalendarView /> :

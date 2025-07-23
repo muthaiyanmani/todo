@@ -9,7 +9,11 @@ import {
   List,
   User,
   Settings,
+  Target,
+  LogOut,
+  ChevronDown,
 } from 'lucide-react';
+import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../ui/button';
@@ -38,9 +42,10 @@ export function SidebarRQ() {
     searchQuery,
     setSearchQuery,
   } = useAppStoreRQ();
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // React Query hooks
   const { data: tasks = [] } = useTasks();
@@ -91,6 +96,11 @@ export function SidebarRQ() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   if (sidebarCollapsed) {
     return (
       <div className="h-full flex flex-col p-2">
@@ -124,6 +134,27 @@ export function SidebarRQ() {
             </Button>
           );
         })}
+
+        {/* Special view icons */}
+        <Button
+          variant={location.pathname === '/dashboard/calendar' ? 'secondary' : 'ghost'}
+          size="icon"
+          onClick={() => navigate('/dashboard/calendar')}
+          className="mb-1"
+          title="Calendar"
+        >
+          <Calendar className="h-4 w-4 text-indigo-600" />
+        </Button>
+
+        <Button
+          variant={location.pathname === '/dashboard/habits' ? 'secondary' : 'ghost'}
+          size="icon"
+          onClick={() => navigate('/dashboard/habits')}
+          className="mb-1"
+          title="Habits"
+        >
+          <Target className="h-4 w-4 text-emerald-600" />
+        </Button>
       </div>
     );
   }
@@ -133,18 +164,52 @@ export function SidebarRQ() {
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-primary-foreground" />
+          <div className="relative flex-1">
+            <div className="flex items-center space-x-2">
+              <button
+                className="w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+              >
+                <User className="h-4 w-4 text-primary-foreground" />
+              </button>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{user?.name}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user?.name}</p>
-            </div>
+
+            {/* User Menu Dropdown */}
+            {showUserMenu && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowUserMenu(false)}
+                />
+                <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-20 py-1">
+                  <button
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center space-x-2"
+                    onClick={() => {
+                      navigate('/dashboard/settings');
+                      setShowUserMenu(false);
+                    }}
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span>Settings</span>
+                  </button>
+                  <button
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center space-x-2 text-destructive"
+                    onClick={() => {
+                      handleLogout();
+                      setShowUserMenu(false);
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-          <div className="flex items-center space-x-1">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard/settings')}>
-              <Settings className="h-4 w-4" />
-            </Button>
+          <div className="flex items-center space-x-1 ml-2">
             <Button variant="ghost" size="icon" onClick={() => setSidebarCollapsed(true)}>
               <Menu className="h-4 w-4" />
             </Button>
@@ -202,6 +267,15 @@ export function SidebarRQ() {
           >
             <Calendar className="h-4 w-4 mr-3 text-indigo-600" />
             <span className="flex-1 text-left">Calendar</span>
+          </Button>
+
+          <Button
+            variant={location.pathname === '/dashboard/habits' ? 'secondary' : 'ghost'}
+            className="w-full justify-start mb-1 h-10 cursor-pointer"
+            onClick={() => navigate('/dashboard/habits')}
+          >
+            <Target className="h-4 w-4 mr-3 text-emerald-600" />
+            <span className="flex-1 text-left">Habits</span>
           </Button>
 
         </div>

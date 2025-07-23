@@ -38,7 +38,7 @@ const quadrantConfig: Record<EisenhowerQuadrant, EisenhowerQuadrantInfo> = {
     id: 'do',
     title: 'Do First',
     description: 'Important & Urgent',
-    color: 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900',
+    color: 'border-red-200/50 dark:border-red-800/50 bg-red-50/30 dark:bg-red-950/20 hover:bg-red-100/50 dark:hover:bg-red-900/30',
     icon: 'AlertTriangle',
     priority: 1
   },
@@ -46,7 +46,7 @@ const quadrantConfig: Record<EisenhowerQuadrant, EisenhowerQuadrantInfo> = {
     id: 'decide',
     title: 'Schedule',
     description: 'Important & Not Urgent',
-    color: 'border-amber-200 dark:border-amber-600 bg-amber-50 dark:bg-amber-950 hover:bg-amber-100 dark:hover:bg-amber-900',
+    color: 'border-amber-200/50 dark:border-amber-700/50 bg-amber-50/30 dark:bg-amber-950/20 hover:bg-amber-100/50 dark:hover:bg-amber-900/30',
     icon: 'Clock',
     priority: 2
   },
@@ -54,7 +54,7 @@ const quadrantConfig: Record<EisenhowerQuadrant, EisenhowerQuadrantInfo> = {
     id: 'delegate',
     title: 'Delegate',
     description: 'Not Important & Urgent',
-    color: 'border-blue-200 dark:border-blue-600 bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900',
+    color: 'border-blue-200/50 dark:border-blue-700/50 bg-blue-50/30 dark:bg-blue-950/20 hover:bg-blue-100/50 dark:hover:bg-blue-900/30',
     icon: 'Users',
     priority: 3
   },
@@ -62,7 +62,7 @@ const quadrantConfig: Record<EisenhowerQuadrant, EisenhowerQuadrantInfo> = {
     id: 'delete',
     title: 'Don\'t Do',
     description: 'Not Important & Not Urgent',
-    color: 'border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800',
+    color: 'border-slate-200/50 dark:border-slate-700/50 bg-slate-50/30 dark:bg-slate-900/20 hover:bg-slate-100/50 dark:hover:bg-slate-800/30',
     icon: 'Trash2',
     priority: 4
   }
@@ -280,24 +280,24 @@ export function EisenhowerMatrix() {
       {/* How it Works Section */}
       {showHowItWorks && (
         <Card className="p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Info className="h-5 w-5 text-primary" />
+          <div className="flex items-center mb-4 space-x-2">
+            <Info className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold">How the Eisenhower Matrix Works</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h4 className="font-medium mb-3">The Four Quadrants:</h4>
+              <h4 className="mb-3 font-medium">The Four Quadrants:</h4>
               <div className="space-y-3">
                 {Object.entries(quadrantConfig).map(([key, config]) => {
                   const IconComponent = iconMap[config.icon as keyof typeof iconMap];
                   return (
                     <div key={key} className="flex items-start space-x-3">
                       <div className={cn('p-2 rounded-lg', config.color)}>
-                        <IconComponent className="h-4 w-4" />
+                        <IconComponent className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="font-medium text-sm">{config.title}</p>
+                        <p className="text-sm font-medium">{config.title}</p>
                         <p className="text-xs text-muted-foreground">{config.description}</p>
                       </div>
                     </div>
@@ -307,14 +307,14 @@ export function EisenhowerMatrix() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-3">Smart Categorization:</h4>
+              <h4 className="mb-3 font-medium">Smart Categorization:</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
                 <p><strong>Important tasks</strong> are those marked as important, in "My Day", with important keywords, or due within a week.</p>
                 <p><strong>Urgent tasks</strong> are overdue, due today/tomorrow, contain urgent keywords, or have past reminders.</p>
                 <p><strong>Goal:</strong> Spend most time in "Schedule" quadrant to prevent crises and focus on long-term success.</p>
               </div>
 
-              <div className="mt-4 p-3 bg-primary/5 dark:bg-primary/10 rounded-lg">
+              <div className="p-3 mt-4 rounded-lg bg-primary/5 dark:bg-primary/10">
                 <p className="text-sm text-primary/90 dark:text-primary">
                   💡 <strong>Pro Tip:</strong> Tasks are automatically categorized based on their properties. You can manually move tasks between quadrants using the menu button.
                 </p>
@@ -336,8 +336,8 @@ export function EisenhowerMatrix() {
       {showInsights && analysis.insights.length > 0 && (
         <div className="space-y-4">
           <Card className="p-4">
-            <div className="flex items-center space-x-2 mb-3">
-              <TrendingUp className="h-5 w-5 text-primary" />
+            <div className="flex items-center mb-3 space-x-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
               <h3 className="font-semibold">Productivity Insights</h3>
             </div>
             <div className="space-y-2">
@@ -348,12 +348,12 @@ export function EisenhowerMatrix() {
               ))}
             </div>
             {analysis.recommendations.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-border">
-                <h4 className="font-medium mb-2 text-sm">Recommendations:</h4>
+              <div className="pt-4 mt-4 border-t border-border">
+                <h4 className="mb-2 text-sm font-medium">Recommendations:</h4>
                 <ul className="space-y-1">
                   {analysis.recommendations.map((rec, index) => (
-                    <li key={index} className="text-sm text-muted-foreground flex items-start">
-                      <span className="text-primary mr-2">•</span>
+                    <li key={index} className="flex items-start text-sm text-muted-foreground">
+                      <span className="mr-2 text-primary">•</span>
                       {rec}
                     </li>
                   ))}
@@ -434,20 +434,19 @@ function DraggableTask({
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
       className={cn(
-        'touch-none',
-        isDragging && 'opacity-50'
+        isDragging && 'opacity-50 z-50'
       )}
     >
-      <TaskCard
-        task={task}
-        isSelected={isSelected}
-        onClick={onClick}
-        onToggleComplete={onToggleComplete}
-        onQuadrantChange={onQuadrantChange}
-      />
+      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+        <TaskCard
+          task={task}
+          isSelected={isSelected}
+          onClick={onClick}
+          onToggleComplete={onToggleComplete}
+          onQuadrantChange={onQuadrantChange}
+        />
+      </div>
     </div>
   );
 }
@@ -472,14 +471,14 @@ function TaskCard({
   return (
     <div
       className={cn(
-        'group p-3 rounded-lg border border-gray-300 border-visible-light border-visible-dark hover:bg-muted/50 cursor-pointer transition-colors relative',
+        'group p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors relative bg-background',
         isSelected && 'bg-muted ring-1 ring-primary/20 border-primary/40'
       )}
       onClick={onClick}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2 mb-1">
+          <div className="flex items-center mb-1 space-x-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -508,7 +507,7 @@ function TaskCard({
             </p>
           )}
 
-          <div className="flex items-center space-x-3 mt-2 text-xs text-muted-foreground">
+          <div className="flex items-center mt-2 space-x-3 text-xs text-muted-foreground">
             {task.dueDate && (
               <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
             )}
@@ -521,13 +520,13 @@ function TaskCard({
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="w-6 h-6 transition-opacity opacity-0 group-hover:opacity-100"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMoveMenu(!showMoveMenu);
               }}
             >
-              <MoreHorizontal className="h-3 w-3" />
+              <MoreHorizontal className="w-3 h-3" />
             </Button>
 
             {showMoveMenu && (
@@ -542,14 +541,14 @@ function TaskCard({
                     return (
                       <button
                         key={key}
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center space-x-2"
+                        className="flex items-center w-full px-3 py-2 space-x-2 text-sm text-left hover:bg-accent"
                         onClick={(e) => {
                           e.stopPropagation();
                           onQuadrantChange(key as EisenhowerQuadrant);
                           setShowMoveMenu(false);
                         }}
                       >
-                        <IconComponent className="h-3 w-3" />
+                        <IconComponent className="w-3 h-3" />
                         <span>{config.title}</span>
                       </button>
                     );

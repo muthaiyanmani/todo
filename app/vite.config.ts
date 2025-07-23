@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Smart Todo Pro',
+        name: 'Todo Pro',
         short_name: 'TodoPro',
         description: 'Advanced task management with offline support',
         theme_color: '#000000',
