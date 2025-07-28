@@ -1,4 +1,4 @@
-import { ReactNode, useState, useRef } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { cn } from '../../lib/utils';
 import { soundService } from '../../services/sound-service';
 
@@ -33,10 +33,10 @@ export function AnimatedButton({
       const rect = buttonRef.current.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      
+
       const newRipple = { id: Date.now(), x, y };
       setRipples(prev => [...prev, newRipple]);
-      
+
       // Remove ripple after animation
       setTimeout(() => {
         setRipples(prev => prev.filter(ripple => ripple.id !== newRipple.id));
@@ -93,7 +93,7 @@ export function AnimatedButton({
       disabled={disabled}
     >
       {children}
-      
+
       {/* Ripple effects */}
       {ripples.map(ripple => (
         <span
@@ -155,7 +155,7 @@ export function AnimatedCard({
       onMouseLeave={handleMouseLeave}
     >
       {children}
-      
+
       {/* Hover glow effect */}
       {isHovered && hoverable && (
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 rounded-lg pointer-events-none" />
@@ -171,11 +171,11 @@ interface PulseAnimationProps {
   color?: 'blue' | 'green' | 'red' | 'yellow' | 'purple';
 }
 
-export function PulseAnimation({ 
-  children, 
-  isActive, 
+export function PulseAnimation({
+  children,
+  isActive,
   intensity = 'medium',
-  color = 'blue' 
+  color = 'blue'
 }: PulseAnimationProps) {
   const intensityMap = {
     low: 'animate-pulse',
@@ -269,10 +269,10 @@ interface ShakeAnimationProps {
   intensity?: 'low' | 'medium' | 'high';
 }
 
-export function ShakeAnimation({ 
-  children, 
-  isShaking, 
-  intensity = 'medium' 
+export function ShakeAnimation({
+  children,
+  isShaking,
+  intensity = 'medium'
 }: ShakeAnimationProps) {
   const intensityMap = {
     low: 'animate-pulse',

@@ -1,11 +1,11 @@
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Switch } from '../../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Switch } from '../../components/ui/switch';
 import { useAppStoreRQ } from '../../store/app-store-rq';
 import { useAuthStore } from '../../store/auth-store';
-import { Monitor, Moon, Sun } from 'lucide-react';
 
 export function Preferences() {
   const { theme, setTheme, showCompleted, setShowCompleted } = useAppStoreRQ();
@@ -25,7 +25,14 @@ export function Preferences() {
         preferences: {
           ...user?.preferences,
           theme,
-          notifications: user?.preferences?.notifications || true,
+          notifications: user?.preferences?.notifications || {
+            tasks: true,
+            reminders: true,
+            achievements: true,
+            weekly: true,
+            email: true,
+            push: true,
+          },
           timezone: user?.preferences?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
         updatedAt: new Date(),
@@ -192,8 +199,8 @@ export function Preferences() {
 
       {/* Save Button */}
       <div className="flex justify-center sm:justify-end pt-2 sm:pt-4">
-        <Button 
-          onClick={handleSave} 
+        <Button
+          onClick={handleSave}
           disabled={isLoading}
           className="w-full sm:w-auto h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base px-4 sm:px-6 lg:px-8"
         >

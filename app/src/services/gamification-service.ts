@@ -1,4 +1,4 @@
-import { Task } from '../types';
+import type { Task } from '../types';
 
 export interface Achievement {
   id: string;
@@ -182,7 +182,7 @@ export class GamificationService {
       const defaultAchievements = this.getDefaultAchievements();
       const existingIds = stats.achievements.map((a: Achievement) => a.id);
       const newAchievements = defaultAchievements.filter(a => !existingIds.includes(a.id));
-      
+
       return {
         ...stats,
         achievements: [...stats.achievements, ...newAchievements]
@@ -197,19 +197,19 @@ export class GamificationService {
 
   public calculateXP(taskCompleted: boolean, isImportant: boolean, isEisenhower: boolean): number {
     let xp = 0;
-    
+
     if (taskCompleted) {
       xp += 10; // Base XP for completion
-      
+
       if (isImportant) {
         xp += 5; // Bonus for important tasks
       }
-      
+
       if (isEisenhower) {
         xp += 3; // Bonus for using Eisenhower Matrix
       }
     }
-    
+
     return xp;
   }
 
@@ -219,14 +219,14 @@ export class GamificationService {
     const xpForCurrentLevel = Math.pow(level - 1, 2) * 50;
     const xpForNextLevel = Math.pow(level, 2) * 50;
     const xpToNextLevel = xpForNextLevel - xp;
-    
+
     return { level, xpToNextLevel };
   }
 
   public updateStreak(stats: UserStats): UserStats {
     const today = new Date().toDateString();
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toDateString();
-    
+
     if (stats.lastActiveDate === yesterday) {
       // Continue streak
       stats.currentStreak += 1;
@@ -235,7 +235,7 @@ export class GamificationService {
       // Reset streak if more than a day has passed
       stats.currentStreak = 1;
     }
-    
+
     stats.lastActiveDate = today;
     return stats;
   }
@@ -243,50 +243,50 @@ export class GamificationService {
   public checkPerfectDay(tasks: Task[]): boolean {
     const myDayTasks = tasks.filter(task => task.myDay);
     if (myDayTasks.length === 0) return false;
-    
+
     return myDayTasks.every(task => task.completed);
   }
 
   public checkAchievements(stats: UserStats, tasks: Task[]): Achievement[] {
     const newlyUnlocked: Achievement[] = [];
-    
+
     stats.achievements.forEach(achievement => {
       if (achievement.unlocked) return;
-      
+
       let achieved = false;
-      
+
       switch (achievement.requirement.type) {
         case 'task_count':
           achieved = stats.tasksCompleted >= achievement.requirement.value;
           break;
-          
+
         case 'streak':
           achieved = stats.currentStreak >= achievement.requirement.value;
           break;
-          
+
         case 'perfect_day':
           achieved = stats.perfectDays >= achievement.requirement.value;
           break;
-          
+
         case 'eisenhower_usage':
-          const eisenhowerTasks = tasks.filter(task => 
-            task.completed && (task.priority !== undefined || task.urgent !== undefined)
+          const eisenhowerTasks = tasks.filter(task =>
+            task.completed && task.urgent !== undefined
           );
           achieved = eisenhowerTasks.length >= achievement.requirement.value;
           break;
-          
+
         case 'weekly_goal':
           achieved = stats.weeklyProgress >= stats.weeklyGoal;
           break;
       }
-      
+
       if (achieved) {
         achievement.unlocked = true;
         achievement.unlockedAt = new Date().toISOString();
         newlyUnlocked.push(achievement);
       }
     });
-    
+
     return newlyUnlocked;
   }
 
@@ -298,7 +298,7 @@ export class GamificationService {
   } {
     let stats = this.getStats();
     const task = tasks.find(t => t.id === taskId);
-    
+
     if (!task) {
       return { stats, newAchievements: [], levelUp: false, perfectDay: false };
     }
@@ -306,43 +306,43 @@ export class GamificationService {
     // Update basic stats
     stats.tasksCompleted += 1;
     stats = this.updateStreak(stats);
-    
+
     // Calculate XP
     const xpGained = this.calculateXP(
       true,
       task.important || false,
-      task.priority !== undefined || task.urgent !== undefined
+      task.urgent !== undefined
     );
-    
+
     const oldLevel = stats.level;
     stats.xp += xpGained;
     const { level, xpToNextLevel } = this.calculateLevel(stats.xp);
     stats.level = level;
     stats.xpToNextLevel = xpToNextLevel;
-    
+
     const levelUp = level > oldLevel;
-    
+
     // Update weekly progress
     const today = new Date();
     const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-    const thisWeekTasks = tasks.filter(t => 
+    const thisWeekTasks = tasks.filter(t =>
       t.completed && new Date(t.updatedAt || t.createdAt) >= weekStart
     );
     stats.weeklyProgress = thisWeekTasks.length;
-    
+
     // Check for perfect day
     const perfectDay = this.checkPerfectDay(tasks);
     if (perfectDay && !stats.lastActiveDate.includes('perfect')) {
       stats.perfectDays += 1;
       stats.lastActiveDate += '-perfect'; // Mark this day as perfect
     }
-    
+
     // Check for new achievements
     const newAchievements = this.checkAchievements(stats, tasks);
-    
+
     // Save updated stats
     this.saveStats(stats);
-    
+
     return {
       stats,
       newAchievements,
@@ -351,28 +351,31 @@ export class GamificationService {
     };
   }
 
-  public getProgressToNextMilestone(stats: UserStats): {
-    type: 'level' | 'streak' | 'weekly' | 'achievement';
-    current: number;
-    target: number;
-    label: string;
-  } | null {
+  public getProgressToNextMilestone(stats: UserStats): (
+    { type: 'level'; current: number; target: number; label: string } |
+    { type: 'weekly'; current: number; target: number; label: string } |
+    { type: 'achievement'; current: number; target: number; label: string; achievement: Achievement }
+  ) | null {
     // Find the next closest milestone
-    const milestones = [
+    const milestones: (
+      { type: 'level'; current: number; target: number; label: string } |
+      { type: 'weekly'; current: number; target: number; label: string } |
+      { type: 'achievement'; current: number; target: number; label: string; achievement: Achievement }
+    )[] = [
       {
-        type: 'level' as const,
+        type: 'level',
         current: stats.xp,
         target: Math.pow(stats.level, 2) * 50,
         label: `Level ${stats.level + 1}`
       },
       {
-        type: 'weekly' as const,
+        type: 'weekly',
         current: stats.weeklyProgress,
         target: stats.weeklyGoal,
         label: 'Weekly Goal'
       }
     ];
-    
+
     // Find uncompleted achievements close to completion
     const nextAchievement = stats.achievements
       .filter(a => !a.unlocked)
@@ -390,7 +393,7 @@ export class GamificationService {
             break;
         }
         return {
-          type: 'achievement' as const,
+          type: "achievement" as const,
           current,
           target: a.requirement.value,
           label: a.title,
@@ -399,16 +402,16 @@ export class GamificationService {
       })
       .filter(m => m.current < m.target)
       .sort((a, b) => (a.target - a.current) - (b.target - b.current))[0];
-    
+
     if (nextAchievement) {
       milestones.push(nextAchievement);
     }
-    
+
     // Return the closest milestone
     const closestMilestone = milestones
       .filter(m => m.current < m.target)
       .sort((a, b) => (a.target - a.current) - (b.target - b.current))[0];
-    
+
     return closestMilestone || null;
   }
 }

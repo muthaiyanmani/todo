@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '../../lib/utils';
 
 interface DropdownMenuProps {
@@ -29,7 +29,7 @@ const DropdownMenuContext = React.createContext<{
   triggerRef: React.RefObject<HTMLElement>;
 }>({
   isOpen: false,
-  setIsOpen: () => {},
+  setIsOpen: () => { /* noop */ },
   triggerRef: { current: null }
 });
 
@@ -71,26 +71,25 @@ export function DropdownMenuTrigger({ asChild, children }: DropdownMenuTriggerPr
 
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children, {
-      ...children.props,
       ref: triggerRef,
       onClick: handleClick,
-    });
+    } as React.HTMLAttributes<HTMLElement>);
   }
 
   return (
-    <button ref={triggerRef as any} onClick={handleClick}>
+    <button ref={triggerRef as React.RefObject<HTMLButtonElement>} onClick={handleClick}>
       {children}
     </button>
   );
 }
 
-export function DropdownMenuContent({ 
-  align = 'end', 
-  side = 'bottom', 
-  className, 
-  children 
+export function DropdownMenuContent({
+  align = 'end',
+  side = 'bottom',
+  className,
+  children
 }: DropdownMenuContentProps) {
-  const { isOpen, setIsOpen } = React.useContext(DropdownMenuContext);
+  const { isOpen } = React.useContext(DropdownMenuContext);
 
   if (!isOpen) return null;
 
@@ -109,7 +108,7 @@ export function DropdownMenuContent({
 
   return (
     <div className={cn(
-      "absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+      'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
       sideClasses[side],
       alignmentClasses[align],
       className
@@ -130,7 +129,7 @@ export function DropdownMenuItem({ className, onClick, children }: DropdownMenuI
   return (
     <div
       className={cn(
-        "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer",
+        'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer',
         className
       )}
       onClick={handleClick}

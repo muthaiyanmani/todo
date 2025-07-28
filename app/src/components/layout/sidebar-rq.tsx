@@ -1,36 +1,36 @@
 import {
-  Sun,
-  Star,
   Calendar,
   CheckSquare,
-  Plus,
-  Menu,
-  Search,
-  List,
-  User,
-  Settings,
-  Target,
-  LogOut,
-  Trophy,
-  Zap,
-  Flame,
-  TrendingUp,
   Crown,
-  Sparkles,
+  Flame,
+  List,
+  LogOut,
   Medal,
+  Menu,
+  Plus,
+  Search,
+  Settings,
+  Sparkles,
+  Star,
+  Sun,
+  Target,
+  TrendingUp,
+  Trophy,
+  User,
+  Zap,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useCreateTaskList, useTaskLists } from '../../hooks/use-task-lists';
+import { useTasks } from '../../hooks/use-tasks';
 import { cn } from '../../lib/utils';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { gamificationService } from '../../services/gamification-service';
+import { useAppStoreRQ } from '../../store/app-store-rq';
+import { useAuthStore } from '../../store/auth-store';
+import type { SmartListType } from '../../types';
 import { SidebarSettings } from '../settings/sidebar-settings';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { useAppStoreRQ } from '../../store/app-store-rq';
-import { useAuthStore } from '../../store/auth-store';
-import { useTasks } from '../../hooks/use-tasks';
-import { useTaskLists, useCreateTaskList } from '../../hooks/use-task-lists';
-import { gamificationService } from '../../services/gamification-service';
-import type { SmartListType } from '../../types';
 
 const smartLists = [
   { id: 'my-day' as SmartListType, name: 'My Day', icon: Sun, color: 'text-blue-600', bgColor: 'bg-blue-100 dark:bg-blue-900/30' },
@@ -96,7 +96,13 @@ export function SidebarRQ() {
     if (name?.trim()) {
       const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
       const color = colors[Math.floor(Math.random() * colors.length)];
-      createTaskListMutation.mutate({ name: name.trim(), color });
+      createTaskListMutation.mutate({
+        userId: user?.id || 'anonymous',
+        name: name.trim(),
+        color,
+        isDefault: false,
+        isShared: false,
+      });
     }
   };
 
@@ -134,7 +140,7 @@ export function SidebarRQ() {
               </span>
             </div>
             <div className="w-6 h-1 overflow-hidden bg-gray-200 rounded-full">
-              <div 
+              <div
                 className="h-full transition-all duration-500 bg-gradient-to-r from-blue-500 to-purple-500"
                 style={{ width: `${getLevelProgress()}%` }}
               />
@@ -232,7 +238,7 @@ export function SidebarRQ() {
                   <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                     <span>Level {userStats.level}</span>
                     <div className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full transition-all duration-1000 ease-out bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
                         style={{ width: `${getLevelProgress()}%` }}
                       />
@@ -271,7 +277,7 @@ export function SidebarRQ() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <button
                     className="flex items-center w-full px-3 py-2 space-x-3 text-sm text-left transition-colors hover:bg-accent/50"
                     onClick={() => {
@@ -297,9 +303,9 @@ export function SidebarRQ() {
             )}
           </div>
           <div className="flex items-center ml-3 space-x-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setSidebarCollapsed(true)}
               className="transition-all duration-200 hover:bg-white/10 hover:scale-105"
             >
@@ -346,7 +352,7 @@ export function SidebarRQ() {
               <span>Smart Lists</span>
             </h3>
           </div>
-          
+
           {smartLists.map((list, index) => {
             const Icon = list.icon;
             const count = getTaskCount(list.id);
@@ -381,8 +387,8 @@ export function SidebarRQ() {
                     <div className="relative">
                       <span className={cn(
                         "px-2.5 py-1 ml-2 text-xs font-medium rounded-full transition-all duration-300",
-                        isActive 
-                          ? "bg-primary text-primary-foreground shadow-sm" 
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-sm"
                           : "bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
                       )}>
                         {count > 99 ? '99+' : count}
@@ -414,7 +420,7 @@ export function SidebarRQ() {
               <span>Views</span>
             </h3>
           </div>
-          
+
           <Button
             variant={location.pathname === '/dashboard/calendar' ? 'secondary' : 'ghost'}
             className={cn(
@@ -529,7 +535,7 @@ export function SidebarRQ() {
           )}
         </div>
       </div>
-      
+
       {/* Settings Sidebar */}
       <SidebarSettings isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </div>

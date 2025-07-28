@@ -1,13 +1,13 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Calendar, momentLocalizer, Views, type View } from 'react-big-calendar';
+import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import moment from 'moment';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Calendar, momentLocalizer, Views, type View } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useCreateTask, useTasks } from '../../hooks/use-tasks';
 import { useAppStoreRQ } from '../../store/app-store-rq';
 import { useAuthStore } from '../../store/auth-store';
-import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import type { Task } from '../../types';
-import { useTasks, useCreateTask } from '../../hooks/use-tasks';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Button } from '../ui/button';
 
 const localizer = momentLocalizer(moment);
 
@@ -46,10 +46,10 @@ export function CalendarViewRQ() {
   // Convert tasks to calendar events including all types
   const events = useMemo<CalendarEvent[]>(() => {
     const calendarEvents: CalendarEvent[] = [];
-    
+
     tasks.forEach((task) => {
       if (task.completed) return;
-      
+
       // Add tasks with due dates
       if (task.dueDate) {
         calendarEvents.push({
@@ -60,7 +60,7 @@ export function CalendarViewRQ() {
           resource: task,
         });
       }
-      
+
       // Add My Day tasks (show on today if no due date)
       if (task.myDay && !task.dueDate) {
         const today = new Date();
@@ -73,7 +73,7 @@ export function CalendarViewRQ() {
           resource: task,
         });
       }
-      
+
       // Handle recurring tasks - disabled for now
       // TODO: Add recurrence support to Task type
       // if (task.recurrence && task.recurrence.pattern !== 'none') {
@@ -81,12 +81,12 @@ export function CalendarViewRQ() {
       //   calendarEvents.push(...recurrenceEvents);
       // }
     });
-    
+
     return calendarEvents;
   }, [tasks]);
-  
+
   // Recurring events generation - disabled until Task type supports recurrence
-  const generateRecurringEvents = (task: Task): CalendarEvent[] => {
+  const generateRecurringEvents = (_task: Task): CalendarEvent[] => {
     return [];
     // TODO: Implement when Task type includes recurrence property
   };
@@ -124,10 +124,10 @@ export function CalendarViewRQ() {
     let borderStyle = 'solid';
     let borderWidth = '0px';
     let fontWeight = 'normal';
-    
+
     // Priority-based styling using Eisenhower matrix logic
     const isUrgent = task.dueDate && new Date(task.dueDate) <= new Date(Date.now() + 24 * 60 * 60 * 1000); // Due within 24 hours
-    
+
     if (task.important && isUrgent) {
       backgroundColor = '#dc2626'; // Red - Do First
       fontWeight = 'bold';
@@ -138,20 +138,20 @@ export function CalendarViewRQ() {
     } else if (!task.important && !isUrgent) {
       backgroundColor = '#6b7280'; // Gray - Don't Do
     }
-    
+
     // Override for special types
     if (task.myDay && !task.dueDate) {
       backgroundColor = '#3b82f6'; // Blue for My Day
       borderStyle = 'dashed';
       borderWidth = '1px';
     }
-    
+
     // Recurring tasks get a special border
     if (event.id.includes('-recur-')) {
       borderStyle = 'dotted';
       borderWidth = '2px';
     }
-    
+
     // Important tasks get bold text
     if (task.important) {
       fontWeight = 'bold';
@@ -203,7 +203,7 @@ export function CalendarViewRQ() {
         </div>
 
         <h2 className="hidden lg:block text-xl font-semibold flex-1 text-center">{toolbar.label}</h2>
-        
+
         {/* Legend for mobile and desktop */}
         <div className="hidden lg:flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1">
@@ -269,7 +269,7 @@ export function CalendarViewRQ() {
             <span className="sm:hidden">D</span>
             <span className="hidden sm:inline">Day</span>
           </Button>
-          
+
           {/* Legend toggle for mobile */}
           <Button
             variant="outline"
@@ -318,7 +318,7 @@ export function CalendarViewRQ() {
           </div>
         </div>
       )}
-      
+
       <style>{`
         .rbc-calendar {
           font-family: inherit;

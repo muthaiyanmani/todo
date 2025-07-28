@@ -1,14 +1,14 @@
+import { Check, Copy, Share2, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Share2, Users, X, Copy, Check } from 'lucide-react';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Label } from '../../ui/label';
-import { Checkbox } from '../../ui/checkbox';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../ui/dialog';
-import { useFriends, useShareHabitProgress, useHabitStats } from '../../../hooks/use-habits';
+import { useFriends, useHabitStats, useShareHabitProgress } from '../../../hooks/use-habits';
 import { soundService } from '../../../services/sound-service';
 import type { Habit } from '../../../types/habit.types';
+import { Button } from '../../ui/button';
+import { Checkbox } from '../../ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../ui/dialog';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 
 interface HabitShareModalProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ export function HabitShareModal({ isOpen, onClose, habit }: HabitShareModalProps
   const [isSuccess, setIsSuccess] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  
+
   const { data: friends = [] } = useFriends();
   const { data: stats } = useHabitStats(habit.id);
   const shareProgress = useShareHabitProgress();
@@ -71,10 +71,10 @@ export function HabitShareModal({ isOpen, onClose, habit }: HabitShareModalProps
         friendIds: data.selectedFriends,
         message: data.message,
       });
-      
+
       // Generate a mock share URL
       setShareUrl(`https://todopro.app/shared/habit/${habit.id}?token=abc123`);
-      
+
       soundService.playSuccess();
       setIsSuccess(true);
     } catch (error) {
@@ -95,9 +95,11 @@ export function HabitShareModal({ isOpen, onClose, habit }: HabitShareModalProps
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="w-full max-w-sm sm:max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Share2 className="h-5 w-5" />
-            Share Your Progress
+          <DialogTitle>
+            <span className="flex items-center gap-2">
+              <Share2 className="h-5 w-5" />
+              Share Your Progress
+            </span>
           </DialogTitle>
         </DialogHeader>
 
@@ -164,10 +166,10 @@ export function HabitShareModal({ isOpen, onClose, habit }: HabitShareModalProps
                 <Label>Share with Friends</Label>
                 <div className="grid grid-cols-1 gap-2 mt-2 max-h-24 sm:max-h-32 overflow-y-auto">
                   {friends.map((connection) => {
-                    const friend = connection.addresseeUserId === 'user-1' 
-                      ? connection.requesterUser 
+                    const friend = connection.addresseeUserId === 'user-1'
+                      ? connection.requesterUser
                       : connection.addresseeUser;
-                    
+
                     if (!friend) return null;
 
                     return (
@@ -225,8 +227,8 @@ export function HabitShareModal({ isOpen, onClose, habit }: HabitShareModalProps
               <Button type="button" variant="outline" onClick={handleClose} size="sm" className="flex-1">
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={shareProgress.isPending || (friends.length > 0 && selectedFriends.length === 0)}
                 size="sm"
                 className="flex-1"

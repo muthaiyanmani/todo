@@ -1,24 +1,24 @@
-import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import DatePicker from 'react-datepicker';
 import {
-  X,
-  Star,
-  Sun,
-  Calendar,
   Bell,
-  Repeat,
+  Calendar,
   Paperclip,
   Plus,
+  Repeat,
+  Star,
+  Sun,
   Trash2,
+  X,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import { useAddSubtask, useDeleteTask, useTask, useUpdateSubtask, useUpdateTask } from '../../hooks/use-tasks';
 import { cn } from '../../lib/utils';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Checkbox } from '../ui/checkbox';
-import { useAppStoreRQ } from '../../store/app-store-rq';
-import { useTask, useUpdateTask, useDeleteTask, useAddSubtask, useUpdateSubtask } from '../../hooks/use-tasks';
 import { notificationService } from '../../services/notification-service';
+import { useAppStoreRQ } from '../../store/app-store-rq';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import { Input } from '../ui/input';
 
 export function TaskDetailsRQ() {
   const { selectedTaskId, setSelectedTask } = useAppStoreRQ();
@@ -240,7 +240,7 @@ export function TaskDetailsRQ() {
               <div className="absolute top-full left-0 mt-1 z-50 bg-popover rounded-md shadow-lg">
                 <DatePicker
                   selected={selectedTask.dueDate ? new Date(selectedTask.dueDate) : null}
-                  onChange={(date) => {
+                  onChange={(date: Date | null) => {
                     handleUpdateTask({ dueDate: date || undefined });
                     setShowDueDatePicker(false);
                   }}
@@ -270,7 +270,7 @@ export function TaskDetailsRQ() {
               <div className="absolute top-full left-0 mt-1 z-50 bg-popover rounded-md shadow-lg">
                 <DatePicker
                   selected={selectedTask.reminderDateTime ? new Date(selectedTask.reminderDateTime) : null}
-                  onChange={async (date) => {
+                  onChange={async (date: Date | null) => {
                     handleUpdateTask({ reminderDateTime: date || undefined });
                     if (date) {
                       await notificationService.scheduleTaskReminder(selectedTask, date);

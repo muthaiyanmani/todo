@@ -5,7 +5,19 @@ export interface User {
   avatar?: string;
   preferences: {
     theme: 'light' | 'dark' | 'system';
-    notifications: boolean;
+    privacy: {
+      shareData: boolean;
+      analytics: boolean;
+      marketing: boolean;
+    },
+    notifications: {
+      tasks: boolean;
+      reminders: boolean;
+      achievements: boolean;
+      weekly: boolean;
+      email: boolean;
+      push: boolean;
+    };
     timezone: string;
   };
   createdAt: Date;

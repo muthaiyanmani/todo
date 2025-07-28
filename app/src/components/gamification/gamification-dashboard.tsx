@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Trophy, Flame, Star, Target, Crown, Medal, ChevronRight, Zap, TrendingUp } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { Button } from '../ui/button';
-import { Card } from '../ui/card';
-import { MilestoneProgress } from '../animations/progress-celebrations';
-import { AnimatedCard, PulseAnimation } from '../animations/interactive-animations';
-import { gamificationService, type UserStats, type Achievement } from '../../services/gamification-service';
+import { ChevronRight, Crown, Flame, Medal, Star, Target, TrendingUp, Trophy } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTasks } from '../../hooks/use-tasks';
+import { cn } from '../../lib/utils';
+import { gamificationService, type Achievement, type UserStats } from '../../services/gamification-service';
+import { AnimatedCard, PulseAnimation } from '../animations/interactive-animations';
+import { MilestoneProgress } from '../animations/progress-celebrations';
+import { Button } from '../ui/button';
 
 interface GamificationDashboardProps {
   isCompact?: boolean;
@@ -79,13 +78,13 @@ export function GamificationDashboard({ isCompact = false, className }: Gamifica
             <div className="text-lg font-bold">{stats.currentStreak}</div>
             <div className="text-xs text-muted-foreground">Day Streak</div>
           </AnimatedCard>
-          
+
           <AnimatedCard className="p-3 text-center" hoverable>
             <Target className="h-5 w-5 text-green-500 mx-auto mb-1" />
             <div className="text-lg font-bold">{stats.tasksCompleted}</div>
             <div className="text-xs text-muted-foreground">Completed</div>
           </AnimatedCard>
-          
+
           <AnimatedCard className="p-3 text-center" hoverable>
             <Trophy className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
             <div className="text-lg font-bold">{unlockedAchievements.length}</div>
@@ -132,7 +131,7 @@ export function GamificationDashboard({ isCompact = false, className }: Gamifica
         <AnimatedCard className="p-6" hoverable>
           <div className="flex items-center justify-between mb-4">
             <Flame className="h-8 w-8 text-orange-500" />
-            <PulseAnimation isActive={stats.currentStreak > 0} color="orange">
+            <PulseAnimation isActive={stats.currentStreak > 0} color="yellow">
               <span className="text-2xl font-bold">{stats.currentStreak}</span>
             </PulseAnimation>
           </div>
@@ -222,7 +221,7 @@ export function GamificationDashboard({ isCompact = false, className }: Gamifica
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Achievements</h3>
-          
+
           {/* Category Filter */}
           <div className="flex gap-2 text-sm">
             {['all', 'milestone', 'consistency', 'productivity', 'special'].map((category) => (
