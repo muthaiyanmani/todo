@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { Plus, Star, Sun, AlertTriangle, Clock, Users, Trash2, ChevronDown } from 'lucide-react';
+import { SmartTaskSuggestions } from '../tasks/smart-task-suggestions';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -62,6 +63,8 @@ export function MyDayTaskView() {
   const { user } = useAuthStore();
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskTime, setNewTaskTime] = useState('');
+  const [newTaskNote, setNewTaskNote] = useState('');
+  const [newTaskImportant, setNewTaskImportant] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showEisenhowerGroups, setShowEisenhowerGroups] = useState(true);
   const [completionAnimations, setCompletionAnimations] = useState<
@@ -182,21 +185,28 @@ export function MyDayTaskView() {
     }
 
     try {
+      const timeNote = newTaskTime.trim() ? `Scheduled for ${newTaskTime}` : '';
+      const finalNote = newTaskNote.trim() 
+        ? (timeNote ? `${newTaskNote}\n\n${timeNote}` : newTaskNote)
+        : timeNote;
+
       await createTaskMutation.mutateAsync({
         title: newTaskTitle.trim(),
         userId: user?.id || 'user-1',
         listId: '',
-        note: newTaskTime.trim() ? `Scheduled for ${newTaskTime}` : '',
+        note: finalNote,
         myDay: true,
-        important: false,
+        important: newTaskImportant,
         completed: false,
         subtasks: [],
         dueDate: dueDate,
       });
       setNewTaskTitle('');
       setNewTaskTime('');
+      setNewTaskNote('');
+      setNewTaskImportant(false);
     } catch (error) {
-      console.error('Failed to create task:', error);
+      // TODO: Add proper error handling/notification
     }
   };
 
@@ -440,33 +450,33 @@ export function MyDayTaskView() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex-none p-4 border-b sm:p-6 border-border">
+      <div className="flex-none p-3 sm:p-4 lg:p-6 border-b border-border">
         <div className="space-y-3 sm:space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center space-x-2">
               <Sun className="w-4 h-4 text-blue-600 sm:h-5 sm:w-5" />
-              <h2 className="text-base font-semibold sm:text-lg">My Day Tasks</h2>
+              <h2 className="text-base font-semibold sm:text-lg lg:text-xl">My Day Tasks</h2>
             </div>
             
-            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <div className="flex items-center gap-1 sm:gap-2 flex-wrap sm:flex-nowrap">
               <Button
                 variant={showEisenhowerGroups ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setShowEisenhowerGroups(!showEisenhowerGroups)}
-                className="text-xs sm:text-sm whitespace-nowrap"
+                className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
               >
-                <span className="hidden sm:inline">{showEisenhowerGroups ? 'Group by Priority' : 'Show All'}</span>
-                <span className="sm:hidden">{showEisenhowerGroups ? 'Priority' : 'All'}</span>
+                <span className="hidden md:inline">{showEisenhowerGroups ? 'Group by Priority' : 'Show All'}</span>
+                <span className="md:hidden">{showEisenhowerGroups ? 'Priority' : 'All'}</span>
               </Button>
               
               <Button
                 variant={showCompleted ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setShowCompleted(!showCompleted)}
-                className="text-xs sm:text-sm whitespace-nowrap"
+                className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
               >
-                <span className="hidden sm:inline">{showCompleted ? 'Hide Completed' : 'Show Completed'}</span>
-                <span className="sm:hidden">{showCompleted ? 'Hide' : 'Show'}</span>
+                <span className="hidden md:inline">{showCompleted ? 'Hide Completed' : 'Show Completed'}</span>
+                <span className="md:hidden">{showCompleted ? 'Hide' : 'Show'}</span>
               </Button>
             </div>
           </div>
@@ -481,7 +491,7 @@ export function MyDayTaskView() {
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleCreateTask()}
-                className="h-12 sm:h-14 pr-20 sm:pr-24 text-base"
+                className="h-10 sm:h-12 lg:h-14 pr-16 sm:pr-20 lg:pr-24 text-sm sm:text-base"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2">
                 <Button
@@ -587,6 +597,20 @@ export function MyDayTaskView() {
               <Plus className="w-4 h-4" />
             </Button>
           </div>
+
+          {/* Smart Suggestions for Quick Add */}
+          {newTaskTitle.trim().length > 3 && (
+            <SmartTaskSuggestions
+              taskTitle={newTaskTitle}
+              currentNote={newTaskNote}
+              onApplySuggestion={() => {
+                // TODO: Implement suggestion application logic
+              }}
+              onUpdateNote={setNewTaskNote}
+              onUpdateImportant={setNewTaskImportant}
+              className="mt-3 border rounded-lg p-3 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20"
+            />
+          )}
         </div>
       </div>
 

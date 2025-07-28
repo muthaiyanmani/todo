@@ -1,11 +1,12 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Calendar, momentLocalizer, Views, type View } from 'react-big-calendar';
 import moment from 'moment';
-import { useAppStore } from '../../store/app-store';
+import { useAppStoreRQ } from '../../store/app-store-rq';
 import { useAuthStore } from '../../store/auth-store';
 import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import type { Task } from '../../types';
+import { useTasks, useCreateTask } from '../../hooks/use-tasks';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -19,8 +20,10 @@ interface CalendarEvent {
   allDay?: boolean;
 }
 
-export function CalendarView() {
-  const { tasks, setSelectedTask } = useAppStore();
+export function CalendarViewRQ() {
+  const { data: tasks = [] } = useTasks();
+  const createTaskMutation = useCreateTask();
+  const { setSelectedTask } = useAppStoreRQ();
   const { user } = useAuthStore();
   const [view, setView] = useState<View>(
     window.innerWidth < 640 ? Views.DAY : Views.MONTH
@@ -96,15 +99,13 @@ export function CalendarView() {
   );
 
   const handleSelectSlot = useCallback(
-    ({ start }: { start: Date }) => {
+    async ({ start }: { start: Date }) => {
       const taskTitle = prompt('Create a new task:');
       if (taskTitle?.trim()) {
-        const { addTask } = useAppStore.getState();
-
-        addTask({
+        await createTaskMutation.mutateAsync({
           title: taskTitle.trim(),
           userId: user?.id || 'anonymous',
-          listId: 'default-list',
+          listId: 'default',
           note: '',
           completed: false,
           important: false,
@@ -114,12 +115,8 @@ export function CalendarView() {
         });
       }
     },
-    [user]
+    [user, createTaskMutation]
   );
-
-  // const handleEventDrop = useCallback(({ event, start }: { event: CalendarEvent; start: Date }) => {
-  //   updateTask(event.id, { dueDate: start });
-  // }, [updateTask]);
 
   const eventStyleGetter = (event: CalendarEvent) => {
     const task = event.resource;
@@ -469,7 +466,6 @@ export function CalendarView() {
         onNavigate={(newDate: Date) => setDate(newDate)}
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
-        // onEventDrop={handleEventDrop}
         eventPropGetter={eventStyleGetter}
         selectable
         components={{

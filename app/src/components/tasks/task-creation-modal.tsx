@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CalendarDays, Clock, Repeat, X, Star, Sun } from 'lucide-react';
+import { SmartTaskSuggestions } from './smart-task-suggestions';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -202,6 +203,20 @@ export function TaskCreationModal({
                 autoFocus
               />
             </div>
+
+            {/* Smart Suggestions */}
+            {title.trim().length > 3 && (
+              <SmartTaskSuggestions
+                taskTitle={title}
+                currentNote={note}
+                onApplySuggestion={(suggestion) => {
+                  console.log('Applied suggestion:', suggestion);
+                }}
+                onUpdateNote={setNote}
+                onUpdateImportant={setImportant}
+                className="border rounded-lg p-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20"
+              />
+            )}
 
             {/* Task Note */}
             <div className="space-y-2">

@@ -61,35 +61,36 @@ export function Settings() {
             </Button>
             <div className="flex items-center space-x-2">
               <SettingsIcon className="h-5 w-5" />
-              <h1 className="text-xl font-semibold">Settings</h1>
+              <h1 className="text-xl lg:text-2xl font-semibold">Settings</h1>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-4 pb-20 md:pb-4">
-        <div className="flex flex-col md:flex-row gap-6">
+      <div className="max-w-6xl mx-auto p-3 sm:p-4 lg:p-6 pb-20 md:pb-4">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
           {/* Settings Navigation - Mobile: Horizontal scroll, Desktop: Sidebar */}
-          <div className="md:w-64 space-y-2">
+          <div className="lg:w-64 xl:w-72 space-y-2">
             <Card>
-              <CardHeader className="hidden md:block">
-                <CardTitle className="text-sm font-medium">Settings</CardTitle>
+              <CardHeader className="hidden lg:block pb-3">
+                <CardTitle className="text-base lg:text-lg font-medium">Settings</CardTitle>
               </CardHeader>
-              <CardContent className="pt-4 md:pt-0">
+              <CardContent className="pt-3 sm:pt-4 lg:pt-0">
                 {/* Mobile: Horizontal scrolling tabs */}
-                <div className="flex md:flex-col space-x-2 md:space-x-0 md:space-y-1 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
+                <div className="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-1 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0">
                   {settingsNavItems.map((item) => (
                     <Button
                       key={item.id}
                       variant={activeItem === item.id ? 'secondary' : 'ghost'}
                       className={cn(
-                        'flex-shrink-0 md:w-full justify-start h-9 px-3 md:px-4 cursor-pointer',
+                        'flex-shrink-0 lg:w-full justify-center lg:justify-start h-10 lg:h-11 px-3 lg:px-4 cursor-pointer',
                         activeItem === item.id && 'bg-accent'
                       )}
                       onClick={() => navigate(item.path)}
+                      title={item.label}
                     >
-                      <item.icon className="h-4 w-4 mr-2 md:mr-3" />
-                      <span className="whitespace-nowrap">{item.label}</span>
+                      <item.icon className="h-4 w-4 lg:h-5 lg:w-5 lg:mr-3" />
+                      <span className="hidden lg:block text-base whitespace-nowrap">{item.label}</span>
                     </Button>
                   ))}
                 </div>

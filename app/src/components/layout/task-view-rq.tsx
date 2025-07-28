@@ -9,6 +9,7 @@ import { useAppStoreRQ } from '../../store/app-store-rq';
 import { useAuthStore } from '../../store/auth-store';
 import { AISuggestions } from '../ai/ai-suggestions';
 import { TaskCreationModal } from '../tasks/task-creation-modal';
+import { SmartTaskSuggestions } from '../tasks/smart-task-suggestions';
 import { CompletionAnimation } from '../animations/completion-animation';
 import { ProgressCelebration } from '../animations/progress-celebrations';
 import { useTasks, useCreateTask, useUpdateTask } from '../../hooks/use-tasks';
@@ -31,6 +32,8 @@ export function TaskViewRQ() {
 
   const { user } = useAuthStore();
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskNote, setNewTaskNote] = useState('');
+  const [newTaskImportant, setNewTaskImportant] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [completionAnimations, setCompletionAnimations] = useState<
     Array<{ id: string; position: { x: number; y: number } }>
@@ -203,16 +206,18 @@ export function TaskViewRQ() {
         title: newTaskTitle.trim(),
         userId: user?.id || 'user-1',
         listId,
-        note: '',
+        note: newTaskNote.trim() || '',
         completed: false,
-        important: view === 'important',
+        important: newTaskImportant || view === 'important',
         myDay: view === 'my-day',
         dueDate: view === 'planned' ? new Date() : undefined,
         subtasks: [],
       });
       setNewTaskTitle('');
+      setNewTaskNote('');
+      setNewTaskImportant(false);
     } catch (error) {
-      console.error('Failed to add task:', error);
+      // TODO: Add proper error handling/notification
     }
   };
 
@@ -242,7 +247,7 @@ export function TaskViewRQ() {
         repeatRule: taskData.repeatRule,
       });
     } catch (error) {
-      console.error('Failed to create task:', error);
+      // TODO: Add proper error handling/notification
       throw error;
     }
   };
@@ -392,17 +397,17 @@ export function TaskViewRQ() {
   return (
     <div className="h-full flex flex-col bg-background">
       {/* Header */}
-      <div className="p-6 pb-4 border-b border-border">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground mb-1">{getViewTitle()}</h1>
-            {getViewSubtitle() && <p className="text-muted-foreground">{getViewSubtitle()}</p>}
+      <div className="p-3 sm:p-4 lg:p-6 pb-3 sm:pb-4 border-b border-border">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1">{getViewTitle()}</h1>
+            {getViewSubtitle() && <p className="text-sm sm:text-base text-muted-foreground">{getViewSubtitle()}</p>}
           </div>
 
           {view === 'my-day' && (
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
+            <div className="flex items-center space-x-2 flex-shrink-0">
+              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9">
+                <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           )}
@@ -410,14 +415,14 @@ export function TaskViewRQ() {
 
         {/* Suggestions for My Day */}
         {view === 'my-day' && (
-          <div className="bg-primary/5 dark:bg-blue-950/20 border border-primary/20 dark:border-blue-900/30 rounded-lg p-4 mb-4">
-            <div className="flex items-start space-x-3">
-              <Sun className="h-5 w-5 text-primary dark:text-blue-400 mt-0.5" />
-              <div className="flex-1">
-                <h3 className="font-medium text-primary dark:text-blue-100 mb-1">
+          <div className="bg-primary/5 dark:bg-blue-950/20 border border-primary/20 dark:border-blue-900/30 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+            <div className="flex items-start space-x-2 sm:space-x-3">
+              <Sun className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-blue-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm sm:text-base font-medium text-primary dark:text-blue-100 mb-1">
                   {activeTasks.length === 0 ? 'Plan your day' : 'Suggestions'}
                 </h3>
-                <p className="text-sm text-primary/80 dark:text-blue-200 mb-2">
+                <p className="text-xs sm:text-sm text-primary/80 dark:text-blue-200 mb-2">
                   {activeTasks.length === 0
                     ? 'Get things done with My Day, a daily planner with a focus on the here and now.'
                     : 'Here are some tasks you might want to add to My Day:'}
@@ -429,15 +434,15 @@ export function TaskViewRQ() {
                       .map((task) => (
                         <div
                           key={task.id}
-                          className="flex items-center justify-between p-2 bg-primary/10 dark:bg-blue-900/30 border border-primary/20 dark:border-blue-800/30 rounded"
+                          className="flex items-center justify-between p-2 bg-primary/10 dark:bg-blue-900/30 border border-primary/20 dark:border-blue-800/30 rounded gap-2"
                         >
-                          <span className="text-sm text-primary/90 dark:text-blue-200">
+                          <span className="text-xs sm:text-sm text-primary/90 dark:text-blue-200 truncate min-w-0 flex-1">
                             {task.title}
                           </span>
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-6 text-xs text-primary hover:text-primary/80 dark:text-blue-400 dark:hover:text-blue-300"
+                            className="h-6 px-2 text-xs text-primary hover:text-primary/80 dark:text-blue-400 dark:hover:text-blue-300 flex-shrink-0"
                             onClick={() => handleToggleMyDay(task.id)}
                           >
                             Add
@@ -454,7 +459,7 @@ export function TaskViewRQ() {
         {/* Add Task Input */}
         <div className="space-y-3">
           <div className="flex items-center space-x-2">
-            <Plus className="h-4 w-4 text-muted-foreground" />
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
             <Input
               placeholder={createTaskMutation.isPending ? 'Adding task...' : 'Add a task'}
               value={newTaskTitle}
@@ -465,22 +470,37 @@ export function TaskViewRQ() {
                 }
               }}
               disabled={createTaskMutation.isPending}
-              className="border-0 shadow-none focus-visible:ring-0 text-base"
+              className="border-0 shadow-none focus-visible:ring-0 text-sm sm:text-base min-w-0 flex-1"
             />
           </div>
           
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50">
-            <span className="text-xs text-muted-foreground">Need more options?</span>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 gap-2">
+            <span className="text-xs text-muted-foreground flex-shrink-0">Need more options?</span>
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setIsModalOpen(true)}
-              className="text-xs text-primary hover:text-primary/80 hover:bg-primary/10 gap-1"
+              className="text-xs text-primary hover:text-primary/80 hover:bg-primary/10 gap-1 h-6 sm:h-7 px-2 sm:px-3 flex-shrink-0"
             >
               <Calendar className="h-3 w-3" />
-              Add with details
+              <span className="hidden sm:inline">Add with details</span>
+              <span className="sm:hidden">Details</span>
             </Button>
           </div>
+
+          {/* Smart Suggestions for Task Creation */}
+          {newTaskTitle.trim().length > 3 && (
+            <SmartTaskSuggestions
+              taskTitle={newTaskTitle}
+              currentNote={newTaskNote}
+              onApplySuggestion={() => {
+                // TODO: Implement suggestion application logic
+              }}
+              onUpdateNote={setNewTaskNote}
+              onUpdateImportant={setNewTaskImportant}
+              className="mt-4 border rounded-lg p-3 bg-gradient-to-r from-green-50/50 to-blue-50/50 dark:from-green-950/20 dark:to-blue-950/20"
+            />
+          )}
         </div>
       </div>
 
@@ -488,30 +508,30 @@ export function TaskViewRQ() {
       <div className="flex-1 overflow-y-auto">
         {tasksLoading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary"></div>
           </div>
         ) : activeTasks.length === 0 && completedTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-center">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+          <div className="flex flex-col items-center justify-center h-48 sm:h-64 text-center p-4">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-full flex items-center justify-center mb-3 sm:mb-4">
               {view === 'my-day' ? (
-                <Sun className="h-8 w-8 text-muted-foreground" />
+                <Sun className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
               ) : view === 'important' ? (
-                <Star className="h-8 w-8 text-muted-foreground" />
+                <Star className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
               ) : (
-                <Calendar className="h-8 w-8 text-muted-foreground" />
+                <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
               )}
             </div>
-            <h3 className="font-medium mb-2">
+            <h3 className="text-sm sm:text-base font-medium mb-2">
               {view === 'my-day' ? 'Focus on your day' : 'All done!'}
             </h3>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-xs sm:text-sm max-w-xs">
               {view === 'my-day'
                 ? 'Get things done with a clearer view of the day ahead'
                 : 'No tasks here yet'}
             </p>
           </div>
         ) : (
-          <div className="p-4 space-y-1">
+          <div className="p-2 sm:p-3 lg:p-4 space-y-1">
             {/* Active Tasks */}
             {activeTasks.map((task) => (
               <TaskItem
@@ -528,10 +548,10 @@ export function TaskViewRQ() {
 
             {/* Completed Tasks */}
             {completedTasks.length > 0 && (
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-auto p-2 text-sm font-medium"
+                  className="w-full justify-start h-auto p-2 text-xs sm:text-sm font-medium"
                   onClick={() => setShowCompleted(!showCompleted)}
                 >
                   Completed {completedTasks.length}
@@ -619,7 +639,7 @@ function TaskItem({
   return (
     <div
       className={cn(
-        'group flex items-start space-x-3 p-3 rounded-lg border border-gray-300 border-visible-light border-visible-dark hover:bg-muted/50 hover:border-primary/30 cursor-pointer transition-colors',
+        'group flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg border border-gray-300 border-visible-light border-visible-dark hover:bg-muted/50 hover:border-primary/30 cursor-pointer transition-colors',
         isSelected && 'bg-muted ring-1 ring-primary/20 border-primary/40',
         task.completed && 'opacity-60',
         isUpdating && 'opacity-50'
@@ -638,31 +658,31 @@ function TaskItem({
           checked={task.completed}
           onCheckedChange={() => {}} // Handled by parent div
           disabled={isUpdating}
-          className="mt-0.5 transition-all duration-200 hover:scale-110 active:scale-95 pointer-events-none"
+          className="mt-0.5 transition-all duration-200 hover:scale-110 active:scale-95 pointer-events-none h-4 w-4 sm:h-5 sm:w-5"
         />
       </div>
 
       {/* Task Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2 mb-1">
-          <span className={cn('text-sm', task.completed && 'line-through text-muted-foreground')}>
+          <span className={cn('text-xs sm:text-sm truncate', task.completed && 'line-through text-muted-foreground')}>
             {task.title}
           </span>
 
-          {task.important && <Star className="h-3 w-3 text-yellow-500 fill-current" />}
+          {task.important && <Star className="h-3 w-3 text-yellow-500 fill-current flex-shrink-0" />}
         </div>
 
         {/* Task metadata */}
-        <div className="flex items-center space-x-3 text-xs text-muted-foreground">
+        <div className="flex items-center space-x-2 sm:space-x-3 text-xs text-muted-foreground flex-wrap">
           {task.myDay && (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 flex-shrink-0">
               <Sun className="h-3 w-3" />
               <span>My Day</span>
             </div>
           )}
 
           {task.dueDate && (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 flex-shrink-0">
               <Calendar className="h-3 w-3" />
               <span
                 className={cn(
@@ -682,23 +702,23 @@ function TaskItem({
           )}
 
           {task.subtasks.length > 0 && (
-            <span>
+            <span className="flex-shrink-0">
               {task.subtasks.filter((st) => st.completed).length} of {task.subtasks.length}
             </span>
           )}
         </div>
 
         {task.note && (
-          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.note}</p>
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-1 sm:line-clamp-2">{task.note}</p>
         )}
       </div>
 
       {/* Actions */}
-      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center space-x-1 opacity-0 sm:group-hover:opacity-100 transition-opacity">
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6"
+          className="h-5 w-5 sm:h-6 sm:w-6"
           onClick={(e) => {
             e.stopPropagation();
             onToggleImportant();
@@ -707,7 +727,7 @@ function TaskItem({
         >
           <Star
             className={cn(
-              'h-3 w-3',
+              'h-2.5 w-2.5 sm:h-3 sm:w-3',
               task.important ? 'text-yellow-500 fill-current' : 'text-muted-foreground'
             )}
           />
@@ -717,7 +737,7 @@ function TaskItem({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6"
+            className="h-5 w-5 sm:h-6 sm:w-6"
             onClick={(e) => {
               e.stopPropagation();
               onToggleMyDay();
@@ -725,7 +745,7 @@ function TaskItem({
             disabled={isUpdating}
             title="Add to My Day"
           >
-            <Sun className="h-3 w-3 text-muted-foreground" />
+            <Sun className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground" />
           </Button>
         )}
       </div>

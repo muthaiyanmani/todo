@@ -192,34 +192,34 @@ export function EisenhowerMatrix() {
       <Card
         ref={setNodeRef}
         className={cn(
-          'h-[400px] border-2 transition-colors',
+          'h-[250px] sm:h-[300px] lg:h-[400px] border-2 transition-colors',
           config.color,
           isOver && 'ring-2 ring-primary ring-offset-2'
         )}
       >
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center justify-between text-lg">
-            <div className="flex items-center space-x-2">
-              <IconComponent className="h-5 w-5" />
-              <span>{config.title}</span>
+        <CardHeader className="pb-2 sm:pb-3">
+          <CardTitle className="flex items-center justify-between text-sm sm:text-base lg:text-lg">
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              <IconComponent className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5" />
+              <span className="truncate">{config.title}</span>
             </div>
-            <span className="text-sm font-normal text-muted-foreground">
+            <span className="text-xs sm:text-sm font-normal text-muted-foreground flex-shrink-0">
               {quadrantTasks.length}
             </span>
           </CardTitle>
-          <p className="text-sm text-muted-foreground">{config.description}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground truncate">{config.description}</p>
         </CardHeader>
 
         <CardContent className="pt-0">
           <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
-            <div className="space-y-2 max-h-[280px] overflow-y-auto">
+            <div className="space-y-1 sm:space-y-2 max-h-[160px] sm:max-h-[200px] lg:max-h-[280px] overflow-y-auto">
               {quadrantTasks.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-muted rounded-full flex items-center justify-center">
-                    <IconComponent className="h-6 w-6 text-muted-foreground" />
+                <div className="text-center py-4 sm:py-6 lg:py-8">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto mb-2 sm:mb-3 bg-muted rounded-full flex items-center justify-center">
+                    <IconComponent className="h-3 w-3 sm:h-4 sm:w-4 lg:h-6 lg:w-6 text-muted-foreground" />
                   </div>
-                  <p className="text-sm text-muted-foreground">No tasks in this quadrant</p>
-                  <p className="text-xs text-muted-foreground mt-1">Drop tasks here</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">No tasks in this quadrant</p>
+                  <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Drop tasks here</p>
                 </div>
               ) : (
                 quadrantTasks.map((task) => (
@@ -247,57 +247,61 @@ export function EisenhowerMatrix() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="p-6 space-y-6">
+      <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-5 lg:space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Eisenhower Matrix</h1>
-          <p className="text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">Eisenhower Matrix</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Prioritize your tasks by urgency and importance for better decision-making
           </p>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-1 sm:gap-2 flex-wrap sm:flex-nowrap">
           <Button
             variant={showHowItWorks ? 'default' : 'outline'}
             size="sm"
             onClick={() => setShowHowItWorks(!showHowItWorks)}
+            className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
           >
-            <Info className="h-4 w-4 mr-2" />
-            How it works
+            <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span className="hidden md:inline">How it works</span>
+            <span className="md:hidden">Help</span>
           </Button>
           <Button
             variant={showInsights ? 'default' : 'outline'}
             size="sm"
             onClick={() => setShowInsights(!showInsights)}
+            className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
           >
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Insights ({tasks.filter(t => !t.completed).length} tasks)
+            <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span className="hidden md:inline">Insights ({tasks.filter(t => !t.completed).length} tasks)</span>
+            <span className="md:hidden">Stats</span>
           </Button>
         </div>
       </div>
 
       {/* How it Works Section */}
       {showHowItWorks && (
-        <Card className="p-6">
-          <div className="flex items-center mb-4 space-x-2">
-            <Info className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">How the Eisenhower Matrix Works</h3>
+        <Card className="p-3 sm:p-4 lg:p-6">
+          <div className="flex items-center mb-3 sm:mb-4 space-x-2">
+            <Info className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <h3 className="text-base sm:text-lg font-semibold">How the Eisenhower Matrix Works</h3>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 lg:grid-cols-2">
             <div>
-              <h4 className="mb-3 font-medium">The Four Quadrants:</h4>
-              <div className="space-y-3">
+              <h4 className="mb-2 sm:mb-3 text-sm sm:text-base font-medium">The Four Quadrants:</h4>
+              <div className="space-y-2 sm:space-y-3">
                 {Object.entries(quadrantConfig).map(([key, config]) => {
                   const IconComponent = iconMap[config.icon as keyof typeof iconMap];
                   return (
-                    <div key={key} className="flex items-start space-x-3">
-                      <div className={cn('p-2 rounded-lg', config.color)}>
-                        <IconComponent className="w-4 h-4" />
+                    <div key={key} className="flex items-start space-x-2 sm:space-x-3">
+                      <div className={cn('p-1.5 sm:p-2 rounded-lg', config.color)}>
+                        <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium">{config.title}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium">{config.title}</p>
                         <p className="text-xs text-muted-foreground">{config.description}</p>
                       </div>
                     </div>
@@ -307,15 +311,15 @@ export function EisenhowerMatrix() {
             </div>
 
             <div>
-              <h4 className="mb-3 font-medium">Smart Categorization:</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="mb-2 sm:mb-3 text-sm sm:text-base font-medium">Smart Categorization:</h4>
+              <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
                 <p><strong>Important tasks</strong> are those marked as important, in "My Day", with important keywords, or due within a week.</p>
                 <p><strong>Urgent tasks</strong> are overdue, due today/tomorrow, contain urgent keywords, or have past reminders.</p>
                 <p><strong>Goal:</strong> Spend most time in "Schedule" quadrant to prevent crises and focus on long-term success.</p>
               </div>
 
-              <div className="p-3 mt-4 rounded-lg bg-primary/5 dark:bg-primary/10">
-                <p className="text-sm text-primary/90 dark:text-primary">
+              <div className="p-2 sm:p-3 mt-3 sm:mt-4 rounded-lg bg-primary/5 dark:bg-primary/10">
+                <p className="text-xs sm:text-sm text-primary/90 dark:text-primary">
                   💡 <strong>Pro Tip:</strong> Tasks are automatically categorized based on their properties. You can manually move tasks between quadrants using the menu button.
                 </p>
               </div>
@@ -325,7 +329,7 @@ export function EisenhowerMatrix() {
       )}
 
       {/* Matrix Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         <QuadrantCard quadrant="do" tasks={matrix.do} />
         <QuadrantCard quadrant="decide" tasks={matrix.decide} />
         <QuadrantCard quadrant="delegate" tasks={matrix.delegate} />
@@ -334,27 +338,27 @@ export function EisenhowerMatrix() {
 
       {/* Insights Section */}
       {showInsights && analysis.insights.length > 0 && (
-        <div className="space-y-4">
-          <Card className="p-4">
-            <div className="flex items-center mb-3 space-x-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Productivity Insights</h3>
+        <div className="space-y-3 sm:space-y-4">
+          <Card className="p-3 sm:p-4">
+            <div className="flex items-center mb-2 sm:mb-3 space-x-2">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              <h3 className="text-sm sm:text-base font-semibold">Productivity Insights</h3>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               {analysis.insights.map((insight, index) => (
-                <p key={index} className="text-sm text-muted-foreground">
+                <p key={index} className="text-xs sm:text-sm text-muted-foreground">
                   {insight}
                 </p>
               ))}
             </div>
             {analysis.recommendations.length > 0 && (
-              <div className="pt-4 mt-4 border-t border-border">
-                <h4 className="mb-2 text-sm font-medium">Recommendations:</h4>
+              <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-border">
+                <h4 className="mb-2 text-xs sm:text-sm font-medium">Recommendations:</h4>
                 <ul className="space-y-1">
                   {analysis.recommendations.map((rec, index) => (
-                    <li key={index} className="flex items-start text-sm text-muted-foreground">
-                      <span className="mr-2 text-primary">•</span>
-                      {rec}
+                    <li key={index} className="flex items-start text-xs sm:text-sm text-muted-foreground">
+                      <span className="mr-1 sm:mr-2 text-primary flex-shrink-0">•</span>
+                      <span className="min-w-0">{rec}</span>
                     </li>
                   ))}
                 </ul>
@@ -365,7 +369,7 @@ export function EisenhowerMatrix() {
       )}
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
         {Object.entries(matrix).map(([quadrant, tasks]) => {
           const config = quadrantConfig[quadrant as EisenhowerQuadrant];
           const IconComponent = iconMap[config.icon as keyof typeof iconMap];
@@ -373,13 +377,16 @@ export function EisenhowerMatrix() {
             ((tasks.length / Object.values(analysis.distribution).reduce((a, b) => a + b, 0)) * 100).toFixed(0) : '0';
 
           return (
-            <Card key={quadrant} className="p-4">
-              <div className="flex items-center space-x-2">
-                <IconComponent className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">{config.title}</span>
+            <Card key={quadrant} className="p-2 sm:p-3 lg:p-4">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <IconComponent className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                <span className="text-xs sm:text-sm font-medium truncate">{config.title}</span>
               </div>
-              <p className="text-2xl font-bold mt-1">{tasks.length}</p>
-              <p className="text-xs text-muted-foreground">{percentage}% • {config.description}</p>
+              <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-1">{tasks.length}</p>
+              <p className="text-xs text-muted-foreground">
+                <span className="hidden sm:inline">{percentage}% • {config.description}</span>
+                <span className="sm:hidden">{percentage}%</span>
+              </p>
             </Card>
           );
         })}
@@ -471,30 +478,30 @@ function TaskCard({
   return (
     <div
       className={cn(
-        'group p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors relative bg-background',
+        'group p-2 sm:p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors relative bg-background',
         isSelected && 'bg-muted ring-1 ring-primary/20 border-primary/40'
       )}
       onClick={onClick}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center mb-1 space-x-2">
+          <div className="flex items-center mb-1 space-x-1 sm:space-x-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleComplete();
               }}
               className={cn(
-                'w-4 h-4 rounded border-2 border-gray-300 flex items-center justify-center transition-colors',
+                'w-3 h-3 sm:w-4 sm:h-4 rounded border-2 border-gray-300 flex items-center justify-center transition-colors flex-shrink-0',
                 task.completed && 'bg-primary border-primary'
               )}
             >
               {task.completed && (
-                <div className="w-2 h-2 bg-white rounded-sm" />
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-sm" />
               )}
             </button>
             <span className={cn(
-              'text-sm font-medium',
+              'text-xs sm:text-sm font-medium truncate',
               task.completed && 'line-through text-muted-foreground'
             )}>
               {task.title}
@@ -502,16 +509,16 @@ function TaskCard({
           </div>
 
           {task.note && (
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+            <p className="text-xs text-muted-foreground mt-1 line-clamp-1 sm:line-clamp-2">
               {task.note}
             </p>
           )}
 
-          <div className="flex items-center mt-2 space-x-3 text-xs text-muted-foreground">
+          <div className="flex items-center mt-1 sm:mt-2 space-x-2 sm:space-x-3 text-xs text-muted-foreground">
             {task.dueDate && (
-              <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+              <span className="truncate">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
             )}
-            {task.myDay && <span className="text-blue-600">My Day</span>}
+            {task.myDay && <span className="text-blue-600 flex-shrink-0">My Day</span>}
           </div>
         </div>
 
@@ -520,13 +527,13 @@ function TaskCard({
             <Button
               variant="ghost"
               size="icon"
-              className="w-6 h-6 transition-opacity opacity-0 group-hover:opacity-100"
+              className="w-5 h-5 sm:w-6 sm:h-6 transition-opacity opacity-0 group-hover:opacity-100"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMoveMenu(!showMoveMenu);
               }}
             >
-              <MoreHorizontal className="w-3 h-3" />
+              <MoreHorizontal className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
             </Button>
 
             {showMoveMenu && (
@@ -535,21 +542,21 @@ function TaskCard({
                   className="fixed inset-0 z-10"
                   onClick={() => setShowMoveMenu(false)}
                 />
-                <div className="absolute right-0 top-8 z-20 bg-popover border border-border rounded-lg shadow-lg py-1 min-w-[120px]">
+                <div className="absolute right-0 top-6 sm:top-8 z-20 bg-popover border border-border rounded-lg shadow-lg py-1 min-w-[100px] sm:min-w-[120px]">
                   {Object.entries(quadrantConfig).map(([key, config]) => {
                     const IconComponent = iconMap[config.icon as keyof typeof iconMap];
                     return (
                       <button
                         key={key}
-                        className="flex items-center w-full px-3 py-2 space-x-2 text-sm text-left hover:bg-accent"
+                        className="flex items-center w-full px-2 sm:px-3 py-1.5 sm:py-2 space-x-1 sm:space-x-2 text-xs sm:text-sm text-left hover:bg-accent"
                         onClick={(e) => {
                           e.stopPropagation();
                           onQuadrantChange(key as EisenhowerQuadrant);
                           setShowMoveMenu(false);
                         }}
                       >
-                        <IconComponent className="w-3 h-3" />
-                        <span>{config.title}</span>
+                        <IconComponent className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                        <span className="truncate">{config.title}</span>
                       </button>
                     );
                   })}

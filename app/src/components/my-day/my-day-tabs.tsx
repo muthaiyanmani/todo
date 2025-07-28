@@ -41,16 +41,16 @@ export function MyDayTabs({ activeView, onViewChange, taskCount = 0 }: MyDayTabs
             size="sm"
             onClick={() => onViewChange(tab.id)}
             className={cn(
-              'flex items-center space-x-1 sm:space-x-2 transition-all cursor-pointer px-2 sm:px-3',
+              'flex items-center gap-1 sm:gap-2 transition-all cursor-pointer h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm',
               isActive
                 ? 'bg-background shadow-sm'
                 : 'hover:bg-background/50'
             )}
             title={tab.description}
           >
-            <Icon className="h-4 w-4" />
-            <span className="hidden sm:inline">{tab.label}</span>
-            <span className="sm:hidden">{tab.shortLabel}</span>
+            <Icon className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden md:inline">{tab.label}</span>
+            <span className="md:hidden">{tab.shortLabel}</span>
             {tab.id === 'list' && taskCount > 0 && (
               <span className="ml-1 bg-primary/20 text-primary text-xs px-1.5 py-0.5 rounded">
                 {taskCount}

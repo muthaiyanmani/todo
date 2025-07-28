@@ -47,34 +47,34 @@ export function Preferences() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
       {success && (
-        <div className="p-3 text-sm text-green-800 border border-green-200 rounded-md bg-green-50">
+        <div className="p-2 sm:p-3 lg:p-4 text-xs sm:text-sm lg:text-base text-green-800 border border-green-200 rounded-md bg-green-50">
           Preferences saved successfully!
         </div>
       )}
 
       {/* Appearance */}
       <Card>
-        <CardHeader>
-          <CardTitle>Appearance</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-3 sm:pb-4 lg:pb-6">
+          <CardTitle className="text-base sm:text-lg lg:text-xl">Appearance</CardTitle>
+          <CardDescription className="text-xs sm:text-sm lg:text-base">
             Customize how Todo Pro looks and feels
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-3">
-            <label className="text-sm font-medium">Theme</label>
-            <div className="grid grid-cols-3 gap-3">
+        <CardContent className="space-y-4 sm:space-y-6 lg:space-y-8">
+          <div className="space-y-2 sm:space-y-3 lg:space-y-4">
+            <label className="text-xs sm:text-sm lg:text-base font-medium">Theme</label>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
               {themeOptions.map((option) => (
                 <Button
                   key={option.value}
                   variant={theme === option.value ? 'default' : 'outline'}
-                  className="flex flex-col h-20 space-y-2"
+                  className="flex flex-col h-16 sm:h-20 lg:h-24 space-y-1 sm:space-y-2 text-xs sm:text-sm lg:text-base"
                   onClick={() => setTheme(option.value as 'light' | 'dark' | 'system')}
                 >
-                  <option.icon className="w-5 h-5" />
-                  <span className="text-xs">{option.label}</span>
+                  <option.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                  <span className="text-xs sm:text-sm">{option.label}</span>
                 </Button>
               ))}
             </div>
@@ -84,23 +84,24 @@ export function Preferences() {
 
       {/* Task Display */}
       <Card>
-        <CardHeader>
-          <CardTitle>Task Display</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-3 sm:pb-4 lg:pb-6">
+          <CardTitle className="text-base sm:text-lg lg:text-xl">Task Display</CardTitle>
+          <CardDescription className="text-xs sm:text-sm lg:text-base">
             Configure how tasks are displayed in your lists
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <label className="text-sm font-medium">Show completed tasks</label>
-              <div className="text-sm text-muted-foreground">
+        <CardContent className="space-y-3 sm:space-y-4 lg:space-y-6">
+          <div className="flex items-start sm:items-center justify-between gap-3">
+            <div className="space-y-0.5 sm:space-y-1 flex-1">
+              <label className="text-xs sm:text-sm lg:text-base font-medium">Show completed tasks</label>
+              <div className="text-xs sm:text-sm lg:text-base text-muted-foreground">
                 Display completed tasks in your task lists
               </div>
             </div>
             <Switch
               checked={showCompleted}
               onCheckedChange={setShowCompleted}
+              className="shrink-0"
             />
           </div>
         </CardContent>
@@ -108,17 +109,17 @@ export function Preferences() {
 
       {/* Regional Settings */}
       <Card>
-        <CardHeader>
-          <CardTitle>Regional Settings</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-3 sm:pb-4 lg:pb-6">
+          <CardTitle className="text-base sm:text-lg lg:text-xl">Regional Settings</CardTitle>
+          <CardDescription className="text-xs sm:text-sm lg:text-base">
             Set your timezone and regional preferences
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Timezone</label>
+        <CardContent className="space-y-3 sm:space-y-4 lg:space-y-6">
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm lg:text-base font-medium">Timezone</label>
             <Select defaultValue={user?.preferences?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}>
-              <SelectTrigger>
+              <SelectTrigger className="h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -134,10 +135,10 @@ export function Preferences() {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Date Format</label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm lg:text-base font-medium">Date Format</label>
             <Select defaultValue="MM/DD/YYYY">
-              <SelectTrigger>
+              <SelectTrigger className="h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -149,10 +150,10 @@ export function Preferences() {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Time Format</label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm lg:text-base font-medium">Time Format</label>
             <Select defaultValue="12">
-              <SelectTrigger>
+              <SelectTrigger className="h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -166,17 +167,17 @@ export function Preferences() {
 
       {/* Start of Week */}
       <Card>
-        <CardHeader>
-          <CardTitle>Calendar Settings</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-3 sm:pb-4 lg:pb-6">
+          <CardTitle className="text-base sm:text-lg lg:text-xl">Calendar Settings</CardTitle>
+          <CardDescription className="text-xs sm:text-sm lg:text-base">
             Configure calendar and scheduling preferences
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Start of Week</label>
+        <CardContent className="space-y-3 sm:space-y-4 lg:space-y-6">
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm lg:text-base font-medium">Start of Week</label>
             <Select defaultValue="sunday">
-              <SelectTrigger>
+              <SelectTrigger className="h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -190,8 +191,12 @@ export function Preferences() {
       </Card>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isLoading}>
+      <div className="flex justify-center sm:justify-end pt-2 sm:pt-4">
+        <Button 
+          onClick={handleSave} 
+          disabled={isLoading}
+          className="w-full sm:w-auto h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base px-4 sm:px-6 lg:px-8"
+        >
           {isLoading ? 'Saving...' : 'Save Preferences'}
         </Button>
       </div>

@@ -12,9 +12,7 @@ import {
   Circle,
   Flame
 } from 'lucide-react';
-import { format } from 'date-fns';
 import { Button } from '../ui/button';
-import { Card } from '../ui/card';
 import { cn } from '../../lib/utils';
 import { AnimatedCard } from '../animations/interactive-animations';
 import { 
@@ -82,7 +80,7 @@ export function HabitCard({ habit, viewMode, onEdit, onShare }: HabitCardProps) 
         }
       });
     } catch (error) {
-      console.error('Failed to complete habit:', error);
+      // TODO: Add proper error handling/notification
     } finally {
       setIsCompleting(false);
     }

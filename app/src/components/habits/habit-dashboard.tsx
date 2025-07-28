@@ -56,11 +56,11 @@ export function HabitDashboard() {
 
   return (
     <div className="h-full overflow-auto">
-      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
+      <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Your Habits</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Your Habits</h1>
             <p className="text-muted-foreground mt-1 text-sm sm:text-base">
               Track and build consistent habits to achieve your goals
             </p>
@@ -68,9 +68,9 @@ export function HabitDashboard() {
           <Button 
             onClick={() => setIsCreatingHabit(true)}
             size="sm"
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-9 sm:h-10"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
             <span className="hidden sm:inline">New Habit</span>
             <span className="sm:hidden">New</span>
           </Button>
@@ -198,8 +198,8 @@ export function HabitDashboard() {
 
         {/* Weekly Progress Chart */}
         {habits.length > 0 && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Weekly Progress</h2>
+          <div className="space-y-3 sm:space-y-4">
+            <h2 className="text-lg sm:text-xl font-semibold">Weekly Progress</h2>
             <HabitProgressChart habits={habits} />
           </div>
         )}

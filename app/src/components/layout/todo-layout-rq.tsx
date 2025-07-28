@@ -2,7 +2,7 @@ import { cn } from '../../lib/utils';
 import { SidebarRQ } from './sidebar-rq';
 import { TaskViewRQ } from './task-view-rq';
 import { TaskDetailsRQ } from './task-details-rq';
-import { CalendarView } from '../calendar/calendar-view';
+import { CalendarViewRQ } from '../calendar/calendar-view-rq';
 import { EisenhowerMatrix } from '../eisenhower/eisenhower-matrix';
 import { MyDayView } from '../my-day/my-day-view';
 import { useAppStoreRQ } from '../../store/app-store-rq';
@@ -53,7 +53,7 @@ export function TodoLayoutRQ() {
               isMobile ? 'pb-20' : 'pb-0'
             )}
           >
-            {view === 'calendar' ? <CalendarView /> :
+            {view === 'calendar' ? <CalendarViewRQ /> :
              view === 'eisenhower' ? <EisenhowerMatrix /> :
              view === 'my-day' ? <MyDayView /> :
              <TaskViewRQ />}

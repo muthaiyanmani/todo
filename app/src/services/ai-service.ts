@@ -257,6 +257,111 @@ class AIService {
 
     return Math.round(durations.reduce((a, b) => a + b, 0) / durations.length);
   }
+
+  // Generate psychological prompts for better task understanding
+  generatePsychologicalPrompts(taskTitle: string): {
+    whyPrompts: string[];
+    consequencePrompts: string[];
+    contextPrompts: string[];
+  } {
+    const titleLower = taskTitle.toLowerCase();
+    
+    const whyPrompts = [
+      `What specific outcome will completing "${taskTitle}" achieve?`,
+      `How does this task align with your bigger goals?`,
+      `What value will this bring to your life or work?`,
+      `Why is this important to you right now?`,
+    ];
+
+    const consequencePrompts = [
+      `What happens if "${taskTitle}" is delayed by a week?`,
+      `Who else might be affected if this task isn't completed?`,
+      `What opportunities might be missed if this is postponed?`,
+      `How will you feel if this task remains undone?`,
+    ];
+
+    const contextPrompts = [];
+
+    // Add context-specific prompts based on task content
+    if (titleLower.includes('meeting') || titleLower.includes('call')) {
+      contextPrompts.push(
+        `What key questions need to be answered in this meeting?`,
+        `What preparation will make this more productive?`,
+        `What decisions need to be made?`
+      );
+    }
+
+    if (titleLower.includes('project') || titleLower.includes('create') || titleLower.includes('build')) {
+      contextPrompts.push(
+        `What's the smallest first step you can take?`,
+        `What resources or tools do you need?`,
+        `How will you know when this is complete?`
+      );
+    }
+
+    if (titleLower.includes('email') || titleLower.includes('message') || titleLower.includes('contact')) {
+      contextPrompts.push(
+        `What's the key message you want to convey?`,
+        `What response or action do you need from them?`,
+        `When do you need a response by?`
+      );
+    }
+
+    return { whyPrompts, consequencePrompts, contextPrompts };
+  }
+
+  // Analyze task for psychological insights and prioritization hints
+  getTaskInsights(taskTitle: string): {
+    urgencySignals: string[];
+    importanceSignals: string[];
+    suggestionType: 'immediate' | 'scheduled' | 'delegatable' | 'optional';
+    psychTips: string[];
+  } {
+    const titleLower = taskTitle.toLowerCase();
+    const urgencySignals = [];
+    const importanceSignals = [];
+    const psychTips = [];
+
+    // Detect urgency signals
+    if (titleLower.includes('urgent') || titleLower.includes('asap') || titleLower.includes('deadline')) {
+      urgencySignals.push('Contains urgency keywords');
+    }
+    if (titleLower.includes('today') || titleLower.includes('now')) {
+      urgencySignals.push('Time-sensitive language detected');
+    }
+    if (titleLower.includes('meeting') || titleLower.includes('call') || titleLower.includes('appointment')) {
+      urgencySignals.push('Scheduled interaction with others');
+    }
+
+    // Detect importance signals
+    if (titleLower.includes('project') || titleLower.includes('strategy') || titleLower.includes('planning')) {
+      importanceSignals.push('Strategic or long-term focused');
+    }
+    if (titleLower.includes('client') || titleLower.includes('customer') || titleLower.includes('boss')) {
+      importanceSignals.push('Involves key stakeholders');
+    }
+    if (titleLower.includes('learn') || titleLower.includes('skill') || titleLower.includes('course')) {
+      importanceSignals.push('Personal or professional development');
+    }
+
+    // Determine suggestion type
+    let suggestionType: 'immediate' | 'scheduled' | 'delegatable' | 'optional' = 'scheduled';
+    
+    if (urgencySignals.length > 0 && importanceSignals.length > 0) {
+      suggestionType = 'immediate';
+    } else if (urgencySignals.length > 0 && importanceSignals.length === 0) {
+      suggestionType = 'delegatable';
+    } else if (urgencySignals.length === 0 && importanceSignals.length === 0) {
+      suggestionType = 'optional';
+    }
+
+    // Generate psychological tips
+    psychTips.push('🧠 Consider the emotional weight: How will completing this make you feel?');
+    psychTips.push('🎯 Think about impact: Who benefits when this is done?');
+    psychTips.push('⏰ Reflect on timing: Is this the right moment for this task?');
+
+    return { urgencySignals, importanceSignals, suggestionType, psychTips };
+  }
 }
 
 export const aiService = new AIService();
