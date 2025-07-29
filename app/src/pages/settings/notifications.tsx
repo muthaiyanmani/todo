@@ -1,9 +1,9 @@
+import { Bell, Calendar, Mail, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Switch } from '../../components/ui/switch';
 import { useAuthStore } from '../../store/auth-store';
-import { Bell, Mail, Calendar, Trophy } from 'lucide-react';
 
 export function Notifications() {
   const { user, updateUser } = useAuthStore();
@@ -185,8 +185,8 @@ export function Notifications() {
 
       {/* Save Button */}
       <div className="flex justify-center sm:justify-end pt-2 sm:pt-4">
-        <Button 
-          onClick={handleSave} 
+        <Button
+          onClick={handleSave}
           disabled={isLoading}
           className="w-full sm:w-auto h-8 sm:h-9 lg:h-10 text-xs sm:text-sm lg:text-base px-4 sm:px-6 lg:px-8"
         >

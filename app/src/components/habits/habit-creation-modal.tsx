@@ -1,9 +1,10 @@
+import { Calendar, Clock, Settings, Target, X } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { X, Target, Calendar, Clock, Settings } from 'lucide-react';
+import { useCreateHabit, useUpdateHabit } from '../../hooks/use-habits';
+import { soundService } from '../../services/sound-service';
+import type { CreateHabitInput, DifficultyLevel, FrequencyType, Habit, HabitCategory } from '../../types/habit.types';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
 import {
   Dialog,
@@ -11,6 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import {
   Select,
   SelectContent,
@@ -18,9 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { useCreateHabit, useUpdateHabit } from '../../hooks/use-habits';
-import { soundService } from '../../services/sound-service';
-import type { CreateHabitInput, Habit, HabitCategory, DifficultyLevel, FrequencyType } from '../../types/habit.types';
 
 interface HabitCreationModalProps {
   isOpen: boolean;
@@ -73,7 +73,7 @@ const weekDays = [
 export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModalProps) {
   const [step, setStep] = useState(1);
   const isEditing = !!habit;
-  
+
   const createHabit = useCreateHabit();
   const updateHabit = useUpdateHabit();
 
@@ -269,7 +269,7 @@ export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModa
             id="frequencyValue"
             type="number"
             min="1"
-            {...register('frequencyValue', { 
+            {...register('frequencyValue', {
               required: 'Frequency is required',
               min: { value: 1, message: 'Must be at least 1' }
             })}
@@ -445,7 +445,7 @@ export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModa
         <div className="text-sm space-y-1">
           <p><strong>Habit:</strong> {watchedValues.name}</p>
           <p><strong>Category:</strong> {watchedValues.category}</p>
-          <p><strong>Frequency:</strong> {watchedValues.frequencyType === 'daily' ? 'Daily' : 
+          <p><strong>Frequency:</strong> {watchedValues.frequencyType === 'daily' ? 'Daily' :
             watchedValues.frequencyType === 'custom' ? `${watchedValues.customDays.length} days per week` :
             `${watchedValues.frequencyValue} times per ${watchedValues.frequencyType}`}</p>
           <p><strong>Difficulty:</strong> {watchedValues.difficulty}</p>
@@ -461,11 +461,13 @@ export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModa
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="w-full max-w-md sm:max-w-2xl max-h-[95vh] overflow-y-auto mx-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            {isEditing ? 'Edit Habit' : 'Create New Habit'}
-            <Button variant="ghost" size="icon" onClick={handleClose}>
-              <X className="h-4 w-4" />
-            </Button>
+          <DialogTitle>
+            <div className="flex items-center justify-between">
+              {isEditing ? 'Edit Habit' : 'Create New Habit'}
+              <Button variant="ghost" size="icon" onClick={handleClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </DialogTitle>
         </DialogHeader>
 
@@ -527,8 +529,8 @@ export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModa
             </Button>
 
             {step < 4 ? (
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={nextStep}
                 size="sm"
                 className="flex-1 sm:flex-none"
@@ -536,8 +538,8 @@ export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModa
                 Next
               </Button>
             ) : (
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={createHabit.isPending || updateHabit.isPending}
                 size="sm"
                 className="flex-1 sm:flex-none"

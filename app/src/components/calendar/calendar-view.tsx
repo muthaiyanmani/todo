@@ -1,12 +1,12 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Calendar, momentLocalizer, Views, type View } from 'react-big-calendar';
+import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import moment from 'moment';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Calendar, momentLocalizer, Views, type View } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useAppStore } from '../../store/app-store';
 import { useAuthStore } from '../../store/auth-store';
-import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import type { Task } from '../../types';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Button } from '../ui/button';
 
 const localizer = momentLocalizer(moment);
 
@@ -22,9 +22,7 @@ interface CalendarEvent {
 export function CalendarView() {
   const { tasks, setSelectedTask } = useAppStore();
   const { user } = useAuthStore();
-  const [view, setView] = useState<View>(
-    window.innerWidth < 640 ? Views.DAY : Views.MONTH
-  );
+  const [view, setView] = useState<View>(window.innerWidth < 640 ? Views.DAY : Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [showLegend, setShowLegend] = useState(false);
 
@@ -43,10 +41,10 @@ export function CalendarView() {
   // Convert tasks to calendar events including all types
   const events = useMemo<CalendarEvent[]>(() => {
     const calendarEvents: CalendarEvent[] = [];
-    
+
     tasks.forEach((task) => {
       if (task.completed) return;
-      
+
       // Add tasks with due dates
       if (task.dueDate) {
         calendarEvents.push({
@@ -57,7 +55,7 @@ export function CalendarView() {
           resource: task,
         });
       }
-      
+
       // Add My Day tasks (show on today if no due date)
       if (task.myDay && !task.dueDate) {
         const today = new Date();
@@ -70,7 +68,7 @@ export function CalendarView() {
           resource: task,
         });
       }
-      
+
       // Handle recurring tasks - disabled for now
       // TODO: Add recurrence support to Task type
       // if (task.recurrence && task.recurrence.pattern !== 'none') {
@@ -78,12 +76,12 @@ export function CalendarView() {
       //   calendarEvents.push(...recurrenceEvents);
       // }
     });
-    
+
     return calendarEvents;
   }, [tasks]);
-  
+
   // Recurring events generation - disabled until Task type supports recurrence
-  const generateRecurringEvents = (task: Task): CalendarEvent[] => {
+  const generateRecurringEvents = (_task: Task): CalendarEvent[] => {
     return [];
     // TODO: Implement when Task type includes recurrence property
   };
@@ -127,10 +125,11 @@ export function CalendarView() {
     let borderStyle = 'solid';
     let borderWidth = '0px';
     let fontWeight = 'normal';
-    
+
     // Priority-based styling using Eisenhower matrix logic
-    const isUrgent = task.dueDate && new Date(task.dueDate) <= new Date(Date.now() + 24 * 60 * 60 * 1000); // Due within 24 hours
-    
+    const isUrgent =
+      task.dueDate && new Date(task.dueDate) <= new Date(Date.now() + 24 * 60 * 60 * 1000); // Due within 24 hours
+
     if (task.important && isUrgent) {
       backgroundColor = '#dc2626'; // Red - Do First
       fontWeight = 'bold';
@@ -141,20 +140,20 @@ export function CalendarView() {
     } else if (!task.important && !isUrgent) {
       backgroundColor = '#6b7280'; // Gray - Don't Do
     }
-    
+
     // Override for special types
     if (task.myDay && !task.dueDate) {
       backgroundColor = '#3b82f6'; // Blue for My Day
       borderStyle = 'dashed';
       borderWidth = '1px';
     }
-    
+
     // Recurring tasks get a special border
     if (event.id.includes('-recur-')) {
       borderStyle = 'dotted';
       borderWidth = '2px';
     }
-    
+
     // Important tasks get bold text
     if (task.important) {
       fontWeight = 'bold';
@@ -189,26 +188,43 @@ export function CalendarView() {
     };
 
     return (
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-3 mb-4 p-3 sm:p-4 bg-background border-b">
-        <div className="flex items-center justify-between w-full lg:w-auto gap-2">
+      <div className="flex flex-col items-center justify-between gap-3 p-3 mb-4 border-b lg:flex-row sm:p-4 bg-background">
+        <div className="flex items-center justify-between w-full gap-2 lg:w-auto">
           <div className="flex items-center space-x-1 sm:space-x-2">
-            <Button variant="outline" size="icon" onClick={goToBack} className="h-8 w-8 sm:h-9 sm:w-9">
-              <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={goToBack}
+              className="w-8 h-8 sm:h-9 sm:w-9"
+            >
+              <ChevronLeft className="w-3 h-3 sm:h-4 sm:w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={goToNext} className="h-8 w-8 sm:h-9 sm:w-9">
-              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={goToNext}
+              className="w-8 h-8 sm:h-9 sm:w-9"
+            >
+              <ChevronRight className="w-3 h-3 sm:h-4 sm:w-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={goToToday} className="h-8 px-2 sm:h-9 sm:px-3 text-xs sm:text-sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToToday}
+              className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
+            >
               Today
             </Button>
           </div>
           <h2 className="text-lg font-semibold lg:hidden">{toolbar.label}</h2>
         </div>
 
-        <h2 className="hidden lg:block text-lg font-semibold flex-1 text-center">{toolbar.label}</h2>
-        
+        <h2 className="flex-1 hidden text-lg font-semibold text-center lg:block">
+          {toolbar.label}
+        </h2>
+
         {/* Legend for mobile and desktop */}
-        <div className="hidden lg:flex items-center gap-4 text-xs">
+        <div className="items-center hidden gap-4 text-xs lg:flex">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 bg-red-600 rounded"></div>
             <span>Do First</span>
@@ -218,7 +234,7 @@ export function CalendarView() {
             <span>Schedule</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-amber-500 rounded"></div>
+            <div className="w-3 h-3 rounded bg-amber-500"></div>
             <span>Delegate</span>
           </div>
           <div className="flex items-center gap-1">
@@ -226,16 +242,16 @@ export function CalendarView() {
             <span>Don't Do</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-blue-500 rounded border border-dashed border-gray-400"></div>
+            <div className="w-3 h-3 bg-blue-500 border border-gray-400 border-dashed rounded"></div>
             <span>My Day</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-blue-700 rounded border-2 border-dotted border-gray-400"></div>
+            <div className="w-3 h-3 bg-blue-700 border-2 border-gray-400 border-dotted rounded"></div>
             <span>Recurring</span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+        <div className="flex items-center flex-shrink-0 space-x-1 sm:space-x-2">
           <Button
             variant={view === Views.MONTH ? 'default' : 'outline'}
             size="sm"
@@ -243,7 +259,7 @@ export function CalendarView() {
               setView(Views.MONTH);
               toolbar.onView(Views.MONTH);
             }}
-            className="h-8 px-2 sm:h-9 sm:px-3 text-xs sm:text-sm"
+            className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
           >
             <span className="sm:hidden">M</span>
             <span className="hidden sm:inline">Month</span>
@@ -255,7 +271,7 @@ export function CalendarView() {
               setView(Views.WEEK);
               toolbar.onView(Views.WEEK);
             }}
-            className="h-8 px-2 sm:h-9 sm:px-3 text-xs sm:text-sm"
+            className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
           >
             <span className="sm:hidden">W</span>
             <span className="hidden sm:inline">Week</span>
@@ -267,21 +283,21 @@ export function CalendarView() {
               setView(Views.DAY);
               toolbar.onView(Views.DAY);
             }}
-            className="h-8 px-2 sm:h-9 sm:px-3 text-xs sm:text-sm"
+            className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
           >
             <span className="sm:hidden">D</span>
             <span className="hidden sm:inline">Day</span>
           </Button>
-          
+
           {/* Legend toggle for mobile */}
           <Button
             variant="outline"
             size="icon"
             onClick={() => setShowLegend(!showLegend)}
-            className="lg:hidden h-8 w-8 sm:h-9 sm:w-9"
+            className="w-8 h-8 lg:hidden sm:h-9 sm:w-9"
             title="Show legend"
           >
-            <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+            <Info className="w-3 h-3 sm:h-4 sm:w-4" />
           </Button>
         </div>
       </div>
@@ -289,10 +305,10 @@ export function CalendarView() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-background overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden bg-background">
       {/* Mobile Legend */}
       {showLegend && (
-        <div className="lg:hidden p-3 border-b bg-muted/50">
+        <div className="p-3 border-b lg:hidden bg-muted/50">
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-red-600 rounded"></div>
@@ -303,7 +319,7 @@ export function CalendarView() {
               <span>Schedule (Important)</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-amber-500 rounded"></div>
+              <div className="w-3 h-3 rounded bg-amber-500"></div>
               <span>Delegate (Urgent)</span>
             </div>
             <div className="flex items-center gap-1">
@@ -311,17 +327,17 @@ export function CalendarView() {
               <span>Don't Do (Neither)</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-blue-500 rounded border border-dashed border-gray-400"></div>
+              <div className="w-3 h-3 bg-blue-500 border border-gray-400 border-dashed rounded"></div>
               <span>My Day Tasks</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-blue-700 rounded border-2 border-dotted border-gray-400"></div>
+              <div className="w-3 h-3 bg-blue-700 border-2 border-gray-400 border-dotted rounded"></div>
               <span>Recurring Tasks</span>
             </div>
           </div>
         </div>
       )}
-      
+
       <style>{`
         .rbc-calendar {
           font-family: inherit;
@@ -476,7 +492,7 @@ export function CalendarView() {
           toolbar: CustomToolbar,
         }}
         style={{ flex: 1 }}
-        className="calendar-container px-2 pb-2 sm:px-4 sm:pb-4 lg:px-6 lg:pb-6"
+        className="px-2 pb-2 calendar-container sm:px-4 sm:pb-4 lg:px-6 lg:pb-6"
       />
     </div>
   );

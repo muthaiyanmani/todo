@@ -1,12 +1,12 @@
+import { Mail, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Mail, Users, X } from 'lucide-react';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Label } from '../../ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../ui/dialog';
 import { useSendFriendInvitation } from '../../../hooks/use-habits';
 import { soundService } from '../../../services/sound-service';
+import { Button } from '../../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../ui/dialog';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 
 interface FriendInvitationModalProps {
   isOpen: boolean;
@@ -46,10 +46,10 @@ export function FriendInvitationModal({ isOpen, onClose }: FriendInvitationModal
         email: data.email,
         message: data.message,
       });
-      
+
       soundService.playSuccess();
       setIsSuccess(true);
-      
+
       // Auto close after 2 seconds
       setTimeout(() => {
         handleClose();
@@ -63,9 +63,11 @@ export function FriendInvitationModal({ isOpen, onClose }: FriendInvitationModal
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="w-full max-w-sm sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Invite a Friend
+          <DialogTitle>
+            <span className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Invite a Friend
+            </span>
           </DialogTitle>
         </DialogHeader>
 
@@ -124,8 +126,8 @@ export function FriendInvitationModal({ isOpen, onClose }: FriendInvitationModal
               <Button type="button" variant="outline" onClick={handleClose} size="sm" className="flex-1">
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={sendInvitation.isPending}
                 size="sm"
                 className="flex-1"

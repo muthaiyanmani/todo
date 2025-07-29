@@ -1,23 +1,23 @@
-import { useState } from 'react';
 import { format } from 'date-fns';
-import DatePicker from 'react-datepicker';
 import {
-  X,
-  Star,
-  Sun,
-  Calendar,
   Bell,
-  Repeat,
+  Calendar,
   Paperclip,
   Plus,
+  Repeat,
+  Star,
+  Sun,
   Trash2,
+  X,
 } from 'lucide-react';
+import { useState } from 'react';
+import DatePicker from 'react-datepicker';
 import { cn } from '../../lib/utils';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Checkbox } from '../ui/checkbox';
-import { useAppStore } from '../../store/app-store';
 import { notificationService } from '../../services/notification-service';
+import { useAppStore } from '../../store/app-store';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import { Input } from '../ui/input';
 
 export function TaskDetails() {
   const { selectedTask, setSelectedTask, updateTask, deleteTask, addSubtask, updateSubtask } = useAppStore();
@@ -177,8 +177,13 @@ export function TaskDetails() {
               <div className="absolute top-full left-0 mt-1 z-50 bg-popover rounded-md shadow-lg">
                 <DatePicker
                   selected={selectedTask.dueDate ? new Date(selectedTask.dueDate) : null}
-                  onChange={(date) => {
-                    updateTask(selectedTask.id, { dueDate: date || undefined });
+                  onChange={(date: Date | null) => {
+                    // Ensure 'date' is a single Date object, not an array
+                    if (Array.isArray(date)) {
+                      updateTask(selectedTask.id, { dueDate: date[0] || undefined });
+                    } else {
+                      updateTask(selectedTask.id, { dueDate: date || undefined });
+                    }
                     setShowDueDatePicker(false);
                   }}
                   inline
@@ -206,7 +211,7 @@ export function TaskDetails() {
               <div className="absolute top-full left-0 mt-1 z-50 bg-popover rounded-md shadow-lg">
                 <DatePicker
                   selected={selectedTask.reminderDateTime ? new Date(selectedTask.reminderDateTime) : null}
-                  onChange={async (date) => {
+                  onChange={async (date: Date | null) => {
                     updateTask(selectedTask.id, { reminderDateTime: date || undefined });
                     if (date) {
                       await notificationService.scheduleTaskReminder(selectedTask, date);

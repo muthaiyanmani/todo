@@ -12,7 +12,19 @@ export const mockUser: User = {
   avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
   preferences: {
     theme: 'system',
-    notifications: true,
+    privacy: {
+      shareData: false,
+      analytics: true,
+      marketing: false,
+    },
+    notifications: {
+      tasks: true,
+      reminders: true,
+      achievements: false,
+      weekly: true,
+      email: false,
+      push: true,
+    },
     timezone: 'America/New_York',
   },
   createdAt: new Date('2024-01-01'),

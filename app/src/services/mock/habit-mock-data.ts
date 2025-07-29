@@ -1,13 +1,13 @@
-import { 
-  Habit, 
-  HabitEntry, 
-  HabitStats, 
-  HabitInsight, 
+import { addDays, subDays } from 'date-fns';
+import type {
   FriendConnection,
-  UserProfile,
-  HabitAchievement 
+  Habit,
+  HabitAchievement,
+  HabitEntry,
+  HabitInsight,
+  HabitStats,
+  UserProfile
 } from '../../types/habit.types';
-import { addDays, subDays, format, startOfWeek, startOfMonth } from 'date-fns';
 
 // Mock user profiles
 export const mockUserProfiles: UserProfile[] = [
@@ -184,11 +184,11 @@ export const mockHabits: Habit[] = [
 function generateMockEntries(habitId: string, completionRate: number): HabitEntry[] {
   const entries: HabitEntry[] = [];
   const today = new Date();
-  
+
   for (let i = 0; i < 30; i++) {
     const date = subDays(today, i);
     const shouldComplete = Math.random() * 100 < completionRate;
-    
+
     if (shouldComplete) {
       entries.push({
         id: `entry-${habitId}-${i}`,
@@ -206,7 +206,7 @@ function generateMockEntries(habitId: string, completionRate: number): HabitEntr
       });
     }
   }
-  
+
   return entries;
 }
 

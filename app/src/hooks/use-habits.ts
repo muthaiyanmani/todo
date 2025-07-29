@@ -1,22 +1,22 @@
 import {
-  useQuery,
   useMutation,
+  type UseMutationResult,
+  useQuery,
   useQueryClient,
-  UseQueryResult,
-  UseMutationResult
+  type UseQueryResult
 } from '@tanstack/react-query';
-import {
-  Habit,
-  HabitEntry,
-  HabitStats,
-  HabitInsight,
+import { achievementApi, habitApi, socialApi } from '../services/mock/habit-mock-api';
+import type {
   CreateHabitInput,
-  UpdateHabitInput,
   FriendConnection,
+  Habit,
   HabitAchievement,
-  HabitShareData
+  HabitEntry,
+  HabitInsight,
+  HabitShareData,
+  HabitStats,
+  UpdateHabitInput
 } from '../types/habit.types';
-import { habitApi, socialApi, achievementApi } from '../services/mock/habit-mock-api';
 
 // Query keys
 export const habitKeys = {
@@ -52,13 +52,13 @@ export function useHabit(habitId: string): UseQueryResult<Habit | null, Error> {
 
 export function useCreateHabit(): UseMutationResult<Habit, Error, CreateHabitInput> {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (input: CreateHabitInput) => habitApi.createHabit(input),
     onSuccess: (newHabit) => {
       // Invalidate and refetch habits list
       queryClient.invalidateQueries({ queryKey: habitKeys.lists() });
-      
+
       // Add the new habit to the cache
       queryClient.setQueryData(habitKeys.detail(newHabit.id), newHabit);
     },
@@ -67,19 +67,19 @@ export function useCreateHabit(): UseMutationResult<Habit, Error, CreateHabitInp
 
 export function useUpdateHabit(): UseMutationResult<Habit, Error, { habitId: string; updates: UpdateHabitInput }> {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ habitId, updates }) => habitApi.updateHabit(habitId, updates),
     onSuccess: (updatedHabit) => {
       // Update the specific habit in cache
       queryClient.setQueryData(habitKeys.detail(updatedHabit.id), updatedHabit);
-      
+
       // Update the habit in the list
       queryClient.setQueryData<Habit[]>(
         habitKeys.list('user-1'),
         (oldHabits) => {
           if (!oldHabits) return [updatedHabit];
-          return oldHabits.map(habit => 
+          return oldHabits.map(habit =>
             habit.id === updatedHabit.id ? updatedHabit : habit
           );
         }
@@ -90,7 +90,7 @@ export function useUpdateHabit(): UseMutationResult<Habit, Error, { habitId: str
 
 export function useDeleteHabit(): UseMutationResult<void, Error, string> {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (habitId: string) => habitApi.deleteHabit(habitId),
     onSuccess: (_, habitId) => {
@@ -103,7 +103,7 @@ export function useDeleteHabit(): UseMutationResult<void, Error, string> {
 
 export function useArchiveHabit(): UseMutationResult<Habit, Error, string> {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (habitId: string) => habitApi.archiveHabit(habitId),
     onSuccess: () => {
@@ -140,25 +140,25 @@ export function useCreateHabitEntry(): UseMutationResult<
   }
 > {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ habitId, data }) => habitApi.createHabitEntry(habitId, data),
     onSuccess: (newEntry) => {
       // Invalidate entries for this habit
       queryClient.invalidateQueries({ queryKey: habitKeys.entries(newEntry.habitId) });
-      
+
       // Invalidate stats as they need to be recalculated
       queryClient.invalidateQueries({ queryKey: habitKeys.stats(newEntry.habitId) });
-      
+
       // Invalidate the habit itself to update streak info
       queryClient.invalidateQueries({ queryKey: habitKeys.detail(newEntry.habitId) });
       queryClient.invalidateQueries({ queryKey: habitKeys.lists() });
-      
+
       // Check for new achievements
       achievementApi.checkAchievements('user-1').then((unlockedAchievements) => {
         if (unlockedAchievements.length > 0) {
           queryClient.invalidateQueries({ queryKey: habitKeys.achievements('user-1') });
-          
+
           // Trigger celebration (this would be handled by a parent component)
           window.dispatchEvent(new CustomEvent('achievement-unlocked', {
             detail: unlockedAchievements[0]
@@ -201,7 +201,7 @@ export function useSendFriendInvitation(): UseMutationResult<
   { email: string; message?: string }
 > {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ email, message }) => socialApi.sendFriendInvitation(email, message),
     onSuccess: () => {
@@ -212,7 +212,7 @@ export function useSendFriendInvitation(): UseMutationResult<
 
 export function useAcceptFriendRequest(): UseMutationResult<FriendConnection, Error, string> {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (connectionId: string) => socialApi.acceptFriendRequest(connectionId),
     onSuccess: () => {
@@ -227,7 +227,7 @@ export function useShareHabitProgress(): UseMutationResult<
   { habitId: string; friendIds: string[]; message?: string }
 > {
   return useMutation({
-    mutationFn: ({ habitId, friendIds, message }) => 
+    mutationFn: ({ habitId, friendIds, message }) =>
       socialApi.shareHabitProgress(habitId, friendIds, message),
   });
 }
@@ -250,7 +250,7 @@ export function useHabitAchievements(userId: string = 'user-1'): UseQueryResult<
 
 export function useCheckAchievements(): UseMutationResult<HabitAchievement[], Error, string> {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (userId: string) => achievementApi.checkAchievements(userId),
     onSuccess: (unlockedAchievements, userId) => {
@@ -267,7 +267,7 @@ export function useHabitData(habitId: string) {
   const entries = useHabitEntries(habitId);
   const stats = useHabitStats(habitId);
   const insights = useHabitInsights(habitId);
-  
+
   return {
     habit,
     entries,

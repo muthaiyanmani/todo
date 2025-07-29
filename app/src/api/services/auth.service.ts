@@ -1,6 +1,6 @@
 // import { apiClient, API_ENDPOINTS } from '../client';
-import { mockDelay, mockUser, createMockResponse } from '../mock-data';
 import type { LoginCredentials, RegisterCredentials, User } from '../../types';
+import { createMockResponse, mockDelay, mockUser } from '../mock-data';
 
 export const authService = {
   async login(credentials: LoginCredentials) {
@@ -34,7 +34,19 @@ export const authService = {
       name: credentials.name,
       preferences: {
         theme: 'system',
-        notifications: true,
+        privacy: {
+          shareData: false,
+          analytics: false,
+          marketing: false,
+        },
+        notifications: {
+          tasks: true,
+          reminders: true,
+          achievements: false,
+          weekly: true,
+          email: false,
+          push: true,
+        },
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       createdAt: new Date(),
