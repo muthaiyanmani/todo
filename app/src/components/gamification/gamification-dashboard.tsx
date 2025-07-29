@@ -115,8 +115,8 @@ export function GamificationDashboard({ isCompact = false, className }: Gamifica
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Your Progress</h2>
-          <p className="text-muted-foreground">Track your productivity journey</p>
+          <h2 className="text-lg font-semibold">Your Progress</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">Track your productivity journey</p>
         </div>
         <div className="flex items-center gap-2">
           <Crown className="h-8 w-8 text-yellow-500" />

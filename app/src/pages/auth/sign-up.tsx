@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
 import {
   Card,
   CardContent,
@@ -12,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
+import { Input } from '../../components/ui/input';
 import { useAuthStore } from '../../store/auth-store';
 
 const signUpSchema = z
@@ -56,16 +56,16 @@ export function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-background">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Create an account</CardTitle>
-          <CardDescription className="text-center">Get started with Todo Pro</CardDescription>
+          <CardDescription className="text-center">Get started</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {error && (
-              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+              <div className="p-3 text-sm border rounded-md bg-destructive/10 border-destructive/20 text-destructive">
                 {error}
               </div>
             )}
@@ -147,7 +147,7 @@ export function SignUp() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm">
+          <div className="mt-6 text-sm text-center">
             Already have an account?{' '}
             <Link to="/auth/signin" className="text-primary hover:underline">
               Sign in

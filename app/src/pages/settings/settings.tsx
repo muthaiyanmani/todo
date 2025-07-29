@@ -61,7 +61,7 @@ export function Settings() {
             </Button>
             <div className="flex items-center space-x-2">
               <SettingsIcon className="h-5 w-5" />
-              <h1 className="text-xl lg:text-2xl font-semibold">Settings</h1>
+              <h1 className="text-2xl font-bold">Settings</h1>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@ export function Settings() {
           <div className="lg:w-64 xl:w-72 space-y-2">
             <Card>
               <CardHeader className="hidden lg:block pb-3">
-                <CardTitle className="text-base lg:text-lg font-medium">Settings</CardTitle>
+                <CardTitle className="text-lg font-semibold">Settings</CardTitle>
               </CardHeader>
               <CardContent className="pt-3 sm:pt-4 lg:pt-0">
                 {/* Mobile: Horizontal scrolling tabs */}
@@ -90,7 +90,7 @@ export function Settings() {
                       title={item.label}
                     >
                       <item.icon className="h-4 w-4 lg:h-5 lg:w-5 lg:mr-3" />
-                      <span className="hidden lg:block text-base whitespace-nowrap">{item.label}</span>
+                      <span className="hidden lg:block text-sm font-medium whitespace-nowrap">{item.label}</span>
                     </Button>
                   ))}
                 </div>

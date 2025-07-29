@@ -341,7 +341,7 @@ export function SidebarRQ() {
       <div className="flex-1 overflow-y-auto">
         <div className="p-3">
           <div className="mb-3">
-            <h3 className="flex items-center px-2 mb-2 space-x-2 text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+            <h3 className="flex items-center px-2 mb-2 space-x-2 text-sm font-semibold text-muted-foreground">
               <Sparkles className="w-3 h-3" />
               <span>Smart Lists</span>
             </h3>
@@ -409,7 +409,7 @@ export function SidebarRQ() {
         {/* Special Views */}
         <div className="p-3">
           <div className="mb-3">
-            <h3 className="flex items-center px-2 space-x-2 text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+            <h3 className="flex items-center px-2 space-x-2 text-sm font-semibold text-muted-foreground">
               <TrendingUp className="w-3 h-3" />
               <span>Views</span>
             </h3>
@@ -455,7 +455,7 @@ export function SidebarRQ() {
         {/* Custom Lists */}
         <div className="p-3">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="flex items-center px-2 space-x-2 text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+            <h3 className="flex items-center px-2 space-x-2 text-sm font-semibold text-muted-foreground">
               <List className="w-3 h-3" />
               <span>My Lists</span>
             </h3>

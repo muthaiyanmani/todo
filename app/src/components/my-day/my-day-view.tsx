@@ -23,7 +23,7 @@ export function MyDayView() {
           <div className="p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1">
+                <h1 className="text-2xl font-bold text-foreground mb-1">
                   My Day
                 </h1>
                 <p className="text-sm sm:text-base text-muted-foreground">

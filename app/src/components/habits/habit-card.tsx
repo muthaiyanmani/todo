@@ -125,7 +125,7 @@ export function HabitCard({ habit, viewMode, onEdit, onShare }: HabitCardProps) 
           {/* Habit Info */}
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-medium sm:font-semibold text-sm sm:text-base">{habit.name}</h3>
+              <h3 className="text-base font-semibold">{habit.name}</h3>
               <span className={cn('px-2 py-1 rounded-full text-xs font-medium', getCategoryColor(habit.category))}>
                 {habit.category}
               </span>
@@ -197,7 +197,7 @@ export function HabitCard({ habit, viewMode, onEdit, onShare }: HabitCardProps) 
       {/* Header */}
       <div className="flex items-start justify-between mb-3 sm:mb-4">
         <div className="flex-1">
-          <h3 className="font-semibold text-base sm:text-lg mb-1 pr-2">{habit.name}</h3>
+          <h3 className="text-base font-semibold mb-1 pr-2">{habit.name}</h3>
           <div className="flex items-center gap-2">
             <span className={cn('px-2 py-1 rounded-full text-xs font-medium', getCategoryColor(habit.category))}>
               {habit.category}

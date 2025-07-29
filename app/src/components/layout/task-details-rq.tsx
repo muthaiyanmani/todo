@@ -89,7 +89,7 @@ export function TaskDetailsRQ() {
       });
       setNewSubtaskTitle('');
     } catch (error) {
-      console.error('Failed to add subtask:', error);
+      // TODO: Add proper error handling/notification
     }
   };
 
@@ -101,7 +101,7 @@ export function TaskDetailsRQ() {
         updates: { completed: !completed },
       });
     } catch (error) {
-      console.error('Failed to toggle subtask:', error);
+      // TODO: Add proper error handling/notification
     }
   };
 
@@ -353,7 +353,7 @@ export function TaskDetailsRQ() {
         </div>
 
         {/* Created */}
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs sm:text-sm text-muted-foreground">
           Created {format(selectedTask.createdAt, 'MMM d, yyyy')}
         </div>
       </div>

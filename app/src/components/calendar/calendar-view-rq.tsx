@@ -199,10 +199,10 @@ export function CalendarViewRQ() {
               Today
             </Button>
           </div>
-          <h2 className="text-base sm:text-lg lg:text-xl font-semibold lg:hidden">{toolbar.label}</h2>
+          <h2 className="text-lg font-semibold lg:hidden">{toolbar.label}</h2>
         </div>
 
-        <h2 className="hidden lg:block text-xl font-semibold flex-1 text-center">{toolbar.label}</h2>
+        <h2 className="hidden lg:block text-lg font-semibold flex-1 text-center">{toolbar.label}</h2>
         
         {/* Legend for mobile and desktop */}
         <div className="hidden lg:flex items-center gap-4 text-xs">

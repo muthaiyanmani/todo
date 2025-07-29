@@ -455,7 +455,7 @@ export function MyDayTaskView() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center space-x-2">
               <Sun className="w-4 h-4 text-blue-600 sm:h-5 sm:w-5" />
-              <h2 className="text-base font-semibold sm:text-lg lg:text-xl">My Day Tasks</h2>
+              <h2 className="text-lg font-semibold">My Day Tasks</h2>
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2 flex-wrap sm:flex-nowrap">
@@ -630,7 +630,7 @@ export function MyDayTaskView() {
                     <div className={cn('p-1.5 rounded-lg', config.bgColor)}>
                       <IconComponent className={cn('h-4 w-4', config.color)} />
                     </div>
-                    <h3 className="font-medium">{config.title}</h3>
+                    <h3 className="text-base font-semibold">{config.title}</h3>
                     <span className="text-sm text-muted-foreground">({tasks.length})</span>
                     <span className="text-xs text-muted-foreground">• {config.description}</span>
                   </div>
@@ -647,7 +647,7 @@ export function MyDayTaskView() {
           <>
             {!showEisenhowerGroups && 'all' in incompleteTasks && incompleteTasks.all.length > 0 && (
               <div>
-                <h3 className="mb-3 font-medium">Tasks ({incompleteTasks.all.length})</h3>
+                <h3 className="mb-3 text-base font-semibold">Tasks ({incompleteTasks.all.length})</h3>
                 <div className="space-y-2">
                   {incompleteTasks.all.map((task: Task) => (
                     <TaskItem key={task.id} task={task} showQuadrant={true} />
@@ -661,7 +661,7 @@ export function MyDayTaskView() {
         {/* Completed Tasks */}
         {showCompleted && completedTasks.length > 0 && (
           <div>
-            <h3 className="mb-3 font-medium">Completed ({completedTasks.length})</h3>
+            <h3 className="mb-3 text-base font-semibold">Completed ({completedTasks.length})</h3>
             <div className="space-y-2">
               {completedTasks.map((task) => (
                 <TaskItem key={task.id} task={task} />
@@ -673,7 +673,7 @@ export function MyDayTaskView() {
         {/* Task Suggestions */}
         {suggestedTasks.length > 0 && (
           <div>
-            <h3 className="mb-3 font-medium">Suggested for My Day</h3>
+            <h3 className="mb-3 text-base font-semibold">Suggested for My Day</h3>
             <div className="space-y-2">
               {suggestedTasks.map((task) => (
                 <div key={task.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">

@@ -109,7 +109,7 @@ export function SidebarSettings({ isOpen, onClose }: SidebarSettingsProps) {
         {/* Header */}
         <div className="p-3 sm:p-4 lg:p-6 border-b bg-muted/30">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg lg:text-xl font-semibold">Settings</h2>
+            <h2 className="text-lg font-semibold">Settings</h2>
             <Button variant="ghost" size="icon" onClick={onClose} className="h-9 w-9 lg:h-10 lg:w-10">
               ✕
             </Button>

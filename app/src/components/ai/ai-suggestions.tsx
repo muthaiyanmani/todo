@@ -48,7 +48,7 @@ export function AISuggestions() {
         subtasks: [],
       });
     } catch (error) {
-      console.error('Failed to add AI suggestion:', error);
+      // TODO: Add proper error handling/notification
     }
   };
 
@@ -87,7 +87,7 @@ export function AISuggestions() {
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
             <Bot className="w-4 h-4 text-white" />
           </div>
-          <h3 className="font-semibold text-foreground text-sm sm:text-base">AI Assistant</h3>
+          <h3 className="text-base font-semibold text-foreground">AI Assistant</h3>
         </div>
         <Button
           variant="ghost"

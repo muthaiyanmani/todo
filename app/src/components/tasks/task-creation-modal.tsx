@@ -153,7 +153,7 @@ export function TaskCreationModal({
       setCustomRecurrence({ type: 'weekly', interval: 1, daysOfWeek: [] });
       onClose();
     } catch (error) {
-      console.error('Failed to create task:', error);
+      // TODO: Add proper error handling/notification
     } finally {
       setIsSubmitting(false);
     }
@@ -183,7 +183,7 @@ export function TaskCreationModal({
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle>Create New Task</CardTitle>
+          <CardTitle className="text-base font-semibold">Create New Task</CardTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>

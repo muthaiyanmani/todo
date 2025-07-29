@@ -123,19 +123,19 @@ export function HabitProgressChart({ habits }: HabitProgressChartProps) {
       {/* Additional Stats */}
       <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t">
         <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">
+          <div className="text-lg font-semibold text-green-600">
             {chartData.filter(d => d.rate >= 80).length}
           </div>
           <div className="text-xs text-muted-foreground">Great Days</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600">
+          <div className="text-lg font-semibold text-blue-600">
             {chartData.reduce((sum, d) => sum + d.completed, 0)}
           </div>
           <div className="text-xs text-muted-foreground">Total Completed</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-purple-600">
+          <div className="text-lg font-semibold text-purple-600">
             {Math.max(...chartData.map(d => d.completed))}
           </div>
           <div className="text-xs text-muted-foreground">Best Day</div>
