@@ -26,51 +26,51 @@ const gtdCategories = [
     title: 'Inbox',
     icon: Inbox,
     description: 'Capture everything here first',
-    color: 'text-blue-600',
+    color: 'text-info',
   },
   {
     id: 'nextActions' as GTDCategory,
     title: 'Next Actions',
     icon: Zap,
     description: 'Ready to be done',
-    color: 'text-green-600',
+    color: 'text-success',
   },
   {
     id: 'waiting' as GTDCategory,
     title: 'Waiting For',
     icon: RefreshCw,
     description: 'Waiting for others',
-    color: 'text-yellow-600',
+    color: 'text-warning',
   },
   {
     id: 'projects' as GTDCategory,
     title: 'Projects',
     icon: Calendar,
     description: 'Multi-step outcomes',
-    color: 'text-purple-600',
+    color: 'text-focus',
   },
   {
     id: 'someday' as GTDCategory,
     title: 'Someday/Maybe',
     icon: Lightbulb,
     description: 'Ideas for later',
-    color: 'text-orange-600',
+    color: 'text-warning',
   },
   {
     id: 'reference' as GTDCategory,
     title: 'Reference',
     icon: Archive,
     description: 'Information to keep',
-    color: 'text-gray-600',
+    color: 'text-muted-foreground',
   },
 ];
 
 const contexts = ['@computer', '@phone', '@office', '@home', '@errands', '@agenda', '@anywhere'];
 
 const energyLevels = [
-  { value: 'high', label: 'High Energy', color: 'bg-red-100 text-red-800' },
-  { value: 'medium', label: 'Medium Energy', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'low', label: 'Low Energy', color: 'bg-green-100 text-green-800' },
+  { value: 'high', label: 'High Energy', color: 'bg-destructive/10 text-destructive' },
+  { value: 'medium', label: 'Medium Energy', color: 'bg-warning/10 text-warning' },
+  { value: 'low', label: 'Low Energy', color: 'bg-success/10 text-success' },
 ];
 
 export function GTDDashboard() {
@@ -257,7 +257,7 @@ export function GTDDashboard() {
         {/* Quick Capture */}
         <Card className="p-4 mb-6">
           <div className="flex items-center space-x-2">
-            <Inbox className="w-4 h-4 text-blue-600" />
+            <Inbox className="w-4 h-4 text-info" />
             <Input
               placeholder="Capture anything on your mind..."
               value={newTaskTitle}

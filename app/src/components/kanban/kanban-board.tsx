@@ -38,10 +38,10 @@ interface KanbanTask extends Task {
 }
 
 const columns: { id: KanbanColumn; title: string; color: string; limit?: number }[] = [
-  { id: 'todo', title: 'To Do', color: 'bg-gray-100 dark:bg-gray-800' },
-  { id: 'inProgress', title: 'In Progress', color: 'bg-blue-100 dark:bg-blue-900/30', limit: 3 },
-  { id: 'review', title: 'Review', color: 'bg-yellow-100 dark:bg-yellow-900/30' },
-  { id: 'done', title: 'Done', color: 'bg-green-100 dark:bg-green-900/30' },
+  { id: 'todo', title: 'To Do', color: 'bg-muted' },
+  { id: 'inProgress', title: 'In Progress', color: 'bg-info/10 dark:bg-info/20', limit: 3 },
+  { id: 'review', title: 'Review', color: 'bg-warning/10 dark:bg-warning/20' },
+  { id: 'done', title: 'Done', color: 'bg-success/10 dark:bg-success/20' },
 ];
 
 // Sortable Task Item Component
@@ -120,7 +120,7 @@ function TaskCard({ task, dragHandle }: { task: KanbanTask; dragHandle?: any }) 
           )}
           
           <div className="flex items-center gap-2 mt-2">
-            {task.important && <Star className="w-3 h-3 text-yellow-500 fill-current" />}
+            {task.important && <Star className="w-3 h-3 text-warning fill-current" />}
             {task.dueDate && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Calendar className="w-3 h-3" />
@@ -175,9 +175,11 @@ export function KanbanBoard() {
                   task.kanbanColumn as KanbanColumn || 'todo'
   }));
 
-  // Group tasks by column
+  // Group tasks by column and sort by creation date (most recent first)
   const tasksByColumn = columns.reduce((acc, column) => {
-    acc[column.id] = kanbanTasks.filter(task => task.kanbanColumn === column.id);
+    acc[column.id] = kanbanTasks
+      .filter(task => task.kanbanColumn === column.id)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return acc;
   }, {} as Record<KanbanColumn, KanbanTask[]>);
 
@@ -202,21 +204,53 @@ export function KanbanBoard() {
     const activeTask = kanbanTasks.find(task => task.id === activeId);
     if (!activeTask) return;
 
+    // Check if dropping on another task (for reordering)
+    const overTask = kanbanTasks.find(task => task.id === overId);
+    
+    if (overTask) {
+      // Reordering within the same column or moving to different column
+      const newColumn = overTask.kanbanColumn;
+      
+      // Check WIP limits when moving to different column
+      if (activeTask.kanbanColumn !== newColumn) {
+        const targetColumn = columns.find(col => col.id === newColumn);
+        if (targetColumn?.limit && tasksByColumn[newColumn].length >= targetColumn.limit) {
+          return; // Prevent move due to WIP limit
+        }
+      }
+      
+      // Update task column and completion status
+      const updates: Partial<Task> = {
+        kanbanColumn: newColumn,
+        completed: newColumn === 'done',
+      };
+
+      if (newColumn === 'done' && !activeTask.completed) {
+        updates.completedAt = new Date();
+      }
+
+      await updateTaskMutation.mutateAsync({
+        id: activeId,
+        updates,
+      });
+      
+      return;
+    }
+
     // Check if dropping on a column (droppable area)
     const targetColumn = columns.find(col => col.id === overId);
     if (!targetColumn) return;
 
     const newColumn = targetColumn.id;
     
-    // If dropping in the same column, do nothing for now
+    // If dropping in the same column without specific position, don't move
     if (activeTask.kanbanColumn === newColumn) {
       return;
     }
 
     // Check WIP limits
     if (targetColumn.limit && tasksByColumn[newColumn].length >= targetColumn.limit) {
-      // Show warning or prevent move
-      return;
+      return; // Prevent move due to WIP limit
     }
 
     // Update task column and completion status
@@ -233,7 +267,7 @@ export function KanbanBoard() {
       id: activeId,
       updates,
     });
-  }, [updateTaskMutation, kanbanTasks, tasksByColumn]);
+  }, [updateTaskMutation, kanbanTasks, tasksByColumn, columns]);
 
   const handleAddTask = async (columnId: KanbanColumn) => {
     const title = newTaskTitles[columnId].trim();
@@ -274,7 +308,7 @@ export function KanbanBoard() {
   }
 
   return (
-    <div className="h-full bg-gray-50 dark:bg-gray-900">
+    <div className="h-full bg-muted/30">
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">Kanban Board</h1>
@@ -308,7 +342,7 @@ export function KanbanBoard() {
 
                 {/* WIP Limit Warning */}
                 {column.limit && tasksByColumn[column.id].length >= column.limit && (
-                  <div className="mb-2 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-xs text-yellow-800 dark:text-yellow-200">
+                  <div className="mb-2 p-2 bg-warning/10 border border-warning/30 rounded text-xs text-warning">
                     WIP limit reached ({column.limit} tasks)
                   </div>
                 )}

@@ -86,18 +86,159 @@ body {
 
 /* Mobile button optimizations */
 @media (max-width: 640px) {
-  /* Ensure buttons don't get too small */
-  button {
-    min-height: 32px;
+  /* Ensure buttons meet touch target requirements */
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
   }
   
-  /* Compact text in small buttons */
+  /* Mobile-optimized typography */
   .text-xs {
-    font-size: 11px;
+    font-size: var(--text-xs);
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+  }
+  .text-base {
+    font-size: var(--text-base);
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+  }
+}
+
+/* Desktop typography enhancements */
+@media (min-width: 768px) {
+  .text-xl {
+    font-size: 1.5rem; /* 24px on desktop */
+  }
+  .text-2xl {
+    font-size: 2rem; /* 32px on desktop */
   }
 }
 
 @layer utilities {
+  
+  /* Design System Utility Classes */
+  
+  /* Semantic color utilities */
+  .text-success {
+    color: hsl(var(--success));
+  }
+  .text-success-foreground {
+    color: hsl(var(--success-foreground));
+  }
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  .text-warning-foreground {
+    color: hsl(var(--warning-foreground));
+  }
+  .text-info {
+    color: hsl(var(--info));
+  }
+  .text-info-foreground {
+    color: hsl(var(--info-foreground));
+  }
+  .text-focus {
+    color: hsl(var(--focus));
+  }
+  .text-focus-foreground {
+    color: hsl(var(--focus-foreground));
+  }
+
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+  .bg-success-foreground {
+    background-color: hsl(var(--success-foreground));
+  }
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+  .bg-warning-foreground {
+    background-color: hsl(var(--warning-foreground));
+  }
+  .bg-info {
+    background-color: hsl(var(--info));
+  }
+  .bg-info-foreground {
+    background-color: hsl(var(--info-foreground));
+  }
+  .bg-focus {
+    background-color: hsl(var(--focus));
+  }
+  .bg-focus-foreground {
+    background-color: hsl(var(--focus-foreground));
+  }
+
+  /* Design token spacing utilities */
+  .space-token-2 > * + * {
+    margin-left: var(--space-2);
+  }
+  .space-token-3 > * + * {
+    margin-left: var(--space-3);
+  }
+  .space-token-4 > * + * {
+    margin-left: var(--space-4);
+  }
+  .space-y-token-2 > * + * {
+    margin-top: var(--space-2);
+  }
+  .space-y-token-3 > * + * {
+    margin-top: var(--space-3);
+  }
+  .space-y-token-4 > * + * {
+    margin-top: var(--space-4);
+  }
+  .space-y-token-6 > * + * {
+    margin-top: var(--space-6);
+  }
+
+  /* Component sizing utilities */
+  .h-touch-target {
+    height: var(--touch-target);
+  }
+  .w-touch-target {
+    width: var(--touch-target);
+  }
+  .min-h-touch-target {
+    min-height: var(--touch-target);
+  }
+  .min-w-touch-target {
+    min-width: var(--touch-target);
+  }
+
+  .h-button-sm {
+    height: var(--button-sm);
+  }
+  .h-button-md {
+    height: var(--button-md);
+  }
+  .h-button-lg {
+    height: var(--button-lg);
+  }
+
+  /* Card padding utilities */
+  .p-card-sm {
+    padding: var(--card-padding-sm);
+  }
+  .p-card-md {
+    padding: var(--card-padding-md);
+  }
+  .p-card-lg {
+    padding: var(--card-padding-lg);
+  }
+
   /* Background utilities */
   .bg-background {
     background-color: hsl(var(--background));
@@ -1487,14 +1628,15 @@ body {
 
 @layer base {
   :root {
+    /* Core theme colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 216 100% 50%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
@@ -1506,18 +1648,70 @@ body {
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+
+    /* Design System Tokens */
+    /* Spacing Scale (8pt grid) */
+    --space-1: 0.25rem;    /* 4px */
+    --space-2: 0.5rem;     /* 8px */
+    --space-3: 0.75rem;    /* 12px */
+    --space-4: 1rem;       /* 16px */
+    --space-6: 1.5rem;     /* 24px */
+    --space-8: 2rem;       /* 32px */
+    --space-12: 3rem;      /* 48px */
+    --space-16: 4rem;      /* 64px */
+
+    /* Component sizing standards */
+    --touch-target: 2.75rem;        /* 44px - minimum touch target */
+    --button-sm: 2rem;              /* 32px - compact buttons */
+    --button-md: 2.5rem;            /* 40px - default buttons */
+    --button-lg: 3rem;              /* 48px - prominent buttons */
+    
+    /* Card padding hierarchy */
+    --card-padding-sm: var(--space-3);   /* 12px - compact cards */
+    --card-padding-md: var(--space-4);   /* 16px - default cards */
+    --card-padding-lg: var(--space-6);   /* 24px - feature cards */
+
+    /* Border radius system */
+    --radius-sm: 0.25rem;   /* 4px */
+    --radius-md: 0.375rem;  /* 6px */
+    --radius: 0.5rem;       /* 8px - default */
+    --radius-lg: 0.75rem;   /* 12px */
+
+    /* Semantic color system */
+    --success: 142 76% 36%;          /* Green - completion, achievement */
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;           /* Yellow - attention, important */
+    --warning-foreground: 0 0% 0%;
+    --info: 216 100% 50%;            /* Blue - information, focus */
+    --info-foreground: 0 0% 100%;
+    --focus: 262 83% 58%;            /* Purple - deep work, concentration */
+    --focus-foreground: 0 0% 100%;
+
+    /* Typography scale - mobile optimized */
+    --text-xs: 0.75rem;      /* 12px - labels, meta */
+    --text-sm: 0.875rem;     /* 14px - body text */
+    --text-base: 1rem;       /* 16px - default (mobile friendly) */
+    --text-lg: 1.125rem;     /* 18px - section headers */
+    --text-xl: 1.25rem;      /* 20px - page titles (mobile) */
+    --text-2xl: 1.5rem;      /* 24px - hero text (mobile) */
+
+    /* Animation timing */
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+    --easing: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
+    /* Core theme colors - dark mode */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 216 100% 60%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -1529,6 +1723,20 @@ body {
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /* Semantic colors - dark mode optimized */
+    --success: 142 76% 50%;          /* Brighter green for dark mode */
+    --success-foreground: 0 0% 0%;
+    --warning: 38 92% 60%;           /* Brighter yellow for dark mode */
+    --warning-foreground: 0 0% 0%;
+    --info: 216 100% 60%;            /* Brighter blue for dark mode */
+    --info-foreground: 0 0% 100%;
+    --focus: 262 83% 68%;            /* Brighter purple for dark mode */
+    --focus-foreground: 0 0% 100%;
+
+    /* Typography adjustments for dark mode */
+    --text-xl: 1.5rem;      /* 24px - larger on desktop */
+    --text-2xl: 2rem;       /* 32px - larger on desktop */
   }
 }
 

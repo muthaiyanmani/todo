@@ -237,7 +237,7 @@ export function EnergyManagement() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold flex items-center">
-            <Battery className="h-5 w-5 mr-2 text-blue-600" />
+            <Battery className="h-5 w-5 mr-2 text-info" />
             Current Energy Level
           </h3>
           <div className="text-3xl font-bold">
@@ -256,8 +256,8 @@ export function EnergyManagement() {
                 className={cn(
                   "w-8 h-8 rounded-full border-2 transition-all",
                   currentEnergy === level
-                    ? "bg-blue-500 border-blue-500 text-white"
-                    : "border-gray-300 hover:border-blue-300"
+                    ? "bg-info border-info text-white"
+                    : "border-muted-foreground/30 hover:border-info/50"
                 )}
               >
                 {level}
@@ -277,8 +277,8 @@ export function EnergyManagement() {
                 className={cn(
                   "flex items-center space-x-1 px-3 py-2 rounded-lg border transition-all",
                   currentMood === mood.value
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : "border-gray-300 hover:border-blue-300"
+                    ? "border-info bg-info/10"
+                    : "border-muted-foreground/30 hover:border-info/50"
                 )}
               >
                 <span className="text-lg">{mood.emoji}</span>
@@ -301,8 +301,8 @@ export function EnergyManagement() {
                   className={cn(
                     "flex items-center space-x-1 px-3 py-2 rounded-lg border transition-all",
                     selectedActivities.includes(activity.id)
-                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                      : "border-gray-300 hover:border-blue-300"
+                      ? "border-info bg-info/10"
+                      : "border-muted-foreground/30 hover:border-info/50"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -333,7 +333,7 @@ export function EnergyManagement() {
       {/* Today's Energy */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <TrendingUp className="h-5 w-5 mr-2 text-green-600" />
+          <TrendingUp className="h-5 w-5 mr-2 text-success" />
           Today's Energy Pattern
         </h3>
         
@@ -376,7 +376,7 @@ export function EnergyManagement() {
       {/* Energy Trend */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <TrendingUp className="h-5 w-5 mr-2 text-purple-600" />
+          <TrendingUp className="h-5 w-5 mr-2 text-focus" />
           7-Day Energy Trend
         </h3>
         
@@ -392,10 +392,10 @@ export function EnergyManagement() {
               <div 
                 className={cn(
                   "w-full h-16 rounded-lg flex items-end justify-center text-xs font-bold text-white transition-all",
-                  day.averageEnergy === 0 && "bg-gray-200 dark:bg-gray-700 text-gray-500",
-                  day.averageEnergy > 0 && day.averageEnergy <= 3 && "bg-red-500",
-                  day.averageEnergy > 3 && day.averageEnergy <= 6 && "bg-yellow-500",
-                  day.averageEnergy > 6 && "bg-green-500"
+                  day.averageEnergy === 0 && "bg-muted text-muted-foreground",
+                  day.averageEnergy > 0 && day.averageEnergy <= 3 && "bg-destructive",
+                  day.averageEnergy > 3 && day.averageEnergy <= 6 && "bg-warning",
+                  day.averageEnergy > 6 && "bg-success"
                 )}
                 style={{
                   height: day.averageEnergy > 0 ? `${(day.averageEnergy / 10) * 64 + 16}px` : '16px'
@@ -414,7 +414,7 @@ export function EnergyManagement() {
       {/* Personalized Recommendations */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <Brain className="h-5 w-5 mr-2 text-orange-600" />
+          <Brain className="h-5 w-5 mr-2 text-warning" />
           Smart Recommendations
         </h3>
         
@@ -428,9 +428,9 @@ export function EnergyManagement() {
                 </div>
                 <span className={cn(
                   "px-2 py-1 text-xs rounded-full",
-                  rec.energyLevel === 'high' && "bg-green-100 text-green-800",
-                  rec.energyLevel === 'medium' && "bg-yellow-100 text-yellow-800",
-                  rec.energyLevel === 'low' && "bg-red-100 text-red-800"
+                  rec.energyLevel === 'high' && "bg-success/10 text-success",
+                  rec.energyLevel === 'medium' && "bg-warning/10 text-warning",
+                  rec.energyLevel === 'low' && "bg-destructive/10 text-destructive"
                 )}>
                   {rec.energyLevel} energy
                 </span>

@@ -201,7 +201,7 @@ export function TwoMinuteRule() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold flex items-center justify-center mb-2">
-          <Timer className="h-6 w-6 mr-2 text-blue-600" />
+          <Timer className="h-6 w-6 mr-2 text-info" />
           Two-Minute Rule
         </h2>
         <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
@@ -218,7 +218,7 @@ export function TwoMinuteRule() {
               <p className="text-sm text-muted-foreground">Completed Today</p>
               <p className="text-2xl font-bold">{totalCompleted}</p>
             </div>
-            <CheckCircle className="h-8 w-8 text-green-600" />
+            <CheckCircle className="h-8 w-8 text-success" />
           </div>
         </Card>
         
@@ -228,7 +228,7 @@ export function TwoMinuteRule() {
               <p className="text-sm text-muted-foreground">Average Time</p>
               <p className="text-2xl font-bold">{formatTime(Math.round(averageTime))}</p>
             </div>
-            <Clock className="h-8 w-8 text-blue-600" />
+            <Clock className="h-8 w-8 text-info" />
           </div>
         </Card>
         
@@ -238,14 +238,14 @@ export function TwoMinuteRule() {
               <p className="text-sm text-muted-foreground">Under 2 Min</p>
               <p className="text-2xl font-bold">{tasksUnderTwoMinutes}/{totalCompleted}</p>
             </div>
-            <TrendingUp className="h-8 w-8 text-purple-600" />
+            <TrendingUp className="h-8 w-8 text-focus" />
           </div>
         </Card>
       </div>
 
       {/* Active Timer */}
       {activeTaskId && (
-        <Card className="p-6 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+        <Card className="p-6 border-info/30 bg-info/5 dark:bg-info/10">
           <div className="text-center">
             <div className="mb-4">
               <div className={cn("text-6xl font-mono font-bold", getTimeColor(timer))}>
@@ -298,7 +298,7 @@ export function TwoMinuteRule() {
 
       {/* Quick Task Input */}
       <Card className="p-4">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-token-2">
           <Input
             placeholder="Add a quick task (something that takes < 2 minutes)..."
             value={newTaskTitle}
