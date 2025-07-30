@@ -1,13 +1,16 @@
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, Clock, Target, Calendar as CalendarIcon } from 'lucide-react';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Calendar, momentLocalizer, Views, type View } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useCreateTask, useTasks } from '../../hooks/use-tasks';
+import { useTimeBlocking } from '../../hooks/use-productivity';
 import { useAppStoreRQ } from '../../store/app-store-rq';
 import { useAuthStore } from '../../store/auth-store';
 import type { Task } from '../../types';
+import type { TimeBlock } from '../../store/productivity-store';
 import { Button } from '../ui/button';
+import { TimeBlockingCalendar } from '../time-blocking/time-blocking-calendar';
 
 const localizer = momentLocalizer(moment);
 
@@ -28,6 +31,7 @@ export function CalendarViewRQ() {
   const [view, setView] = useState<View>(window.innerWidth < 640 ? Views.DAY : Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [showLegend, setShowLegend] = useState(false);
+  const [calendarMode, setCalendarMode] = useState<'tasks' | 'timeblocking'>('tasks');
 
   // Handle responsive view changes
   useEffect(() => {
@@ -249,6 +253,28 @@ export function CalendarViewRQ() {
         </div>
 
         <div className="flex items-center flex-shrink-0 space-x-1 sm:space-x-2">
+          {/* Calendar Mode Toggle */}
+          <div className="flex items-center border rounded-lg">
+            <Button
+              variant={calendarMode === 'tasks' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setCalendarMode('tasks')}
+              className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm rounded-r-none"
+            >
+              <CalendarIcon className="w-3 h-3 mr-1 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Tasks</span>
+            </Button>
+            <Button
+              variant={calendarMode === 'timeblocking' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setCalendarMode('timeblocking')}
+              className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm rounded-l-none"
+            >
+              <Clock className="w-3 h-3 mr-1 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Blocks</span>
+            </Button>
+          </div>
+
           <Button
             variant={view === Views.MONTH ? 'default' : 'outline'}
             size="sm"
@@ -300,6 +326,11 @@ export function CalendarViewRQ() {
       </div>
     );
   };
+
+  // Render Time Blocking Calendar if that mode is selected
+  if (calendarMode === 'timeblocking') {
+    return <TimeBlockingCalendar />;
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background">

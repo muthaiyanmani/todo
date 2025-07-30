@@ -10,7 +10,11 @@ import { MobileBottomNav } from './mobile-bottom-nav';
 import { MobileTaskDetails } from './mobile-task-details';
 import { useState, useEffect } from 'react';
 
-export function TodoLayoutRQ() {
+interface TodoLayoutRQProps {
+  children?: React.ReactNode;
+}
+
+export function TodoLayoutRQ({ children }: TodoLayoutRQProps) {
   const { sidebarCollapsed, selectedTaskId, view, myDayActiveView } = useAppStoreRQ();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -53,7 +57,8 @@ export function TodoLayoutRQ() {
               isMobile ? 'pb-20' : 'pb-0'
             )}
           >
-            {view === 'calendar' ? <CalendarViewRQ /> :
+            {children ? children :
+             view === 'calendar' ? <CalendarViewRQ /> :
              view === 'eisenhower' ? <EisenhowerMatrix /> :
              view === 'my-day' ? <MyDayView /> :
              <TaskViewRQ />}

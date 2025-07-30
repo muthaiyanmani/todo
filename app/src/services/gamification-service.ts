@@ -351,6 +351,22 @@ export class GamificationService {
     };
   }
 
+  public awardXP(amount: number): { stats: UserStats; levelUp: boolean } {
+    let stats = this.getStats();
+    const oldLevel = stats.level;
+    
+    stats.xp += amount;
+    const { level, xpToNextLevel } = this.calculateLevel(stats.xp);
+    stats.level = level;
+    stats.xpToNextLevel = xpToNextLevel;
+    
+    const levelUp = level > oldLevel;
+    
+    this.saveStats(stats);
+    
+    return { stats, levelUp };
+  }
+
   public getProgressToNextMilestone(stats: UserStats): (
     { type: 'level'; current: number; target: number; label: string } |
     { type: 'weekly'; current: number; target: number; label: string } |

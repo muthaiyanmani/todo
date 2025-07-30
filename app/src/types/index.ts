@@ -58,6 +58,15 @@ export interface Task {
   // Eisenhower Matrix properties
   urgent?: boolean;
   eisenhowerQuadrant?: EisenhowerQuadrant;
+  // Productivity features
+  kanbanColumn?: 'todo' | 'inProgress' | 'review' | 'done';
+  gtdCategory?: 'inbox' | 'nextActions' | 'waiting' | 'projects' | 'someday' | 'reference';
+  project?: string;
+  context?: string;
+  energy?: 'high' | 'medium' | 'low';
+  estimatedTime?: number;
+  nextReviewDate?: Date;
+  assignedTo?: string;
 }
 
 export interface Subtask {

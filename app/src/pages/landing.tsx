@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { 
@@ -20,87 +21,190 @@ import {
   ChevronRight,
   BarChart3,
   Shield,
-  Smartphone
+  Smartphone,
+  Sparkles,
+  TrendingUp,
+  Award,
+  Globe,
+  Check,
+  ArrowDown,
+  MousePointer,
+  Flame
 } from 'lucide-react';
+
+// Import Geist font
+const GeistFontLink = () => {
+  React.useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    return () => {
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, []);
+  return null;
+};
 
 export function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const coreFeatures = [
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    setIsVisible(true);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  const features = [
     {
       icon: Target,
       title: 'Eisenhower Matrix',
-      description: 'Prioritize with the proven 4-quadrant system used by presidents and CEOs.'
+      description: 'Prioritize with the proven 4-quadrant system used by presidents and CEOs.',
+      gradient: 'from-red-500 to-orange-500'
     },
     {
       icon: Brain,
       title: 'AI-Powered Insights',
-      description: 'Get intelligent suggestions to optimize your daily productivity workflow.'
+      description: 'Get intelligent suggestions to optimize your daily productivity workflow.',
+      gradient: 'from-purple-500 to-pink-500'
     },
     {
       icon: Layers,
       title: 'Multiple Views',
-      description: 'Switch seamlessly between matrix, list, and calendar views.'
+      description: 'Switch seamlessly between matrix, list, and calendar views.',
+      gradient: 'from-blue-500 to-cyan-500'
+    },
+    {
+      icon: Zap,
+      title: 'Smart Automation',
+      description: 'Automate recurring tasks and set intelligent reminders.',
+      gradient: 'from-yellow-500 to-orange-500'
+    },
+    {
+      icon: BarChart3,
+      title: 'Analytics & Insights',
+      description: 'Track your productivity patterns and optimize your workflow.',
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    {
+      icon: Users,
+      title: 'Team Collaboration',
+      description: 'Share projects and collaborate with your team seamlessly.',
+      gradient: 'from-indigo-500 to-purple-500'
     }
   ];
 
   const testimonials = [
     {
-      quote: "TodoPro transformed how I manage my daily priorities. The Eisenhower Matrix finally makes sense.",
+      quote: "TodoPro completely transformed our team's productivity. The Eisenhower Matrix is a game-changer.",
       author: "Sarah Chen",
       role: "Product Manager",
-      company: "Stripe"
+      company: "Stripe",
+      avatar: "SC"
     },
     {
-      quote: "The AI insights helped me identify patterns in my productivity I never noticed before.",
+      quote: "The AI insights helped me identify patterns I never noticed. My focus improved dramatically.",
       author: "Marcus Johnson",
-      role: "Startup Founder",
-      company: "TechFlow"
+      role: "Startup Founder", 
+      company: "TechFlow",
+      avatar: "MJ"
     },
     {
       quote: "Simple, powerful, and actually helps me focus on what matters most each day.",
       author: "Elena Rodriguez",
       role: "Design Lead",
-      company: "Figma"
+      company: "Figma",
+      avatar: "ER"
     }
   ];
 
-  const stats = [
-    { number: '15K+', label: 'Teams', icon: Users },
-    { number: '99.9%', label: 'Uptime', icon: Shield },
-    { number: '4.8★', label: 'Rating', icon: Star },
-  ];
+  const stats = [];
+
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
+    <>
+      <GeistFontLink />
+      <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden font-['Geist',sans-serif] antialiased" style={{ fontFeatureSettings: '"cv11", "ss01"', fontVariationSettings: '"opsz" 32' }}>
+      {/* Animated Background Elements with Parallax */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute rounded-full -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-green-400/10 to-emerald-500/10 blur-3xl animate-pulse"
+          style={{
+            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px) translateY(${scrollY * 0.1}px)`
+          }}
+        ></div>
+        <div 
+          className="absolute delay-1000 rounded-full -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-neutral-700/20 to-neutral-600/20 blur-3xl animate-pulse"
+          style={{
+            transform: `translate(${mousePosition.x * -0.01}px, ${mousePosition.y * -0.01}px) translateY(${scrollY * 0.05}px)`
+          }}
+        ></div>
+        <div 
+          className="absolute rounded-full top-1/2 left-1/2 w-60 h-60 bg-gradient-to-r from-neutral-800/30 to-neutral-700/30 blur-3xl animate-pulse delay-2000"
+          style={{
+            transform: `translate(-50%, -50%) translate(${mousePosition.x * 0.01}px, ${mousePosition.y * 0.015}px) translateY(${scrollY * 0.08}px)`
+          }}
+        ></div>
+        {/* Grid pattern overlay with parallax */}
+        <div 
+          className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:100px_100px] opacity-20"
+          style={{
+            transform: `translateY(${scrollY * 0.02}px)`
+          }}
+        ></div>
+      </div>
+
       {/* Navigation */}
-      <nav className="relative z-50 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        scrollY > 50 
+          ? 'bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-neutral-800/50 shadow-lg' 
+          : 'bg-transparent'
+      }`}>
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-7 h-7 bg-gray-900 dark:bg-white rounded-md flex items-center justify-center">
-                <CheckSquare className="h-4 w-4 text-white dark:text-gray-900" />
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="flex items-center justify-center w-8 h-8 shadow-lg bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl">
+                  <CheckSquare className="w-4 h-4 text-white" />
+                </div>
+                <div className="absolute w-3 h-3 bg-green-400 rounded-full -top-1 -right-1 animate-pulse"></div>
               </div>
-              <span className="text-lg font-semibold text-gray-900 dark:text-white">
+              <span className="text-xl font-bold text-white">
                 TodoPro
               </span>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <div className="items-center hidden space-x-8 md:flex">
+              <a href="#features" className="font-medium transition-colors text-neutral-300 hover:text-white">
                 Features
               </a>
-              <a href="#customers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Customers
+              <a href="#testimonials" className="font-medium transition-colors text-neutral-300 hover:text-white">
+                Reviews
               </a>
-              <Link to="/auth/signin" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <Link to="/auth/signin" className="font-medium transition-colors text-neutral-300 hover:text-white">
                 Sign In
               </Link>
               <Link to="/auth/signup">
-                <Button className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 border-0 text-sm px-4 py-2">
-                  Start building
+                <Button className="text-white transition-all duration-300 bg-green-600 border-0 rounded-lg shadow-lg hover:bg-green-700 hover:shadow-xl hover:scale-105">
+                  Get Started
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             </div>
@@ -111,9 +215,9 @@ export function Landing() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-gray-600 dark:text-gray-400"
+                className="text-neutral-300"
               >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
             </div>
           </div>
@@ -121,20 +225,20 @@ export function Landing() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-16 inset-x-0 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 shadow-lg">
+          <div className="md:hidden absolute top-16 inset-x-0 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-neutral-800 shadow-xl">
             <div className="px-4 py-6 space-y-4">
-              <a href="#features" className="block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              <a href="#features" className="block font-medium text-neutral-300 hover:text-white">
                 Features
               </a>
-              <a href="#customers" className="block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                Customers
+              <a href="#testimonials" className="block font-medium text-neutral-300 hover:text-white">
+                Reviews
               </a>
-              <Link to="/auth/signin" className="block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              <Link to="/auth/signin" className="block font-medium text-neutral-300 hover:text-white">
                 Sign In
               </Link>
               <Link to="/auth/signup">
-                <Button className="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-0">
-                  Start building
+                <Button className="w-full text-white bg-green-600 border-0 rounded-lg shadow-lg hover:bg-green-700">
+                  Get Started
                 </Button>
               </Link>
             </div>
@@ -143,99 +247,198 @@ export function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
+      <section className="relative px-4 pt-32 pb-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div 
+            className="text-center"
+            style={{
+              transform: `translateY(${scrollY * 0.1}px)`
+            }}
+          >
+            {/* Animated Badge */}
+            <div className={`inline-flex items-center px-4 py-2 rounded-full bg-neutral-800/60 border border-neutral-700/50 mb-8 transition-all duration-1000 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}>
+              <Sparkles className="w-4 h-4 mr-2 text-green-400" />
+              <span className="text-sm font-medium text-neutral-200">
+                Trusted by 50,000+ users worldwide
+              </span>
+            </div>
+
             {/* Main Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-tight">
-              <span className="text-gray-900 dark:text-white">
-                Build and ship
+            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight transition-all duration-1000 delay-200 font-['Geist',sans-serif] ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
+              <span className="text-white">
+                Focus on what
               </span>
               <br />
-              <span className="text-gray-900 dark:text-white">
-                your productivity
+              <span className="text-transparent bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text">
+                matters most
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-              The task management system that prioritizes what matters. 
-              Built for teams and individuals who value focus over chaos.
+            <p className={`text-xl md:text-2xl text-neutral-400 mb-12 max-w-3xl mx-auto leading-relaxed transition-all duration-1000 delay-400 font-['Geist',sans-serif] ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{ fontWeight: 400, lineHeight: 1.5 }}>
+              The smart task management system that helps you prioritize with the 
+              <span className="font-semibold text-green-400"> Eisenhower Matrix</span>, 
+              powered by AI insights.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
+            <div className={`flex flex-col sm:flex-row gap-4 justify-center mb-16 transition-all duration-1000 delay-600 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
               <Link to="/auth/signup">
-                <Button className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 px-6 py-3 text-base border-0">
-                  Start building
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button className="bg-green-600 hover:bg-green-700 text-white border-0 px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-lg font-['Geist',sans-serif]">
+                  Start Free Today
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Button variant="outline" className="border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 px-6 py-3 text-base">
-                <Play className="mr-2 h-4 w-4" />
-                See how it works
-              </Button>
+            
             </div>
 
             {/* Stats */}
-            <div className="flex justify-center items-center gap-12 text-sm text-gray-600 dark:text-gray-400">
+            <div 
+              className={`grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto transition-all duration-1000 delay-800 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+              style={{
+                transform: `translateY(${scrollY * 0.05}px)`
+              }}
+            >
               {stats.map((stat, index) => {
                 const IconComponent = stat.icon;
                 return (
-                  <div key={index} className="flex items-center gap-2">
-                    <IconComponent className="h-4 w-4" />
-                    <span className="font-medium text-gray-900 dark:text-white">{stat.number}</span>
-                    <span>{stat.label}</span>
+                  <div key={index} className="text-center group">
+                    <div className="inline-flex items-center justify-center w-12 h-12 mb-3 transition-transform duration-300 bg-neutral-800/60 rounded-xl group-hover:scale-110">
+                      <IconComponent className="w-6 h-6 text-green-400" />
+                    </div>
+                    <div className="text-2xl font-bold text-white font-['Geist',sans-serif]" style={{ fontWeight: 700 }}>{stat.number}</div>
+                    <div className="text-sm text-neutral-400 font-['Geist',sans-serif]">{stat.label}</div>
                   </div>
                 );
               })}
             </div>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute transform -translate-x-1/2 bottom-8 left-1/2">
+          <div className="flex flex-col items-center animate-bounce">
+            <ArrowDown className="w-5 h-5 text-neutral-500" />
+            <div className="w-0.5 h-8 bg-gradient-to-b from-neutral-500 to-transparent mt-2"></div>
+          </div>
+        </div>
       </section>
 
-      {/* Product Preview */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-lg">
-            <div className="p-8">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+      {/* Interactive Product Preview */}
+      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-neutral-900/50">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-16 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-['Geist',sans-serif]" style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>
+              See TodoPro in action
+            </h2>
+            <p className="text-xl text-neutral-400 font-['Geist',sans-serif]">
+              The Eisenhower Matrix that actually works
+            </p>
+          </div>
+
+          <div 
+            className="relative max-w-5xl mx-auto"
+            style={{
+              transform: `translateY(${scrollY * 0.03}px)`
+            }}
+          >
+            <div className="overflow-hidden border shadow-2xl bg-neutral-800/60 rounded-3xl border-neutral-700/50 backdrop-blur-sm">
+              {/* Browser Header */}
+              <div className="flex items-center justify-between p-6 border-b border-neutral-700/50">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  </div>
+                  <div className="text-sm text-neutral-400 ml-4 font-['Geist',sans-serif]">
+                    app.todopro.com
+                  </div>
+                </div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-red-100 dark:bg-red-900/20 p-4 rounded-lg">
-                    <h4 className="font-semibold text-red-900 dark:text-red-100 mb-2">Urgent & Important</h4>
-                    <div className="space-y-2">
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Fix production bug</div>
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Client presentation</div>
+
+              {/* Matrix Preview */}
+              <div className="p-8 bg-neutral-800/40">
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Urgent & Important */}
+                  <div className="p-6 transition-transform duration-300 border bg-red-900/20 backdrop-blur-sm rounded-2xl border-red-700/30 group hover:scale-105">
+                    <div className="flex items-center mb-4">
+                      <Flame className="w-5 h-5 mr-2 text-red-400" />
+                      <h4 className="font-bold text-red-200 font-['Geist',sans-serif]">Do First</h4>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium animate-pulse text-white font-['Geist',sans-serif]">
+                        Fix production bug
+                      </div>
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium text-white font-['Geist',sans-serif]">
+                        Client presentation today
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-yellow-100 dark:bg-yellow-900/20 p-4 rounded-lg">
-                    <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">Important, Not Urgent</h4>
-                    <div className="space-y-2">
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Strategic planning</div>
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Team 1:1s</div>
+
+                  {/* Important, Not Urgent */}
+                  <div className="p-6 transition-transform duration-300 border bg-green-900/20 backdrop-blur-sm rounded-2xl border-green-700/30 group hover:scale-105">
+                    <div className="flex items-center mb-4">
+                      <Calendar className="w-5 h-5 mr-2 text-green-400" />
+                      <h4 className="font-bold text-green-200 font-['Geist',sans-serif]">Schedule</h4>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium text-white font-['Geist',sans-serif]">
+                        Strategic planning
+                      </div>
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium text-white font-['Geist',sans-serif]">
+                        Team 1:1 meetings
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-blue-100 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Urgent, Not Important</h4>
-                    <div className="space-y-2">
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Email responses</div>
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Quick meeting</div>
+
+                  {/* Urgent, Not Important */}
+                  <div className="p-6 transition-transform duration-300 border bg-yellow-900/20 backdrop-blur-sm rounded-2xl border-yellow-700/30 group hover:scale-105">
+                    <div className="flex items-center mb-4">
+                      <Users className="w-5 h-5 mr-2 text-yellow-400" />
+                      <h4 className="font-bold text-yellow-200 font-['Geist',sans-serif]">Delegate</h4>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium text-white font-['Geist',sans-serif]">
+                        Email responses
+                      </div>
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium text-white font-['Geist',sans-serif]">
+                        Quick status meeting
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Neither</h4>
-                    <div className="space-y-2">
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Social media</div>
-                      <div className="bg-white dark:bg-gray-800 p-2 rounded text-sm">Random browsing</div>
+
+                  {/* Neither */}
+                  <div className="p-6 transition-transform duration-300 border bg-neutral-700/20 backdrop-blur-sm rounded-2xl border-neutral-600/30 group hover:scale-105">
+                    <div className="flex items-center mb-4">
+                      <X className="w-5 h-5 mr-2 text-neutral-400" />
+                      <h4 className="font-bold text-neutral-200 font-['Geist',sans-serif]">Eliminate</h4>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium line-through opacity-60 text-neutral-400 font-['Geist',sans-serif]">
+                        Social media browsing
+                      </div>
+                      <div className="bg-neutral-700/50 p-3 rounded-xl shadow-sm text-sm font-medium line-through opacity-60 text-neutral-400 font-['Geist',sans-serif]">
+                        Endless meetings
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="text-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">The Eisenhower Matrix - Focus on what matters</span>
+
+                <div className="mt-8 text-center">
+                  <div className="inline-flex items-center text-sm text-neutral-300 bg-neutral-700/50 px-4 py-2 rounded-full shadow-sm font-['Geist',sans-serif]">
+                    <MousePointer className="w-4 h-4 mr-2" />
+                    Interactive Eisenhower Matrix
+                  </div>
                 </div>
               </div>
             </div>
@@ -243,28 +446,40 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Core Features */}
-      <section id="features" className="py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white mb-4">
-              Built for modern productivity
+      {/* Features Section */}
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a]">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-16 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-['Geist',sans-serif]" style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>
+              Everything you need to stay productive
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Three core capabilities that transform how you manage tasks and priorities
+            <p className="text-xl text-neutral-400 max-w-2xl mx-auto font-['Geist',sans-serif]">
+              Powerful features designed to help you focus on what matters most
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {coreFeatures.map((feature, index) => {
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => {
               const IconComponent = feature.icon;
               return (
-                <div key={index} className="text-center group">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-900 dark:bg-white rounded-lg mb-4 group-hover:scale-105 transition-transform">
-                    <IconComponent className="h-6 w-6 text-white dark:text-gray-900" />
+                <div 
+                  key={index} 
+                  className="relative p-8 transition-all duration-500 border shadow-lg group bg-neutral-800/40 backdrop-blur-sm rounded-2xl hover:shadow-2xl hover:scale-105 border-neutral-700/50"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                    transform: `translateY(${scrollY * (0.01 + index * 0.005)}px)`
+                  }}
+                >
+                  <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <IconComponent className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-green-400 transition-colors font-['Geist',sans-serif]" style={{ fontWeight: 600 }}>
+                    {feature.title}
+                  </h3>
+                  <p className="text-neutral-300 leading-relaxed font-['Geist',sans-serif]">
+                    {feature.description}
+                  </p>
+                  <div className={`absolute inset-0 bg-gradient-to-r from-green-400/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300`}></div>
                 </div>
               );
             })}
@@ -272,114 +487,131 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Customer Testimonials */}
-      <section id="customers" className="py-20 bg-gray-50 dark:bg-gray-900/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white mb-4">
-              Loved by teams worldwide
+      {/* Social Proof / Testimonials */}
+      <section id="testimonials" className="px-4 py-20 sm:px-6 lg:px-8 bg-neutral-900/50">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-16 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-['Geist',sans-serif]" style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>
+              Loved by productive teams worldwide
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              See how TodoPro transforms daily productivity
+            <p className="text-xl text-neutral-400 font-['Geist',sans-serif]">
+              See what our users say about their productivity transformation
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-3">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800">
-                <Quote className="h-5 w-5 text-gray-400 dark:text-gray-600 mb-4" />
-                <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                  "{testimonial.quote}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      {testimonial.author[0]}
-                    </span>
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-900 dark:text-white">{testimonial.author}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role} at {testimonial.company}</div>
+              <div 
+                key={index} 
+                className="relative p-8 transition-all duration-500 border shadow-lg group bg-neutral-800/40 backdrop-blur-sm rounded-2xl hover:shadow-2xl hover:scale-105 border-neutral-700/50"
+                style={{
+                  transform: `translateY(${scrollY * (0.02 + index * 0.01)}px)`
+                }}
+              >
+                <div className="absolute -top-4 left-8">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full shadow-lg bg-gradient-to-r from-green-600 to-emerald-600">
+                    <Quote className="w-4 h-4 text-white" />
                   </div>
                 </div>
+                
+                <div className="pt-4">
+                  <p className="text-neutral-200 mb-6 leading-relaxed text-lg font-['Geist',sans-serif]">
+                    "{testimonial.quote}"
+                  </p>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-12 h-12 text-sm font-bold text-white rounded-full shadow-lg bg-gradient-to-r from-green-600 to-emerald-600">
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <div className="font-bold text-white font-['Geist',sans-serif]">{testimonial.author}</div>
+                      <div className="text-sm text-neutral-400 font-['Geist',sans-serif]">{testimonial.role} at {testimonial.company}</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-r from-green-400/5 to-emerald-500/5 rounded-2xl group-hover:opacity-100"></div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+
       {/* CTA Section */}
-      <section className="py-20 bg-gray-900 dark:bg-gray-950 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4">
-            Start building better habits
+      <section className="relative px-4 py-20 overflow-hidden sm:px-6 lg:px-8 bg-gradient-to-r from-green-600 via-emerald-600 to-green-700">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-4xl mx-auto text-center text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 font-['Geist',sans-serif]" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
+            Ready to transform your productivity?
           </h2>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of teams and individuals who prioritize what matters most
+          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto font-['Geist',sans-serif]">
+            Join 50,000+ users who've already discovered the power of focused task management
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link to="/auth/signup">
-              <Button className="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 text-base border-0">
-                Start building
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button className="bg-white text-green-600 hover:bg-neutral-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-['Geist',sans-serif]">
+                Start Free Today
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800 px-6 py-3 text-base">
-              <Play className="mr-2 h-4 w-4" />
-              See how it works
-            </Button>
+          
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="text-white bg-neutral-950">
+        <div className="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             {/* Brand */}
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-6 h-6 bg-gray-900 dark:bg-white rounded-md flex items-center justify-center">
-                  <CheckSquare className="h-3 w-3 text-white dark:text-gray-900" />
+              <div className="flex items-center mb-6 space-x-3">
+                <div className="flex items-center justify-center w-8 h-8 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl">
+                  <CheckSquare className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg font-semibold text-gray-900 dark:text-white">TodoPro</span>
+                <span className="text-xl font-bold font-['Geist',sans-serif]">TodoPro</span>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-sm text-sm">
-                Purpose-built task management for modern teams. Prioritize what matters with the Eisenhower Matrix.
+              <p className="text-neutral-400 mb-6 max-w-md font-['Geist',sans-serif]">
+                The smart task management system that helps you focus on what matters most. 
+                Built for modern teams and individuals.
               </p>
+              <div className="flex space-x-4">
+                {/* Social links would go here */}
+              </div>
             </div>
 
             {/* Product */}
             <div>
-              <h4 className="text-gray-900 dark:text-white font-medium mb-4 text-sm">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><a href="#features" className="hover:text-gray-900 dark:hover:text-white">Features</a></li>
-                <li><a href="#customers" className="hover:text-gray-900 dark:hover:text-white">Customers</a></li>
-                <li><a href="#" className="hover:text-gray-900 dark:hover:text-white">Changelog</a></li>
-                <li><a href="#" className="hover:text-gray-900 dark:hover:text-white">API</a></li>
+              <h4 className="font-semibold mb-4 font-['Geist',sans-serif]">Product</h4>
+              <ul className="space-y-2 text-neutral-400">
+                <li><a href="#features" className="hover:text-white transition-colors font-['Geist',sans-serif]">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors font-['Geist',sans-serif]">Updates</a></li>
+                <li><a href="#" className="hover:text-white transition-colors font-['Geist',sans-serif]">API</a></li>
               </ul>
             </div>
 
             {/* Company */}
             <div>
-              <h4 className="text-gray-900 dark:text-white font-medium mb-4 text-sm">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><a href="#" className="hover:text-gray-900 dark:hover:text-white">About</a></li>
-                <li><a href="#" className="hover:text-gray-900 dark:hover:text-white">Privacy</a></li>
-                <li><a href="#" className="hover:text-gray-900 dark:hover:text-white">Terms</a></li>
-                <li><a href="#" className="hover:text-gray-900 dark:hover:text-white">Support</a></li>
+              <h4 className="font-semibold mb-4 font-['Geist',sans-serif]">Company</h4>
+              <ul className="space-y-2 text-neutral-400">
+                <li><a href="#" className="hover:text-white transition-colors font-['Geist',sans-serif]">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors font-['Geist',sans-serif]">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors font-['Geist',sans-serif]">Privacy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors font-['Geist',sans-serif]">Terms</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              © 2024 TodoPro. Built for productivity teams worldwide.
+          <div className="pt-8 mt-12 text-center border-t border-neutral-800">
+            <p className="text-neutral-400 font-['Geist',sans-serif]">
+              © 2024 TodoPro. Built with ❤️ for productive teams worldwide.
             </p>
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

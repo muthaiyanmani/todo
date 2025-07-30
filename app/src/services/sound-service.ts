@@ -172,6 +172,16 @@ export class SoundService {
     this.playLevelUp();
     setTimeout(() => this.playSuccess(), 300);
   }
+
+  public playClick() {
+    const buffer = this.createHoverSound();
+    this.playBuffer(buffer);
+  }
+
+  public playNotification() {
+    const buffer = this.createSuccessSound();
+    this.playBuffer(buffer);
+  }
 }
 
 // Export a singleton instance

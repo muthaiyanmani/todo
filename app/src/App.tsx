@@ -21,6 +21,14 @@ import { Calendar } from './pages/calendar';
 import { CustomList } from './pages/custom-list';
 import { Habits } from './pages/habits';
 
+// Productivity Pages
+import { PomodoroPage } from './pages/pomodoro';
+import { KanbanPage } from './pages/kanban';
+import { GTDPage } from './pages/gtd';
+import { EnergyPage } from './pages/energy';
+import { TwoMinutePage } from './pages/two-minute';
+import { TimeTrackingPage } from './pages/time-tracking';
+
 // Settings Pages
 import { Settings } from './pages/settings/settings';
 import { Profile } from './pages/settings/profile';
@@ -192,6 +200,56 @@ function App() {
           element={
             <ProtectedRoute>
               <CustomList />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected Routes - Productivity Features */}
+        <Route
+          path="/dashboard/pomodoro"
+          element={
+            <ProtectedRoute>
+              <PomodoroPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/kanban"
+          element={
+            <ProtectedRoute>
+              <KanbanPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/gtd"
+          element={
+            <ProtectedRoute>
+              <GTDPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/energy"
+          element={
+            <ProtectedRoute>
+              <EnergyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/two-minute"
+          element={
+            <ProtectedRoute>
+              <TwoMinutePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/time-tracking"
+          element={
+            <ProtectedRoute>
+              <TimeTrackingPage />
             </ProtectedRoute>
           }
         />

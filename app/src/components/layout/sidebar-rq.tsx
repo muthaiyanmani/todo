@@ -18,6 +18,13 @@ import {
   Trophy,
   User,
   Zap,
+  Timer,
+  Square,
+  Battery,
+  Focus,
+  Brain,
+  Inbox,
+  BarChart3,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -181,25 +188,55 @@ export function SidebarRQ() {
           );
         })}
 
-        {/* Special view icons */}
+        {/* Productivity Tools */}
         <Button
-          variant={location.pathname === '/dashboard/calendar' ? 'secondary' : 'ghost'}
+          variant={location.pathname === '/dashboard/pomodoro' ? 'secondary' : 'ghost'}
           size="icon"
-          onClick={() => navigate('/dashboard/calendar')}
+          onClick={() => navigate('/dashboard/pomodoro')}
           className="mb-1 transition-all duration-300 hover:scale-110"
-          title="Calendar"
+          title="Pomodoro Timer"
         >
-          <Calendar className="w-4 h-4 text-indigo-600" />
+          <Timer className="w-4 h-4 text-red-600" />
         </Button>
 
         <Button
-          variant={location.pathname === '/dashboard/habits' ? 'secondary' : 'ghost'}
+          variant={location.pathname === '/dashboard/kanban' ? 'secondary' : 'ghost'}
           size="icon"
-          onClick={() => navigate('/dashboard/habits')}
+          onClick={() => navigate('/dashboard/kanban')}
           className="mb-1 transition-all duration-300 hover:scale-110"
-          title="Habits"
+          title="Kanban Board"
         >
-          <Target className="w-4 h-4 text-emerald-600" />
+          <Square className="w-4 h-4 text-blue-600" />
+        </Button>
+
+        <Button
+          variant={location.pathname === '/dashboard/gtd' ? 'secondary' : 'ghost'}
+          size="icon"
+          onClick={() => navigate('/dashboard/gtd')}
+          className="mb-1 transition-all duration-300 hover:scale-110"
+          title="GTD Workflow"
+        >
+          <Inbox className="w-4 h-4 text-purple-600" />
+        </Button>
+
+        <Button
+          variant={location.pathname === '/dashboard/energy' ? 'secondary' : 'ghost'}
+          size="icon"
+          onClick={() => navigate('/dashboard/energy')}
+          className="mb-1 transition-all duration-300 hover:scale-110"
+          title="Energy Management"
+        >
+          <Battery className="w-4 h-4 text-green-600" />
+        </Button>
+
+        <Button
+          variant={location.pathname === '/dashboard/two-minute' ? 'secondary' : 'ghost'}
+          size="icon"
+          onClick={() => navigate('/dashboard/two-minute')}
+          className="mb-1 transition-all duration-300 hover:scale-110"
+          title="Two-Minute Rule"
+        >
+          <Zap className="w-4 h-4 text-yellow-600" />
         </Button>
       </div>
     );
@@ -412,7 +449,109 @@ export function SidebarRQ() {
           </div>
         </div>
 
-        {/* Special Views */}
+        {/* Productivity Tools */}
+        <div className="p-3">
+          <div className="mb-3">
+            <h3 className="flex items-center px-2 space-x-2 text-sm font-semibold text-muted-foreground">
+              <Brain className="w-3 h-3" />
+              <span>Productivity</span>
+            </h3>
+          </div>
+
+          <Button
+            variant={location.pathname === '/dashboard/pomodoro' ? 'secondary' : 'ghost'}
+            className={cn(
+              "justify-start w-full h-12 mb-2 cursor-pointer transition-all duration-300 rounded-xl group hover:shadow-md",
+              location.pathname === '/dashboard/pomodoro' && "bg-gradient-to-r from-red-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 shadow-lg scale-[1.02]"
+            )}
+            onClick={() => navigate('/dashboard/pomodoro')}
+          >
+            <div className="flex items-center justify-center w-8 h-8 mr-3 transition-transform duration-300 bg-red-100 rounded-lg dark:bg-red-900/30 group-hover:scale-110">
+              <Timer className="w-4 h-4 text-red-600" />
+            </div>
+            <span className="flex-1 font-medium text-left">Pomodoro</span>
+          </Button>
+
+          <Button
+            variant={location.pathname === '/dashboard/kanban' ? 'secondary' : 'ghost'}
+            className={cn(
+              "justify-start w-full h-12 mb-2 cursor-pointer transition-all duration-300 rounded-xl group hover:shadow-md",
+              location.pathname === '/dashboard/kanban' && "bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 shadow-lg scale-[1.02]"
+            )}
+            onClick={() => navigate('/dashboard/kanban')}
+          >
+            <div className="flex items-center justify-center w-8 h-8 mr-3 transition-transform duration-300 bg-blue-100 rounded-lg dark:bg-blue-900/30 group-hover:scale-110">
+              <Square className="w-4 h-4 text-blue-600" />
+            </div>
+            <span className="flex-1 font-medium text-left">Kanban</span>
+          </Button>
+
+          <Button
+            variant={location.pathname === '/dashboard/gtd' ? 'secondary' : 'ghost'}
+            className={cn(
+              "justify-start w-full h-12 mb-2 cursor-pointer transition-all duration-300 rounded-xl group hover:shadow-md",
+              location.pathname === '/dashboard/gtd' && "bg-gradient-to-r from-purple-100 to-violet-100 dark:from-purple-900/30 dark:to-violet-900/30 shadow-lg scale-[1.02]"
+            )}
+            onClick={() => navigate('/dashboard/gtd')}
+          >
+            <div className="flex items-center justify-center w-8 h-8 mr-3 transition-transform duration-300 bg-purple-100 rounded-lg dark:bg-purple-900/30 group-hover:scale-110">
+              <Inbox className="w-4 h-4 text-purple-600" />
+            </div>
+            <span className="flex-1 font-medium text-left">GTD</span>
+          </Button>
+
+          <Button
+            variant={location.pathname === '/dashboard/energy' ? 'secondary' : 'ghost'}
+            className={cn(
+              "justify-start w-full h-12 mb-2 cursor-pointer transition-all duration-300 rounded-xl group hover:shadow-md",
+              location.pathname === '/dashboard/energy' && "bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 shadow-lg scale-[1.02]"
+            )}
+            onClick={() => navigate('/dashboard/energy')}
+          >
+            <div className="flex items-center justify-center w-8 h-8 mr-3 transition-transform duration-300 bg-green-100 rounded-lg dark:bg-green-900/30 group-hover:scale-110">
+              <Battery className="w-4 h-4 text-green-600" />
+            </div>
+            <span className="flex-1 font-medium text-left">Energy</span>
+          </Button>
+
+          <Button
+            variant={location.pathname === '/dashboard/two-minute' ? 'secondary' : 'ghost'}
+            className={cn(
+              "justify-start w-full h-12 mb-2 cursor-pointer transition-all duration-300 rounded-xl group hover:shadow-md",
+              location.pathname === '/dashboard/two-minute' && "bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 shadow-lg scale-[1.02]"
+            )}
+            onClick={() => navigate('/dashboard/two-minute')}
+          >
+            <div className="flex items-center justify-center w-8 h-8 mr-3 transition-transform duration-300 bg-yellow-100 rounded-lg dark:bg-yellow-900/30 group-hover:scale-110">
+              <Zap className="w-4 h-4 text-yellow-600" />
+            </div>
+            <span className="flex-1 font-medium text-left">2-Min Rule</span>
+          </Button>
+
+          <Button
+            variant={location.pathname === '/dashboard/time-tracking' ? 'secondary' : 'ghost'}
+            className={cn(
+              "justify-start w-full h-12 mb-2 cursor-pointer transition-all duration-300 rounded-xl group hover:shadow-md",
+              location.pathname === '/dashboard/time-tracking' && "bg-gradient-to-r from-slate-100 to-gray-100 dark:from-slate-900/30 dark:to-gray-900/30 shadow-lg scale-[1.02]"
+            )}
+            onClick={() => navigate('/dashboard/time-tracking')}
+          >
+            <div className="flex items-center justify-center w-8 h-8 mr-3 transition-transform duration-300 bg-slate-100 rounded-lg dark:bg-slate-900/30 group-hover:scale-110">
+              <BarChart3 className="w-4 h-4 text-slate-600" />
+            </div>
+            <span className="flex-1 font-medium text-left">Time Track</span>
+          </Button>
+        </div>
+
+        {/* Animated Divider */}
+        <div className="relative mx-4 my-4">
+          <div className="border-t border-gradient-to-r from-transparent via-border to-transparent" />
+          <div className="absolute top-0 transform -translate-x-1/2 -translate-y-1/2 left-1/2">
+            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-secondary animate-pulse" />
+          </div>
+        </div>
+
+        {/* Views */}
         <div className="p-3">
           <div className="mb-3">
             <h3 className="flex items-center px-2 space-x-2 text-sm font-semibold text-muted-foreground">
