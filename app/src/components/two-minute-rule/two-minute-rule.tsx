@@ -204,7 +204,7 @@ export function TwoMinuteRule() {
           <Timer className="h-6 w-6 mr-2 text-blue-600" />
           Two-Minute Rule
         </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
           If it takes less than two minutes, do it now! This technique helps you tackle small tasks immediately 
           instead of letting them pile up.
         </p>
@@ -257,7 +257,7 @@ export function TwoMinuteRule() {
             </div>
             
             <div className="mb-4">
-              <h3 className="font-medium">
+              <h3 className="text-sm font-medium">
                 {quickTasks.find(t => t.id === activeTaskId)?.title}
               </h3>
             </div>
@@ -322,7 +322,7 @@ export function TwoMinuteRule() {
       {/* Potential Two-Minute Tasks */}
       {potentialTasks.length > 0 && (
         <Card className="p-6">
-          <h3 className="font-semibold mb-4 flex items-center">
+          <h3 className="text-lg font-semibold mb-4 flex items-center">
             <Zap className="h-4 w-4 mr-2 text-orange-600" />
             Potential 2-Minute Tasks
           </h3>
@@ -333,7 +333,7 @@ export function TwoMinuteRule() {
           <div className="space-y-2">
             {potentialTasks.map((task) => (
               <div key={task.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <span className="flex-1">{task.title}</span>
+                <span className="flex-1 text-sm">{task.title}</span>
                 <Button
                   size="sm"
                   variant="outline"
@@ -349,7 +349,7 @@ export function TwoMinuteRule() {
 
       {/* Active Quick Tasks */}
       <Card className="p-6">
-        <h3 className="font-semibold mb-4 flex items-center">
+        <h3 className="text-lg font-semibold mb-4 flex items-center">
           <Timer className="h-4 w-4 mr-2 text-blue-600" />
           Quick Tasks ({activeTasks.length})
         </h3>
@@ -366,7 +366,7 @@ export function TwoMinuteRule() {
                     : "border-gray-200 hover:border-gray-300"
                 )}
               >
-                <span className="flex-1">{task.title}</span>
+                <span className="flex-1 text-sm">{task.title}</span>
                 
                 <div className="flex items-center space-x-2">
                   {activeTaskId === task.id ? (
@@ -415,7 +415,7 @@ export function TwoMinuteRule() {
       {completedTasks.length > 0 && (
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold flex items-center">
+            <h3 className="text-lg font-semibold flex items-center">
               <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
               Completed ({completedTasks.length})
             </h3>
@@ -435,7 +435,7 @@ export function TwoMinuteRule() {
                 .slice(0, 10)
                 .map((task) => (
                   <div key={task.id} className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <span className="flex-1 line-through text-muted-foreground">{task.title}</span>
+                    <span className="flex-1 text-sm line-through text-muted-foreground">{task.title}</span>
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       {task.actualDuration && (
                         <span className="font-mono">{formatTime(task.actualDuration)}</span>

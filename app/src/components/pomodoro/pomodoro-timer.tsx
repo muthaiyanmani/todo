@@ -315,7 +315,7 @@ export function PomodoroTimer() {
       {/* Settings Panel */}
       {showSettings && (
         <div className="absolute inset-x-0 top-full mt-4 bg-background border rounded-lg p-4 shadow-lg z-10">
-          <h4 className="font-semibold mb-4">Pomodoro Settings</h4>
+          <h4 className="text-lg font-semibold mb-4">Pomodoro Settings</h4>
           
           <div className="space-y-4">
             <div>

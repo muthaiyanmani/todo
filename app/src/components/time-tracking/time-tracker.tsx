@@ -234,7 +234,7 @@ export function TimeTracker({ task, compact = false }: TimeTrackerProps) {
       {/* Daily Summary */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold flex items-center">
+          <h3 className="text-lg font-semibold flex items-center">
             <Clock className="h-4 w-4 mr-2" />
             Today's Time
           </h3>
@@ -256,7 +256,7 @@ export function TimeTracker({ task, compact = false }: TimeTrackerProps) {
 
       {/* Recent Entries */}
       <Card className="p-6">
-        <h3 className="font-semibold mb-4 flex items-center">
+        <h3 className="text-lg font-semibold mb-4 flex items-center">
           <BarChart3 className="h-4 w-4 mr-2" />
           Recent Time Entries
         </h3>

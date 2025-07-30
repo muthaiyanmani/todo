@@ -367,7 +367,7 @@ export function EnergyManagement() {
             ))}
           </div>
         ) : (
-          <div className="text-center text-muted-foreground py-8">
+          <div className="text-center text-sm text-muted-foreground py-8">
             No energy entries today. Log your first entry above!
           </div>
         )}
@@ -423,7 +423,7 @@ export function EnergyManagement() {
             <div key={index} className="p-4 border rounded-lg">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h4 className="font-medium">{rec.title}</h4>
+                  <h4 className="text-sm font-medium">{rec.title}</h4>
                   <p className="text-sm text-muted-foreground mt-1">{rec.description}</p>
                 </div>
                 <span className={cn(
