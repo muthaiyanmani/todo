@@ -308,8 +308,8 @@ export function KanbanBoard() {
   }
 
   return (
-    <div className="h-full bg-muted/30">
-      <div className="p-6">
+    <div className="min-h-screen bg-muted/30">
+      <div>
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">Kanban Board</h1>
           <p className="text-muted-foreground">Visualize your workflow and manage tasks</p>

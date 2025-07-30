@@ -397,9 +397,9 @@ export function TaskViewRQ() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
-      <div className="p-3 pb-3 border-b sm:p-4 lg:p-6 sm:pb-4 border-border">
+      <div className="pb-3 mb-4 border-b border-border">
         <div className="flex flex-col gap-3 mb-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:mb-4">
           <div className="flex-1 min-w-0">
             <h1 className="mb-1 text-2xl font-bold text-foreground">{getViewTitle()}</h1>
@@ -419,7 +419,7 @@ export function TaskViewRQ() {
 
         {/* Suggestions for My Day */}
         {view === 'my-day' && (
-          <div className="p-3 mb-3 border rounded-lg bg-primary/5 dark:bg-blue-950/20 border-primary/20 dark:border-blue-900/30 sm:p-4 sm:mb-4">
+          <div className="p-4 mb-4 border rounded-lg bg-primary/5 dark:bg-blue-950/20 border-primary/20 dark:border-blue-900/30">
             <div className="flex items-start space-x-2 sm:space-x-3">
               <Sun className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-blue-400 mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
@@ -535,7 +535,7 @@ export function TaskViewRQ() {
             </p>
           </div>
         ) : (
-          <div className="p-2 space-y-1 sm:p-3 lg:p-4">
+          <div className="space-y-2">
             {/* Active Tasks */}
             {activeTasks.map((task) => (
               <TaskItem

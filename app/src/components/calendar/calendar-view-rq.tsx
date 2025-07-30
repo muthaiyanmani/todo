@@ -333,10 +333,10 @@ export function CalendarViewRQ() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-background">
+    <div className="flex flex-col min-h-screen overflow-hidden bg-background">
       {/* Mobile Legend */}
       {showLegend && (
-        <div className="p-3 border-b lg:hidden bg-muted/50">
+        <div className="pb-3 mb-3 border-b lg:hidden bg-muted/50">
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-red-600 rounded"></div>

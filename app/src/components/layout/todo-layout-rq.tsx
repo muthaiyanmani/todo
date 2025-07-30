@@ -57,11 +57,16 @@ export function TodoLayoutRQ({ children }: TodoLayoutRQProps) {
               isMobile ? 'pb-20' : 'pb-0'
             )}
           >
-            {children ? children :
-             view === 'calendar' ? <CalendarViewRQ /> :
-             view === 'eisenhower' ? <EisenhowerMatrix /> :
-             view === 'my-day' ? <MyDayView /> :
-             <TaskViewRQ />}
+            {/* Content Container with proper spacing and centering */}
+            <div className="min-h-full bg-gradient-to-br from-background via-background to-muted/20">
+              <div className="mx-auto max-w-7xl px-4 pt-8 pb-8 sm:px-6 lg:px-8 xl:max-w-6xl">
+                {children ? children :
+                 view === 'calendar' ? <CalendarViewRQ /> :
+                 view === 'eisenhower' ? <EisenhowerMatrix /> :
+                 view === 'my-day' ? <MyDayView /> :
+                 <TaskViewRQ />}
+              </div>
+            </div>
           </div>
 
           {/* Task Details Panel - Hidden on mobile, shown on large screens */}

@@ -195,8 +195,8 @@ export function GTDDashboard() {
   }
 
   return (
-    <div className="h-full bg-background">
-      <div className="p-6">
+    <div className="min-h-screen bg-background">
+      <div>
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">Getting Things Done</h1>

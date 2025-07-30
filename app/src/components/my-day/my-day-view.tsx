@@ -17,10 +17,10 @@ export function MyDayView() {
 
   return (
     <>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col min-h-screen">
         {/* Header with Tabs */}
         <div className="flex-none border-b border-border bg-background">
-          <div className="p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
+          <div className="pb-4 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
               <div className="min-w-0 flex-1">
                 <h1 className="text-2xl font-bold text-foreground mb-1">
