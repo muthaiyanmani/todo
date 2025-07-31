@@ -37,6 +37,7 @@ import { Preferences } from './pages/settings/preferences';
 // Components
 import { ProtectedRoute } from './components/protected-route';
 import { PublicRoute } from './components/public-route';
+import SyncStatusIndicator from './components/sync/sync-status-indicator';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -256,6 +257,9 @@ function App() {
         {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        
+        {/* Sync Status Indicator - Only show when authenticated */}
+        {isAuthenticated && <SyncStatusIndicator position="bottom-right" />}
       </Router>
     </QueryProvider>
   );
