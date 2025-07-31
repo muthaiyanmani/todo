@@ -145,7 +145,7 @@ export function useCreateHabit() {
 
       return { previousHabits };
     },
-    onError: (error, newHabit, context) => {
+    onError: (_error, _newHabit, context) => {
       // Revert optimistic update
       if (context?.previousHabits) {
         context.previousHabits.forEach(([queryKey, data]) => {
@@ -200,7 +200,7 @@ export function useUpdateHabit() {
 
       return { previousHabit, previousHabits };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousHabit) {
         queryClient.setQueryData(habitKeys.detail(id), context.previousHabit);
@@ -258,7 +258,7 @@ export function useDeleteHabit() {
 
       return { previousHabits, habitName };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousHabits) {
         context.previousHabits.forEach(([queryKey, data]) => {
@@ -266,7 +266,7 @@ export function useDeleteHabit() {
         });
       }
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (_data, _id, context) => {
       queryClient.invalidateQueries({ queryKey: habitKeys.lists() });
       toast.success(`${context?.habitName} deleted successfully`);
     },
@@ -302,6 +302,7 @@ export function useCreateHabitEntry() {
         userId: 'user-1', // This will be corrected by server response
         date: entryData.date,
         completed: entryData.completed,
+        completionType: entryData.completed ? 'full' : 'skipped',
         notes: entryData.notes,
         unit: '', // Will be filled from habit data
         createdAt: now,
@@ -309,8 +310,11 @@ export function useCreateHabitEntry() {
       };
 
       // Get habit data to fill unit
-      if (previousHabit && 'unit' in previousHabit) {
-        optimisticEntry.unit = previousHabit.unit;
+      if (previousHabit && typeof previousHabit === 'object' && previousHabit !== null && 'settings' in previousHabit) {
+        const habit = previousHabit as Habit;
+        if (habit.settings.quantityUnit) {
+          optimisticEntry.unit = habit.settings.quantityUnit;
+        }
       }
 
       // Optimistically update entries list
@@ -326,19 +330,13 @@ export function useCreateHabitEntry() {
       // Optimistically update today's habits if this is for today
       const today = new Date().toISOString().split('T')[0];
       if (entryData.date === today) {
-        queryClient.setQueryData(habitKeys.today(), (old: Habit[] | undefined) => {
-          if (!old) return [];
-          return old.map(habit => 
-            habit.id === habitId 
-              ? { ...habit, todayEntry: optimisticEntry }
-              : habit
-          );
-        });
+        // Note: todayEntry tracking removed - entries are managed separately
+        queryClient.invalidateQueries({ queryKey: habitKeys.today() });
       }
 
       return { previousEntries, previousToday, previousHabit };
     },
-    onError: (err, { habitId }, context) => {
+    onError: (_err, { habitId }, context) => {
       // Rollback optimistic updates
       if (context?.previousEntries) {
         queryClient.setQueryData(habitKeys.entries(habitId), context.previousEntries);
@@ -363,14 +361,8 @@ export function useCreateHabitEntry() {
       // Update today's data with real entry
       const today = new Date().toISOString().split('T')[0];
       if (data.date === today) {
-        queryClient.setQueryData(habitKeys.today(), (old: Habit[] | undefined) => {
-          if (!old) return [];
-          return old.map(habit => 
-            habit.id === habitId 
-              ? { ...habit, todayEntry: data }
-              : habit
-          );
-        });
+        // Update today's habits view
+        queryClient.invalidateQueries({ queryKey: habitKeys.today() });
       }
 
       // Invalidate related queries for fresh stats
@@ -446,17 +438,14 @@ export function useUpdateHabitEntry() {
       if (originalEntry.date === today) {
         queryClient.setQueryData(habitKeys.today(), (old: Habit[] | undefined) => {
           if (!old) return old;
-          return old.map(habit => 
-            habit.id === habitId && habit.todayEntry?.id === entryId
-              ? { ...habit, todayEntry: optimisticEntry }
-              : habit
-          );
+          // Note: todayEntry tracking removed - entries are managed separately
+          return old;
         });
       }
 
       return { previousEntries, previousToday, habitId };
     },
-    onError: (err, { entryId }, context) => {
+    onError: (_err, { entryId: _entryId }, context) => {
       // Rollback optimistic updates
       if (context?.habitId && context.previousEntries) {
         queryClient.setQueryData(habitKeys.entries(context.habitId), context.previousEntries);
@@ -483,11 +472,8 @@ export function useUpdateHabitEntry() {
       if (data.date === today) {
         queryClient.setQueryData(habitKeys.today(), (old: Habit[] | undefined) => {
           if (!old) return old;
-          return old.map(habit => 
-            habit.id === data.habitId && habit.todayEntry?.id === data.id
-              ? { ...habit, todayEntry: data }
-              : habit
-          );
+          // Update habits view
+          return old;
         });
       }
 
@@ -555,17 +541,14 @@ export function useDeleteHabitEntry() {
       if (entryToDelete.date === today) {
         queryClient.setQueryData(habitKeys.today(), (old: Habit[] | undefined) => {
           if (!old) return old;
-          return old.map(habit => 
-            habit.id === habitId && habit.todayEntry?.id === entryId
-              ? { ...habit, todayEntry: undefined }
-              : habit
-          );
+          // Note: todayEntry tracking removed - entries are managed separately
+          return old;
         });
       }
 
       return { habitId, previousEntries, previousToday, entryToDelete };
     },
-    onError: (err, entryId, context) => {
+    onError: (_err, _entryId, context) => {
       // Rollback optimistic updates
       if (context?.habitId && context.previousEntries) {
         queryClient.setQueryData(habitKeys.entries(context.habitId), context.previousEntries);
@@ -575,7 +558,7 @@ export function useDeleteHabitEntry() {
       }
       toast.error('Failed to delete habit entry');
     },
-    onSuccess: (data, entryId, context) => {
+    onSuccess: (_data, _entryId, context) => {
       // Optimistic update was already applied, just invalidate stats
       if (context?.habitId) {
         queryClient.invalidateQueries({ queryKey: habitKeys.stats(context.habitId) });
@@ -599,9 +582,9 @@ export function useCompleteHabitForToday() {
   const createEntry = useCreateHabitEntry();
   
   return useMutation({
-    mutationFn: ({ habitId, value, note, mood }: { 
+    mutationFn: ({ habitId, quantity, note, mood }: { 
       habitId: string; 
-      value?: number; 
+      quantity?: number; 
       note?: string; 
       mood?: HabitEntry['mood'] 
     }) => createEntry.mutateAsync({
@@ -609,8 +592,9 @@ export function useCompleteHabitForToday() {
       entryData: {
         date: new Date().toISOString(),
         completed: true,
-        value,
-        note,
+        completionType: 'full',
+        quantity,
+        notes: note,
         mood,
       },
     }),
@@ -621,13 +605,13 @@ export function useUpdateHabitCompletion() {
   const updateEntry = useUpdateHabitEntry();
   
   return useMutation({
-    mutationFn: ({ entryId, completed, value }: { 
+    mutationFn: ({ entryId, completed, quantity }: { 
       entryId: string; 
       completed: boolean; 
-      value?: number 
+      quantity?: number 
     }) => updateEntry.mutateAsync({
       entryId,
-      updates: { completed, value },
+      updates: { completed, quantity },
     }),
   });
 }

@@ -198,7 +198,7 @@ function generateMockEntries(habitId: string, completionRate: number): HabitEntr
         id: `entry-${habitId}-${i}`,
         habitId,
         userId: 'user-1',
-        date,
+        date: date.toISOString(),
         completed: true,
         completionType: 'full',
         quantity: Math.floor(Math.random() * 20) + 10,

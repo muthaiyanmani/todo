@@ -48,6 +48,7 @@ export const authService = {
           push: true,
         },
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: 'en',
       },
       createdAt: new Date(),
       updatedAt: new Date(),

@@ -114,7 +114,7 @@ export function useCreatePomodoroSession() {
 
       return { previousSessions };
     },
-    onError: (error, newSession, context) => {
+    onError: (_error, _newSession, context) => {
       // Revert optimistic update
       if (context?.previousSessions) {
         context.previousSessions.forEach(([queryKey, data]) => {
@@ -172,7 +172,7 @@ export function useUpdatePomodoroSession() {
 
       return { previousSession, previousSessions };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousSession) {
         queryClient.setQueryData(pomodoroKeys.session(id), context.previousSession);
@@ -233,7 +233,7 @@ export function useDeletePomodoroSession() {
 
       return { previousSessions, sessionType };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousSessions) {
         context.previousSessions.forEach(([queryKey, data]) => {
@@ -242,7 +242,7 @@ export function useDeletePomodoroSession() {
       }
       toast.error('Failed to delete Pomodoro session');
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (_data, _id, context) => {
       queryClient.invalidateQueries({ queryKey: pomodoroKeys.sessions() });
       queryClient.invalidateQueries({ queryKey: pomodoroKeys.stats() });
       queryClient.invalidateQueries({ queryKey: pomodoroKeys.today() });
@@ -271,7 +271,7 @@ export function useUpdatePomodoroSettings() {
 
       return { previousSettings };
     },
-    onError: (error, updates, context) => {
+    onError: (_error, _updates, context) => {
       // Revert optimistic update
       if (context?.previousSettings) {
         queryClient.setQueryData(pomodoroKeys.settings(), context.previousSettings);
@@ -287,27 +287,27 @@ export function useUpdatePomodoroSettings() {
 
 // Convenience hooks for common operations
 export function useStartPomodoroSession() {
-  const createSession = useCreatePomodoroSession();
+  const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: ({ type, taskId }: { type: PomodoroSession['type']; taskId?: string }) =>
       pomodoroApi.startSession(type, taskId),
-    onSuccess: (data) => {
-      createSession.onSuccess?.(data, data, undefined);
+    onSuccess: () => {
+      // Invalidate relevant queries after successful start
+      queryClient.invalidateQueries({ queryKey: pomodoroKeys.all });
     },
-    onError: createSession.onError,
   });
 }
 
 export function useCompletePomodoroSession() {
-  const updateSession = useUpdatePomodoroSession();
+  const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: ({ id, actualDuration }: { id: string; actualDuration?: number }) =>
       pomodoroApi.completeSession(id, actualDuration),
-    onSuccess: (data) => {
-      updateSession.onSuccess?.(data, { id: data.id, updates: {} }, undefined);
+    onSuccess: () => {
+      // Invalidate relevant queries after successful completion
+      queryClient.invalidateQueries({ queryKey: pomodoroKeys.all });
     },
-    onError: updateSession.onError,
   });
 }

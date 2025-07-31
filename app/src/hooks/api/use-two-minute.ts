@@ -116,7 +116,7 @@ export function useCreateTwoMinuteTask() {
 
       return { previousTasks };
     },
-    onError: (error, newTask, context) => {
+    onError: (_error, _newTask, context) => {
       // Revert optimistic update
       if (context?.previousTasks) {
         context.previousTasks.forEach(([queryKey, data]) => {
@@ -175,7 +175,7 @@ export function useUpdateTwoMinuteTask() {
 
       return { previousTask, previousTasks };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousTask) {
         queryClient.setQueryData(twoMinuteKeys.task(id), context.previousTask);
@@ -239,7 +239,7 @@ export function useDeleteTwoMinuteTask() {
 
       return { previousTasks, taskTitle };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousTasks) {
         context.previousTasks.forEach(([queryKey, data]) => {
@@ -248,7 +248,7 @@ export function useDeleteTwoMinuteTask() {
       }
       toast.error('Failed to delete two-minute task');
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (_data, _id, context) => {
       queryClient.invalidateQueries({ queryKey: twoMinuteKeys.tasks() });
       queryClient.invalidateQueries({ queryKey: twoMinuteKeys.active() });
       queryClient.invalidateQueries({ queryKey: twoMinuteKeys.stats() });

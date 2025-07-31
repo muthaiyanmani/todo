@@ -99,7 +99,7 @@ export const taskApi = {
     });
   },
 
-  async deleteCompletedTasks(listId?: string): Promise<BatchUpdateResponse> {
+  async deleteCompletedTasks(_listId?: string): Promise<BatchUpdateResponse> {
     // This would need a special endpoint or we'd need to fetch completed tasks first
     // For now, this is a placeholder
     throw new Error('Not implemented - requires special endpoint');

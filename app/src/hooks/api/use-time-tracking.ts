@@ -128,7 +128,7 @@ export function useCreateTimeEntry() {
 
       return { previousEntries };
     },
-    onError: (error, newEntry, context) => {
+    onError: (_error, _newEntry, context) => {
       // Revert optimistic update
       if (context?.previousEntries) {
         context.previousEntries.forEach(([queryKey, data]) => {
@@ -189,7 +189,7 @@ export function useUpdateTimeEntry() {
 
       return { previousEntry, previousEntries };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousEntry) {
         queryClient.setQueryData(timeTrackingKeys.entry(id), context.previousEntry);
@@ -250,7 +250,7 @@ export function useDeleteTimeEntry() {
 
       return { previousEntries, entryDescription };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousEntries) {
         context.previousEntries.forEach(([queryKey, data]) => {
@@ -259,7 +259,7 @@ export function useDeleteTimeEntry() {
       }
       toast.error('Failed to delete time entry');
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (_data, _id, context) => {
       queryClient.invalidateQueries({ queryKey: timeTrackingKeys.entries() });
       queryClient.invalidateQueries({ queryKey: timeTrackingKeys.stats() });
       queryClient.invalidateQueries({ queryKey: timeTrackingKeys.today() });
@@ -306,7 +306,7 @@ export function useCreateTimeProject() {
 
       return { previousProjects };
     },
-    onError: (err, projectData, context) => {
+    onError: (_err, _projectData, context) => {
       // Rollback optimistic update
       if (context?.previousProjects) {
         queryClient.setQueryData(timeTrackingKeys.projects(), context.previousProjects);

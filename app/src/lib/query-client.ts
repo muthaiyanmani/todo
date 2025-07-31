@@ -43,7 +43,7 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       // Global defaults for all mutations
-      retry: (failureCount, error: any) => {
+      retry: (_failureCount, _error: any) => {
         // Don't retry mutations by default
         return false;
       },

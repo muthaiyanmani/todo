@@ -138,7 +138,7 @@ export function useCreateGtdItem() {
 
       return { previousItems };
     },
-    onError: (error, newItem, context) => {
+    onError: (_error, _newItem, context) => {
       // Revert optimistic update
       if (context?.previousItems) {
         context.previousItems.forEach(([queryKey, data]) => {
@@ -211,7 +211,7 @@ export function useUpdateGtdItem() {
 
       return { previousItem, previousItems };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousItem) {
         queryClient.setQueryData(gtdKeys.item(id), context.previousItem);
@@ -274,7 +274,7 @@ export function useDeleteGtdItem() {
 
       return { previousItems, itemTitle };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousItems) {
         context.previousItems.forEach(([queryKey, data]) => {
@@ -283,7 +283,7 @@ export function useDeleteGtdItem() {
       }
       toast.error('Failed to delete GTD item');
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (_data, _id, context) => {
       queryClient.invalidateQueries({ queryKey: gtdKeys.items() });
       queryClient.invalidateQueries({ queryKey: gtdKeys.inbox() });
       queryClient.invalidateQueries({ queryKey: gtdKeys.nextActions() });

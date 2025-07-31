@@ -26,33 +26,26 @@ export class MockDatabase {
       name: 'John Doe',
       email: 'user@example.com',
       avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
-      theme: 'system',
-      privacy: {
-        profileVisibility: 'public',
-        activityVisibility: 'friends',
-        searchableByEmail: true,
-      },
-      notifications: {
-        email: true,
-        push: true,
-        desktop: true,
-        taskReminders: true,
-        habitReminders: true,
-        weeklyReports: true,
-      },
       preferences: {
-        startOfWeek: 'monday',
-        timeFormat: '24h',
-        dateFormat: 'dd/mm/yyyy',
+        theme: 'system',
+        privacy: {
+          shareData: false,
+          analytics: true,
+          marketing: false,
+        },
+        notifications: {
+          tasks: true,
+          reminders: true,
+          achievements: false,
+          weekly: true,
+          email: false,
+          push: true,
+        },
         timezone: 'UTC',
         language: 'en',
-        soundEnabled: true,
-        autoFocus: true,
-        showCompletedTasks: false,
-        taskSortBy: 'dueDate',
       },
-      createdAt: new Date('2024-01-01').toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date(),
     };
     this.users.set(defaultUser.id, defaultUser);
 
@@ -67,8 +60,8 @@ export class MockDatabase {
         isDefault: true,
         isShared: false,
         order: 1,
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
       {
         id: 'list-2',
@@ -79,8 +72,8 @@ export class MockDatabase {
         isDefault: false,
         isShared: false,
         order: 2,
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
       {
         id: 'list-3',
@@ -91,8 +84,8 @@ export class MockDatabase {
         isDefault: false,
         isShared: false,
         order: 3,
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
     ];
     defaultLists.forEach(list => this.taskLists.set(list.id, list));
@@ -108,32 +101,34 @@ export class MockDatabase {
         completed: false,
         important: true,
         myDay: true,
-        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-        reminder: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        reminderDateTime: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
         eisenhowerQuadrant: 'do',
         kanbanColumn: 'inProgress',
-        gtdContext: 'nextActions',
-        energyLevel: 'high',
+        context: 'nextActions',
+        energy: 'high',
         estimatedTime: 120,
-        actualTime: 0,
         tags: ['work', 'important'],
         subtasks: [
           {
             id: 'subtask-1',
+            taskId: 'task-1',
             title: 'Research market trends',
             completed: true,
-            createdAt: new Date('2024-01-01').toISOString(),
+            createdAt: new Date('2024-01-01'),
           },
           {
             id: 'subtask-2',
+            taskId: 'task-1',
             title: 'Create budget analysis',
             completed: false,
-            createdAt: new Date('2024-01-01').toISOString(),
+            createdAt: new Date('2024-01-01'),
           },
         ],
         attachments: [],
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        syncStatus: 'synced',
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
       {
         id: 'task-2',
@@ -144,18 +139,18 @@ export class MockDatabase {
         completed: false,
         important: false,
         myDay: false,
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         eisenhowerQuadrant: 'decide',
         kanbanColumn: 'todo',
-        gtdContext: 'someday',
-        energyLevel: 'medium',
+        context: 'someday',
+        energy: 'medium',
         estimatedTime: 60,
-        actualTime: 0,
         tags: ['personal', 'travel'],
         subtasks: [],
         attachments: [],
-        createdAt: new Date('2024-01-02').toISOString(),
-        updatedAt: new Date().toISOString(),
+        syncStatus: 'synced',
+        createdAt: new Date('2024-01-02'),
+        updatedAt: new Date(),
       },
       {
         id: 'task-3',
@@ -166,31 +161,33 @@ export class MockDatabase {
         completed: false,
         important: true,
         myDay: false,
-        dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
         eisenhowerQuadrant: 'do',
         kanbanColumn: 'todo',
-        gtdContext: 'nextActions',
-        energyLevel: 'high',
+        context: 'nextActions',
+        energy: 'high',
         estimatedTime: 180,
-        actualTime: 0,
         tags: ['work', 'management'],
         subtasks: [
           {
             id: 'subtask-3',
+            taskId: 'task-3',
             title: 'Prepare review templates',
             completed: false,
-            createdAt: new Date('2024-01-03').toISOString(),
+            createdAt: new Date('2024-01-03'),
           },
           {
             id: 'subtask-4',
+            taskId: 'task-3',
             title: 'Schedule one-on-ones',
             completed: false,
-            createdAt: new Date('2024-01-03').toISOString(),
+            createdAt: new Date('2024-01-03'),
           },
         ],
         attachments: [],
-        createdAt: new Date('2024-01-03').toISOString(),
-        updatedAt: new Date().toISOString(),
+        syncStatus: 'synced',
+        createdAt: new Date('2024-01-03'),
+        updatedAt: new Date(),
       },
       {
         id: 'task-4',
@@ -201,25 +198,26 @@ export class MockDatabase {
         completed: false,
         important: false,
         myDay: true,
-        dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
         eisenhowerQuadrant: 'delegate',
         kanbanColumn: 'todo',
-        gtdContext: 'nextActions',
-        energyLevel: 'low',
+        context: 'nextActions',
+        energy: 'low',
         estimatedTime: 45,
-        actualTime: 0,
         tags: ['shopping', 'routine'],
         subtasks: [
           {
             id: 'subtask-5',
+            taskId: 'task-4',
             title: 'Make shopping list',
             completed: true,
-            createdAt: new Date('2024-01-04').toISOString(),
+            createdAt: new Date('2024-01-04'),
           },
         ],
         attachments: [],
-        createdAt: new Date('2024-01-04').toISOString(),
-        updatedAt: new Date().toISOString(),
+        syncStatus: 'synced',
+        createdAt: new Date('2024-01-04'),
+        updatedAt: new Date(),
       },
       {
         id: 'task-5',
@@ -232,15 +230,15 @@ export class MockDatabase {
         myDay: false,
         eisenhowerQuadrant: 'delete',
         kanbanColumn: 'todo',
-        gtdContext: 'someday',
-        energyLevel: 'medium',
+        context: 'someday',
+        energy: 'medium',
         estimatedTime: 300,
-        actualTime: 0,
         tags: ['learning', 'programming'],
         subtasks: [],
         attachments: [],
-        createdAt: new Date('2024-01-05').toISOString(),
-        updatedAt: new Date().toISOString(),
+        syncStatus: 'synced',
+        createdAt: new Date('2024-01-05'),
+        updatedAt: new Date(),
       },
     ];
     defaultTasks.forEach(task => this.tasks.set(task.id, task));
@@ -259,8 +257,8 @@ export class MockDatabase {
     const newUser: User = {
       ...user,
       id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.users.set(newUser.id, newUser);
     return newUser;
@@ -273,7 +271,7 @@ export class MockDatabase {
     const updatedUser: User = {
       ...user,
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     this.users.set(id, updatedUser);
     return updatedUser;
@@ -306,8 +304,8 @@ export class MockDatabase {
     const newTask: Task = {
       ...task,
       id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.tasks.set(newTask.id, newTask);
     return newTask;
@@ -320,7 +318,7 @@ export class MockDatabase {
     const updatedTask: Task = {
       ...task,
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     this.tasks.set(id, updatedTask);
     return updatedTask;
@@ -345,8 +343,8 @@ export class MockDatabase {
     const newTaskList: TaskList = {
       ...taskList,
       id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.taskLists.set(newTaskList.id, newTaskList);
     return newTaskList;
@@ -359,7 +357,7 @@ export class MockDatabase {
     const updatedTaskList: TaskList = {
       ...taskList,
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     this.taskLists.set(id, updatedTaskList);
     return updatedTaskList;

@@ -217,7 +217,7 @@ export const habitApi = {
       id: `entry-${Date.now()}`,
       habitId,
       userId: 'user-1',
-      date: today,
+      date: today.toISOString(),
       completed: data.completed,
       completionType: data.completionType || 'full',
       quantity: data.quantity,

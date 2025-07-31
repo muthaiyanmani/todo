@@ -26,6 +26,7 @@ export const mockUser: User = {
       push: true,
     },
     timezone: 'America/New_York',
+    language: 'en',
   },
   createdAt: new Date('2024-01-01'),
   updatedAt: new Date('2024-01-15'),

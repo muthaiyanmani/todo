@@ -8,7 +8,7 @@ const API_BASE = 'http://backenddomain.com/api/v1';
 
 export const taskHandlers = [
   // Get tasks with pagination, filtering, and sorting
-  http.get(`${API_BASE}/tasks`, ({ request, params }) => {
+  http.get(`${API_BASE}/tasks`, ({ request }) => {
     const user = extractUserFromToken(request.headers.get('Authorization'));
     if (!user) {
       const errorResponse: ApiError = {

@@ -19,6 +19,7 @@ export interface User {
       push: boolean;
     };
     timezone: string;
+    language: string;
   };
   createdAt: Date;
   updatedAt: Date;

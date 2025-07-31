@@ -71,8 +71,8 @@ export function useCreateTask() {
           const optimisticTask: Task = {
             id: `temp-${Date.now()}`,
             userId: 'temp-user',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
             ...newTask,
           };
 
@@ -86,7 +86,7 @@ export function useCreateTask() {
 
       return { previousTasks };
     },
-    onError: (error, newTask, context) => {
+    onError: (_error, _newTask, context) => {
       // Revert optimistic update
       if (context?.previousTasks) {
         context.previousTasks.forEach(([queryKey, data]) => {
@@ -94,7 +94,7 @@ export function useCreateTask() {
         });
       }
     },
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
       toast.success('Task created successfully');
@@ -119,7 +119,7 @@ export function useUpdateTask() {
 
       // Optimistically update the single task
       queryClient.setQueryData(taskKeys.detail(id), (old: Task | undefined) => 
-        old ? { ...old, ...updates, updatedAt: new Date().toISOString() } : old
+        old ? { ...old, ...updates, updatedAt: new Date() } : old
       );
 
       // Optimistically update tasks in lists
@@ -132,7 +132,7 @@ export function useUpdateTask() {
             ...old,
             tasks: old.tasks.map(task => 
               task.id === id 
-                ? { ...task, ...updates, updatedAt: new Date().toISOString() }
+                ? { ...task, ...updates, updatedAt: new Date() }
                 : task
             ),
           };
@@ -141,7 +141,7 @@ export function useUpdateTask() {
 
       return { previousTask, previousTasks };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousTask) {
         queryClient.setQueryData(taskKeys.detail(id), context.previousTask);
@@ -191,7 +191,7 @@ export function useDeleteTask() {
 
       return { previousTasks };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousTasks) {
         context.previousTasks.forEach(([queryKey, data]) => {
@@ -244,7 +244,7 @@ export function useBatchUpdateTasks() {
           const optimisticTask: Task = {
             ...currentTask,
             ...updates,
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date(),
           };
           
           queryClient.setQueryData(taskKeys.detail(taskId), optimisticTask);
@@ -260,7 +260,7 @@ export function useBatchUpdateTasks() {
               return {
                 ...task,
                 ...updates,
-                updatedAt: new Date().toISOString(),
+                updatedAt: new Date(),
               };
             }
             return task;
@@ -276,7 +276,7 @@ export function useBatchUpdateTasks() {
 
       return { affectedTasksData, previousTaskLists };
     },
-    onError: (err, request, context) => {
+    onError: (_err, request, context) => {
       // Rollback optimistic updates
       if (context) {
         const { taskIds } = request;
@@ -298,7 +298,7 @@ export function useBatchUpdateTasks() {
 
       toast.error('Failed to update tasks');
     },
-    onSuccess: (data, request) => {
+    onSuccess: (data, _request) => {
       // Replace optimistic updates with real data
       data.updatedTasks.forEach(task => {
         queryClient.setQueryData(taskKeys.detail(task.id), task);

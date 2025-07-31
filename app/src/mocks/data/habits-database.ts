@@ -26,28 +26,33 @@ export class HabitsDatabase {
         userId: 'user-1',
         name: 'Morning Meditation',
         description: 'Start each day with 10 minutes of mindfulness meditation',
-        category: 'wellness',
-        frequency: 'daily',
-        targetValue: 10,
-        unit: 'minutes',
-        difficulty: 'easy',
-        color: '#8b5cf6',
-        icon: 'brain',
+        category: 'health',
+        targetFrequency: {
+          type: 'daily',
+          value: 1,
+        },
+        duration: {
+          startDate: new Date('2024-01-01'),
+        },
+        difficulty: 'beginner',
+        reminderTime: '07:00',
         isActive: true,
-        streak: 5,
+        isArchived: false,
+        currentStreak: 5,
         longestStreak: 12,
         completionRate: 85,
-        reminderTime: '07:00',
-        reminderDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
         settings: {
           allowPartialCompletion: true,
           trackQuantity: true,
+          quantityUnit: 'minutes',
+          targetQuantity: 10,
+          isPublic: true,
+          shareWithFriends: false,
           showInDashboard: true,
-          privateHabit: false,
         },
         tags: ['mindfulness', 'morning-routine'],
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
       {
         id: 'habit-2',
@@ -55,27 +60,32 @@ export class HabitsDatabase {
         name: 'Daily Exercise',
         description: 'Get at least 30 minutes of physical activity',
         category: 'fitness',
-        frequency: 'daily',
-        targetValue: 30,
-        unit: 'minutes',
-        difficulty: 'medium',
-        color: '#ef4444',
-        icon: 'dumbbell',
+        targetFrequency: {
+          type: 'daily',
+          value: 1,
+        },
+        duration: {
+          startDate: new Date('2024-01-01'),
+        },
+        difficulty: 'intermediate',
+        reminderTime: '18:00',
         isActive: true,
-        streak: 3,
+        isArchived: false,
+        currentStreak: 3,
         longestStreak: 21,
         completionRate: 78,
-        reminderTime: '18:00',
-        reminderDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
         settings: {
           allowPartialCompletion: true,
           trackQuantity: true,
+          quantityUnit: 'minutes',
+          targetQuantity: 30,
+          isPublic: true,
+          shareWithFriends: false,
           showInDashboard: true,
-          privateHabit: false,
         },
         tags: ['fitness', 'health'],
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
       {
         id: 'habit-3',
@@ -83,27 +93,32 @@ export class HabitsDatabase {
         name: 'Read Books',
         description: 'Read for at least 30 minutes each day',
         category: 'learning',
-        frequency: 'daily',
-        targetValue: 30,
-        unit: 'minutes',
-        difficulty: 'easy',
-        color: '#10b981',
-        icon: 'book',
+        targetFrequency: {
+          type: 'daily',
+          value: 1,
+        },
+        duration: {
+          startDate: new Date('2024-01-01'),
+        },
+        difficulty: 'beginner',
+        reminderTime: '21:00',
         isActive: true,
-        streak: 7,
+        isArchived: false,
+        currentStreak: 7,
         longestStreak: 15,
         completionRate: 92,
-        reminderTime: '21:00',
-        reminderDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
         settings: {
           allowPartialCompletion: true,
           trackQuantity: true,
+          quantityUnit: 'minutes',
+          targetQuantity: 30,
+          isPublic: true,
+          shareWithFriends: false,
           showInDashboard: true,
-          privateHabit: false,
         },
         tags: ['reading', 'learning', 'evening-routine'],
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
       {
         id: 'habit-4',
@@ -111,27 +126,32 @@ export class HabitsDatabase {
         name: 'Drink Water',
         description: 'Stay hydrated by drinking 8 glasses of water daily',
         category: 'health',
-        frequency: 'daily',
-        targetValue: 8,
-        unit: 'glasses',
-        difficulty: 'easy',
-        color: '#06b6d4',
-        icon: 'droplet',
+        targetFrequency: {
+          type: 'daily',
+          value: 1,
+        },
+        duration: {
+          startDate: new Date('2024-01-01'),
+        },
+        difficulty: 'beginner',
+        reminderTime: '09:00',
         isActive: true,
-        streak: 2,
+        isArchived: false,
+        currentStreak: 2,
         longestStreak: 30,
         completionRate: 89,
-        reminderTime: '09:00',
-        reminderDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
         settings: {
           allowPartialCompletion: true,
           trackQuantity: true,
+          quantityUnit: 'glasses',
+          targetQuantity: 8,
+          isPublic: true,
+          shareWithFriends: false,
           showInDashboard: true,
-          privateHabit: false,
         },
         tags: ['hydration', 'health'],
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date(),
       },
     ];
 
@@ -143,17 +163,16 @@ export class HabitsDatabase {
         habitId: habit.id,
         totalEntries: Math.floor(Math.random() * 100) + 50,
         completedEntries: Math.floor(habit.completionRate * 1.5),
-        currentStreak: habit.streak,
+        currentStreak: habit.currentStreak,
         longestStreak: habit.longestStreak,
-        averageValue: habit.targetValue * (habit.completionRate / 100),
         completionRate: habit.completionRate,
-        weeklyCompletion: Array.from({ length: 7 }, () => Math.random() > 0.3),
-        monthlyProgress: Array.from({ length: 30 }, () => ({
-          date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-          completed: Math.random() > 0.2,
-          value: Math.random() * habit.targetValue,
+        weeklyCompletion: Array.from({ length: 7 }, () => Math.random() > 0.3 ? 1 : 0),
+        monthlyTrend: Array.from({ length: 12 }, (_, i) => ({
+          month: new Date(Date.now() - i * 30 * 24 * 60 * 60 * 1000).toISOString().substring(0, 7),
+          rate: Math.random() * 100,
         })),
-        lastUpdated: new Date().toISOString(),
+        bestDays: ['monday', 'friday'],
+        averageQuantity: (habit.settings.targetQuantity || 0) * (habit.completionRate / 100),
       });
 
       // Generate recent habit entries
@@ -167,12 +186,12 @@ export class HabitsDatabase {
           userId: 'user-1',
           date: entryDate.toISOString(),
           completed: Math.random() > 0.2,
-          value: Math.random() * habit.targetValue,
-          unit: habit.unit,
-          note: i % 3 === 0 ? 'Felt great today!' : undefined,
-          mood: ['great', 'good', 'okay', 'difficult'][Math.floor(Math.random() * 4)] as any,
-          createdAt: entryDate.toISOString(),
-          updatedAt: entryDate.toISOString(),
+          completionType: Math.random() > 0.2 ? 'full' : 'partial',
+          quantity: Math.random() * (habit.settings.targetQuantity || 0),
+          notes: i % 3 === 0 ? 'Felt great today!' : undefined,
+          mood: [1, 2, 3, 4, 5][Math.floor(Math.random() * 5)] as 1 | 2 | 3 | 4 | 5,
+          createdAt: entryDate,
+          updatedAt: entryDate,
         };
         
         this.habitEntries.set(entry.id, entry);
@@ -203,15 +222,15 @@ export class HabitsDatabase {
     return this.habits.get(id);
   }
 
-  createHabit(habit: Omit<Habit, 'id' | 'createdAt' | 'updatedAt' | 'streak' | 'longestStreak' | 'completionRate'>): Habit {
+  createHabit(habit: Omit<Habit, 'id' | 'createdAt' | 'updatedAt' | 'currentStreak' | 'longestStreak' | 'completionRate'>): Habit {
     const newHabit: Habit = {
       ...habit,
       id: uuidv4(),
-      streak: 0,
+      currentStreak: 0,
       longestStreak: 0,
       completionRate: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     
     this.habits.set(newHabit.id, newHabit);
@@ -223,11 +242,11 @@ export class HabitsDatabase {
       completedEntries: 0,
       currentStreak: 0,
       longestStreak: 0,
-      averageValue: 0,
       completionRate: 0,
-      weeklyCompletion: [false, false, false, false, false, false, false],
-      monthlyProgress: [],
-      lastUpdated: new Date().toISOString(),
+      weeklyCompletion: [0, 0, 0, 0, 0, 0, 0],
+      monthlyTrend: [],
+      bestDays: [],
+      averageQuantity: 0,
     });
     
     return newHabit;
@@ -240,7 +259,7 @@ export class HabitsDatabase {
     const updatedHabit: Habit = {
       ...habit,
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     
     this.habits.set(id, updatedHabit);
@@ -282,8 +301,8 @@ export class HabitsDatabase {
     const newEntry: HabitEntry = {
       ...entry,
       id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     
     this.habitEntries.set(newEntry.id, newEntry);
@@ -301,7 +320,7 @@ export class HabitsDatabase {
     const updatedEntry: HabitEntry = {
       ...entry,
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     
     this.habitEntries.set(id, updatedEntry);
@@ -369,16 +388,16 @@ export class HabitsDatabase {
 
     // Calculate average value
     const averageValue = completedEntries.length > 0 
-      ? completedEntries.reduce((sum, entry) => sum + (entry.value || 0), 0) / completedEntries.length 
+      ? completedEntries.reduce((sum, entry) => sum + (entry.quantity || 0), 0) / completedEntries.length 
       : 0;
 
     // Update habit with calculated stats
     this.habits.set(habitId, {
       ...habit,
-      streak: currentStreak,
+      currentStreak: currentStreak,
       longestStreak,
       completionRate: Math.round(completionRate),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     });
 
     // Update stats
@@ -388,11 +407,11 @@ export class HabitsDatabase {
       completedEntries: completedEntries.length,
       currentStreak,
       longestStreak,
-      averageValue,
       completionRate,
-      weeklyCompletion: this.calculateWeeklyCompletion(entries),
-      monthlyProgress: this.calculateMonthlyProgress(entries),
-      lastUpdated: new Date().toISOString(),
+      weeklyCompletion: this.calculateWeeklyCompletion(entries).map(b => b ? 1 : 0),
+      monthlyTrend: this.calculateMonthlyTrend(entries),
+      bestDays: this.calculateBestDays(entries),
+      averageQuantity: averageValue,
     };
 
     this.habitStats.set(habitId, stats);
@@ -427,11 +446,59 @@ export class HabitsDatabase {
       monthProgress.unshift({
         date: dateStr,
         completed: entry?.completed || false,
-        value: entry?.value || 0,
+        value: entry?.quantity || 0,
       });
     }
     
     return monthProgress;
+  }
+
+  private calculateMonthlyTrend(entries: HabitEntry[]): Array<{ month: string; rate: number }> {
+    const monthTrend: { [key: string]: { total: number; completed: number } } = {};
+    
+    entries.forEach(entry => {
+      const month = entry.date.substring(0, 7); // YYYY-MM format
+      if (!monthTrend[month]) {
+        monthTrend[month] = { total: 0, completed: 0 };
+      }
+      monthTrend[month].total++;
+      if (entry.completed) {
+        monthTrend[month].completed++;
+      }
+    });
+    
+    return Object.entries(monthTrend)
+      .map(([month, data]) => ({
+        month,
+        rate: data.total > 0 ? (data.completed / data.total) * 100 : 0,
+      }))
+      .sort((a, b) => a.month.localeCompare(b.month));
+  }
+
+  private calculateBestDays(entries: HabitEntry[]): string[] {
+    const dayStats: { [key: string]: { total: number; completed: number } } = {};
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    
+    entries.forEach(entry => {
+      const date = new Date(entry.date);
+      const dayName = dayNames[date.getDay()];
+      if (!dayStats[dayName]) {
+        dayStats[dayName] = { total: 0, completed: 0 };
+      }
+      dayStats[dayName].total++;
+      if (entry.completed) {
+        dayStats[dayName].completed++;
+      }
+    });
+    
+    return Object.entries(dayStats)
+      .map(([day, stats]) => ({
+        day,
+        rate: stats.total > 0 ? stats.completed / stats.total : 0,
+      }))
+      .sort((a, b) => b.rate - a.rate)
+      .slice(0, 3)
+      .map(item => item.day);
   }
 
   // Utility methods

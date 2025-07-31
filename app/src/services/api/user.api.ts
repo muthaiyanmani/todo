@@ -17,7 +17,7 @@ export const userApi = {
     return response.data;
   },
 
-  async updateNotificationSettings(notifications: Partial<User['notifications']>): Promise<User> {
+  async updateNotificationSettings(notifications: Partial<User['preferences']['notifications']>): Promise<User> {
     const response = await apiClient.patch<User>('/users/me/notifications', notifications);
     return response.data;
   },

@@ -45,7 +45,7 @@ export function useUpdateProfile() {
 
       return { previousUser };
     },
-    onError: (error, updates, context) => {
+    onError: (_error, _updates, context) => {
       // Revert optimistic update
       if (context?.previousUser) {
         queryClient.setQueryData(userKeys.profile(), context.previousUser);
@@ -83,7 +83,7 @@ export function useUpdatePreferences() {
 
       return { previousUser };
     },
-    onError: (error, preferences, context) => {
+    onError: (_error, _preferences, context) => {
       // Revert optimistic update
       if (context?.previousUser) {
         queryClient.setQueryData(userKeys.profile(), context.previousUser);
@@ -101,7 +101,7 @@ export function useUpdateNotificationSettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (notifications: Partial<User['notifications']>) =>
+    mutationFn: (notifications: Partial<User['preferences']['notifications']>) =>
       userApi.updateNotificationSettings(notifications),
     onMutate: async (notifications) => {
       // Cancel outgoing refetches
@@ -114,14 +114,17 @@ export function useUpdateNotificationSettings() {
       queryClient.setQueryData(userKeys.profile(), (old: User | undefined) =>
         old ? {
           ...old,
-          notifications: { ...old.notifications, ...notifications },
-          updatedAt: new Date().toISOString()
+          preferences: { 
+            ...old.preferences, 
+            notifications: { ...old.preferences.notifications, ...notifications }
+          },
+          updatedAt: new Date()
         } : old
       );
 
       return { previousUser };
     },
-    onError: (error, notifications, context) => {
+    onError: (_error, _notifications, context) => {
       // Revert optimistic update
       if (context?.previousUser) {
         queryClient.setQueryData(userKeys.profile(), context.previousUser);
@@ -153,7 +156,7 @@ export function useUpdateTheme() {
   const updatePreferences = useUpdatePreferences();
   
   return useMutation({
-    mutationFn: (theme: User['theme']) =>
+    mutationFn: (theme: User['preferences']['theme']) =>
       updatePreferences.mutateAsync({ theme }),
   });
 }

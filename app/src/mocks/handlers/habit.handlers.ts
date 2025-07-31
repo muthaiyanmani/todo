@@ -404,7 +404,7 @@ export const habitHandlers = [
       ...entryData,
       habitId,
       userId: user.userId,
-      unit: habit.unit,
+      unit: habit.settings.quantityUnit,
     });
 
     const response: ApiResponse<HabitEntry> = {

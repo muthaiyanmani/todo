@@ -51,8 +51,8 @@ export function useCreateTaskList() {
         const optimisticTaskList: TaskList = {
           id: `temp-${Date.now()}`,
           userId: 'temp-user',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
           order: old.length + 1,
           ...newTaskList,
         };
@@ -62,7 +62,7 @@ export function useCreateTaskList() {
 
       return { previousTaskLists };
     },
-    onError: (error, newTaskList, context) => {
+    onError: (_error, _newTaskList, context) => {
       // Revert optimistic update
       if (context?.previousTaskLists) {
         queryClient.setQueryData(taskListKeys.lists(), context.previousTaskLists);
@@ -109,7 +109,7 @@ export function useUpdateTaskList() {
 
       return { previousTaskList, previousTaskLists };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousTaskList) {
         queryClient.setQueryData(taskListKeys.detail(id), context.previousTaskList);
@@ -154,13 +154,13 @@ export function useDeleteTaskList() {
 
       return { previousTaskLists, deletedListName: deletedList?.name };
     },
-    onError: (error, id, context) => {
+    onError: (_error, _id, context) => {
       // Revert optimistic updates
       if (context?.previousTaskLists) {
         queryClient.setQueryData(taskListKeys.lists(), context.previousTaskLists);
       }
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (_data, _id, context) => {
       queryClient.invalidateQueries({ queryKey: taskListKeys.lists() });
       
       // Also invalidate tasks that belonged to this list
@@ -195,7 +195,7 @@ export function useReorderTaskLists() {
 
       return { previousTaskLists };
     },
-    onError: (error, listIds, context) => {
+    onError: (_error, _listIds, context) => {
       // Revert optimistic update
       if (context?.previousTaskLists) {
         queryClient.setQueryData(taskListKeys.lists(), context.previousTaskLists);

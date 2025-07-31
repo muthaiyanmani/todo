@@ -174,7 +174,7 @@ export const userHandlers = [
       return HttpResponse.json(errorResponse, { status: 401 });
     }
 
-    const notifications = await request.json() as Partial<User['notifications']>;
+    const notifications = await request.json() as Partial<User['preferences']['notifications']>;
     
     const currentUser = mockDb.getUser(user.userId);
     if (!currentUser) {
@@ -192,9 +192,12 @@ export const userHandlers = [
     }
 
     const updatedUser = mockDb.updateUser(user.userId, {
-      notifications: {
-        ...currentUser.notifications,
-        ...notifications,
+      preferences: {
+        ...currentUser.preferences,
+        notifications: {
+          ...currentUser.preferences.notifications,
+          ...notifications,
+        },
       },
     });
 

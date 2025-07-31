@@ -80,7 +80,7 @@ export function useCreateEnergyLevel() {
 
       return { previousLevels };
     },
-    onError: (error, newLevel, context) => {
+    onError: (_error, _newLevel, context) => {
       // Revert optimistic update
       if (context?.previousLevels) {
         context.previousLevels.forEach(([queryKey, data]) => {
@@ -136,7 +136,7 @@ export function useUpdateEnergyLevel() {
 
       return { previousLevel, previousLevels };
     },
-    onError: (error, { id }, context) => {
+    onError: (_error, { id }, context) => {
       // Revert optimistic updates
       if (context?.previousLevel) {
         queryClient.setQueryData(energyKeys.level(id), context.previousLevel);

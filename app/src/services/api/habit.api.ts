@@ -129,11 +129,11 @@ export const habitApi = {
               completedEntries: 0,
               currentStreak: 0,
               longestStreak: 0,
-              averageValue: 0,
               completionRate: 0,
-              weeklyCompletion: [false, false, false, false, false, false, false],
-              monthlyProgress: [],
-              lastUpdated: new Date().toISOString(),
+              weeklyCompletion: [0, 0, 0, 0, 0, 0, 0],
+              monthlyTrend: [],
+              bestDays: [],
+              averageQuantity: 0,
             } as HabitStats,
           };
         }
