@@ -5,6 +5,13 @@ import { cn } from '../../lib/utils';
 import { soundService } from '../../services/sound-service';
 import { useAuthStore } from '../../store/auth-store';
 import { gamificationService } from '../../services/gamification-service';
+import { 
+  usePomodoroSessions, 
+  usePomodoroSettings, 
+  useCreatePomodoroSession, 
+  useUpdatePomodoroSession,
+  useUpdatePomodoroSettings 
+} from '../../hooks/api/use-pomodoro';
 
 interface PomodoroSettings {
   workDuration: number; // in minutes
@@ -16,62 +23,98 @@ interface PomodoroSettings {
   soundEnabled: boolean;
 }
 
-type TimerState = 'work' | 'shortBreak' | 'longBreak';
+type TimerState = 'work' | 'short-break' | 'long-break';
 
 export function PomodoroTimer() {
   const { user } = useAuthStore();
-  const [settings, setSettings] = useState<PomodoroSettings>({
+  
+  // API hooks
+  const { data: sessions = [] } = usePomodoroSessions();
+  const { data: apiSettings } = usePomodoroSettings();
+  const createSession = useCreatePomodoroSession();
+  const updateSession = useUpdatePomodoroSession();
+  const updateSettings = useUpdatePomodoroSettings();
+  
+  // Use API settings or fallback to defaults
+  const settings = apiSettings || {
     workDuration: 25,
     shortBreakDuration: 5,
     longBreakDuration: 15,
-    pomodorosUntilLongBreak: 4,
+    sessionsUntilLongBreak: 4,
     autoStartBreaks: true,
-    autoStartPomodoros: false,
+    autoStartWork: false,
     soundEnabled: true,
-  });
+    notificationsEnabled: true,
+    dailyGoal: 8,
+  };
 
   const [timerState, setTimerState] = useState<TimerState>('work');
   const [timeRemaining, setTimeRemaining] = useState(settings.workDuration * 60);
   const [isRunning, setIsRunning] = useState(false);
-  const [completedPomodoros, setCompletedPomodoros] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
+  const [currentSession, setCurrentSession] = useState<any>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Calculate completed pomodoros from API data
+  const today = new Date().toISOString().split('T')[0];
+  const sessionsArray = Array.isArray(sessions) ? sessions : (sessions?.sessions || []);
+  const todaySessions = sessionsArray.filter((session: any) => 
+    session.startTime.startsWith(today) && 
+    session.type === 'work' && 
+    session.completed
+  );
+  const completedPomodoros = todaySessions.length;
 
   // Get duration based on timer state
   const getDuration = (state: TimerState) => {
     switch (state) {
       case 'work':
         return settings.workDuration * 60;
-      case 'shortBreak':
+      case 'short-break':
         return settings.shortBreakDuration * 60;
-      case 'longBreak':
+      case 'long-break':
         return settings.longBreakDuration * 60;
     }
   };
 
   // Handle timer completion
-  const handleTimerComplete = () => {
+  const handleTimerComplete = async () => {
     if (settings.soundEnabled) {
       soundService.playNotification();
     }
 
+    // Complete current session if it exists
+    if (currentSession) {
+      try {
+        await updateSession.mutateAsync({
+          id: currentSession.id,
+          updates: {
+            endTime: new Date().toISOString(),
+            completed: true,
+          }
+        });
+      } catch (error) {
+        console.error('Failed to complete session:', error);
+      }
+    }
+
     if (timerState === 'work') {
-      const newCompletedPomodoros = completedPomodoros + 1;
-      setCompletedPomodoros(newCompletedPomodoros);
-      
       // Award XP for completing a pomodoro
       gamificationService.awardXP(25);
 
       // Determine next break type
-      const nextState = newCompletedPomodoros % settings.pomodorosUntilLongBreak === 0
-        ? 'longBreak'
-        : 'shortBreak';
+      const newCompletedPomodoros = completedPomodoros + 1;
+      const nextState = newCompletedPomodoros % settings.sessionsUntilLongBreak === 0
+        ? 'long-break'
+        : 'short-break';
       
       setTimerState(nextState);
       setTimeRemaining(getDuration(nextState));
+      setCurrentSession(null);
       
       if (settings.autoStartBreaks) {
         setIsRunning(true);
+        startNewSession(nextState);
       } else {
         setIsRunning(false);
       }
@@ -79,12 +122,30 @@ export function PomodoroTimer() {
       // Break completed, switch back to work
       setTimerState('work');
       setTimeRemaining(getDuration('work'));
+      setCurrentSession(null);
       
-      if (settings.autoStartPomodoros) {
+      if (settings.autoStartWork) {
         setIsRunning(true);
+        startNewSession('work');
       } else {
         setIsRunning(false);
       }
+    }
+  };
+
+  // Start a new session
+  const startNewSession = async (sessionType: TimerState) => {
+    try {
+      const newSession = await createSession.mutateAsync({
+        type: sessionType,
+        duration: getDuration(sessionType),
+        startTime: new Date().toISOString(),
+        completed: false,
+        interrupted: false,
+      });
+      setCurrentSession(newSession);
+    } catch (error) {
+      console.error('Failed to create session:', error);
     }
   };
 
@@ -133,14 +194,14 @@ export function PomodoroTimer() {
           border: 'border-red-500/50',
           progress: 'bg-red-500',
         };
-      case 'shortBreak':
+      case 'short-break':
         return {
           bg: 'bg-green-500/20',
           text: 'text-green-600',
           border: 'border-green-500/50',
           progress: 'bg-green-500',
         };
-      case 'longBreak':
+      case 'long-break':
         return {
           bg: 'bg-blue-500/20',
           text: 'text-blue-600',
@@ -152,10 +213,21 @@ export function PomodoroTimer() {
 
   const colors = getStateColors();
 
-  const handleStartPause = () => {
-    setIsRunning(!isRunning);
-    if (!isRunning && settings.soundEnabled) {
-      soundService.playClick();
+  const handleStartPause = async () => {
+    if (!isRunning) {
+      // Starting timer
+      setIsRunning(true);
+      if (settings.soundEnabled) {
+        soundService.playClick();
+      }
+      
+      // Create new session if none exists
+      if (!currentSession) {
+        await startNewSession(timerState);
+      }
+    } else {
+      // Pausing timer
+      setIsRunning(false);
     }
   };
 
@@ -190,7 +262,7 @@ export function PomodoroTimer() {
             )}
             <h3 className={cn("text-lg font-semibold", colors.text)}>
               {timerState === 'work' ? 'Focus Time' : 
-               timerState === 'shortBreak' ? 'Short Break' : 'Long Break'}
+               timerState === 'short-break' ? 'Short Break' : 'Long Break'}
             </h3>
           </div>
           
@@ -198,7 +270,7 @@ export function PomodoroTimer() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setSettings(prev => ({ ...prev, soundEnabled: !prev.soundEnabled }))}
+              onClick={() => updateSettings.mutate({ soundEnabled: !settings.soundEnabled })}
               className="h-8 w-8"
             >
               {settings.soundEnabled ? (
@@ -292,12 +364,12 @@ export function PomodoroTimer() {
 
         {/* Pomodoro Counter */}
         <div className="flex items-center justify-center space-x-1">
-          {Array.from({ length: settings.pomodorosUntilLongBreak }).map((_, i) => (
+          {Array.from({ length: settings.sessionsUntilLongBreak }).map((_, i) => (
             <div
               key={i}
               className={cn(
                 "w-2 h-2 rounded-full transition-all duration-300",
-                i < completedPomodoros % settings.pomodorosUntilLongBreak
+                i < completedPomodoros % settings.sessionsUntilLongBreak
                   ? colors.progress
                   : "bg-gray-300 dark:bg-gray-600"
               )}
@@ -307,8 +379,8 @@ export function PomodoroTimer() {
 
         {/* Session Info */}
         <div className="mt-4 text-center text-sm text-muted-foreground">
-          Session {Math.floor(completedPomodoros / settings.pomodorosUntilLongBreak) + 1} • 
-          Pomodoro {(completedPomodoros % settings.pomodorosUntilLongBreak) + 1} of {settings.pomodorosUntilLongBreak}
+          Session {Math.floor(completedPomodoros / settings.sessionsUntilLongBreak) + 1} • 
+          Pomodoro {(completedPomodoros % settings.sessionsUntilLongBreak) + 1} of {settings.sessionsUntilLongBreak}
         </div>
       </div>
 
@@ -323,7 +395,7 @@ export function PomodoroTimer() {
               <input
                 type="number"
                 value={settings.workDuration}
-                onChange={(e) => setSettings(prev => ({ ...prev, workDuration: parseInt(e.target.value) || 25 }))}
+                onChange={(e) => updateSettings.mutate({ workDuration: parseInt(e.target.value) || 25 })}
                 className="w-full mt-1 px-3 py-2 border rounded-md"
                 min="1"
                 max="60"
@@ -335,7 +407,7 @@ export function PomodoroTimer() {
               <input
                 type="number"
                 value={settings.shortBreakDuration}
-                onChange={(e) => setSettings(prev => ({ ...prev, shortBreakDuration: parseInt(e.target.value) || 5 }))}
+                onChange={(e) => updateSettings.mutate({ shortBreakDuration: parseInt(e.target.value) || 5 })}
                 className="w-full mt-1 px-3 py-2 border rounded-md"
                 min="1"
                 max="30"
@@ -347,7 +419,7 @@ export function PomodoroTimer() {
               <input
                 type="number"
                 value={settings.longBreakDuration}
-                onChange={(e) => setSettings(prev => ({ ...prev, longBreakDuration: parseInt(e.target.value) || 15 }))}
+                onChange={(e) => updateSettings.mutate({ longBreakDuration: parseInt(e.target.value) || 15 })}
                 className="w-full mt-1 px-3 py-2 border rounded-md"
                 min="1"
                 max="60"
@@ -355,11 +427,11 @@ export function PomodoroTimer() {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Pomodoros until Long Break</label>
+              <label className="text-sm font-medium">Sessions until Long Break</label>
               <input
                 type="number"
-                value={settings.pomodorosUntilLongBreak}
-                onChange={(e) => setSettings(prev => ({ ...prev, pomodorosUntilLongBreak: parseInt(e.target.value) || 4 }))}
+                value={settings.sessionsUntilLongBreak}
+                onChange={(e) => updateSettings.mutate({ sessionsUntilLongBreak: parseInt(e.target.value) || 4 })}
                 className="w-full mt-1 px-3 py-2 border rounded-md"
                 min="2"
                 max="10"
@@ -371,7 +443,7 @@ export function PomodoroTimer() {
                 <input
                   type="checkbox"
                   checked={settings.autoStartBreaks}
-                  onChange={(e) => setSettings(prev => ({ ...prev, autoStartBreaks: e.target.checked }))}
+                  onChange={(e) => updateSettings.mutate({ autoStartBreaks: e.target.checked })}
                   className="rounded"
                 />
                 <span className="text-sm">Auto-start breaks</span>
@@ -380,11 +452,11 @@ export function PomodoroTimer() {
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  checked={settings.autoStartPomodoros}
-                  onChange={(e) => setSettings(prev => ({ ...prev, autoStartPomodoros: e.target.checked }))}
+                  checked={settings.autoStartWork}
+                  onChange={(e) => updateSettings.mutate({ autoStartWork: e.target.checked })}
                   className="rounded"
                 />
-                <span className="text-sm">Auto-start pomodoros</span>
+                <span className="text-sm">Auto-start work sessions</span>
               </label>
             </div>
           </div>

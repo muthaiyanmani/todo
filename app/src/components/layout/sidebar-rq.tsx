@@ -109,6 +109,7 @@ export function SidebarRQ() {
         color,
         isDefault: false,
         isShared: false,
+        order: (taskLists?.length || 0) + 1,
       });
     }
   };

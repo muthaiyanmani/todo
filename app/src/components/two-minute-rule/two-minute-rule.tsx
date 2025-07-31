@@ -1,57 +1,41 @@
 import { useState, useEffect } from 'react';
-import { Timer, Zap, CheckCircle, X, Clock, TrendingUp } from 'lucide-react';
-import { useTasks, useUpdateTask, useCreateTask } from '../../hooks/use-tasks';
-import { useAuthStore } from '../../store/auth-store';
+import { Timer, Zap, CheckCircle, X, Clock, TrendingUp, Plus, Flame } from 'lucide-react';
+import { useTasks } from '../../hooks/api/use-tasks';
+import { 
+  useActiveTwoMinuteTasks, 
+  useTwoMinuteStats, 
+  useQuickAddTwoMinuteTask,
+  useCompleteTwoMinuteTask,
+  useToggleTwoMinuteTask,
+  useTwoMinuteInsights,
+  useTwoMinuteStreak,
+  useDeleteTwoMinuteTask
+} from '../../hooks/api/use-two-minute';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
+import { Spinner } from '../ui/spinner';
 import { soundService } from '../../services/sound-service';
-import type { Task } from '../../types';
-
-interface QuickTask {
-  id: string;
-  title: string;
-  isCompleted: boolean;
-  completedAt?: Date;
-  estimatedDuration: number; // in seconds
-  actualDuration?: number;
-}
 
 export function TwoMinuteRule() {
-  const { data: tasks = [] } = useTasks();
-  const updateTaskMutation = useUpdateTask();
-  const createTaskMutation = useCreateTask();
-  const { user } = useAuthStore();
+  // API hooks
+  const { data: tasks = [], isLoading: tasksLoading } = useTasks();
+  const { data: activeTasks = [], isLoading: loading } = useActiveTwoMinuteTasks();
+  const { data: stats } = useTwoMinuteStats();
+  const insights = useTwoMinuteInsights();
+  const streak = useTwoMinuteStreak();
+  const quickAdd = useQuickAddTwoMinuteTask();
+  const completeTask = useCompleteTwoMinuteTask();
+  const toggleTask = useToggleTwoMinuteTask();
+  const deleteTask = useDeleteTwoMinuteTask();
   
-  const [quickTasks, setQuickTasks] = useState<QuickTask[]>([]);
+  // Local state
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
-
-  // Load quick tasks from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('twoMinuteTasks');
-    if (saved) {
-      try {
-        const tasks = JSON.parse(saved).map((task: any) => ({
-          ...task,
-          completedAt: task.completedAt ? new Date(task.completedAt) : undefined,
-        }));
-        setQuickTasks(tasks);
-      } catch (error) {
-        console.error('Failed to load two-minute tasks:', error);
-      }
-    }
-  }, []);
-
-  // Save quick tasks to localStorage
-  const saveQuickTasks = (tasks: QuickTask[]) => {
-    localStorage.setItem('twoMinuteTasks', JSON.stringify(tasks));
-    setQuickTasks(tasks);
-  };
 
   // Timer effect
   useEffect(() => {
@@ -79,9 +63,12 @@ export function TwoMinuteRule() {
 
   // Detect potential two-minute tasks from regular tasks
   const getPotentialTwoMinuteTasks = () => {
-    return tasks.filter(task => 
+    if (!tasks || tasksLoading) return [];
+    
+    const tasksArray = Array.isArray(tasks) ? tasks : (tasks?.tasks || []);
+    return tasksArray.filter((task: any) => 
       !task.completed &&
-      !task.subtasks.length &&
+      (!task.subtasks || task.subtasks.length === 0) &&
       (task.title.toLowerCase().includes('call') ||
        task.title.toLowerCase().includes('email') ||
        task.title.toLowerCase().includes('text') ||
@@ -94,82 +81,97 @@ export function TwoMinuteRule() {
     ).slice(0, 5);
   };
 
-  const createQuickTask = () => {
+  const createQuickTask = async () => {
     if (!newTaskTitle.trim()) return;
 
-    const newTask: QuickTask = {
-      id: Date.now().toString(),
-      title: newTaskTitle.trim(),
-      isCompleted: false,
-      estimatedDuration: 120, // 2 minutes
-    };
-
-    const updatedTasks = [...quickTasks, newTask];
-    saveQuickTasks(updatedTasks);
-    setNewTaskTitle('');
+    try {
+      await quickAdd.mutateAsync({
+        title: newTaskTitle.trim(),
+        category: 'general',
+        priority: 'medium'
+      });
+      setNewTaskTitle('');
+    } catch (error) {
+      // Error handled by mutation
+    }
   };
 
-  const startTask = (taskId: string) => {
+  const handleCompleteTask = async (taskId: string) => {
+    const task = activeTasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    try {
+      if (activeTaskId === taskId && isRunning) {
+        // Task was being timed - use actual duration
+        const actualMinutes = Math.ceil(timer / 60);
+        await completeTask.mutateAsync({
+          id: taskId,
+          actualDuration: actualMinutes
+        });
+        
+        // Reset timer
+        setIsRunning(false);
+        setActiveTaskId(null);
+        setTimer(0);
+        soundService.playTaskComplete();
+      } else {
+        // Task completed without timing
+        await toggleTask.mutateAsync({
+          id: taskId,
+          completed: true
+        });
+        soundService.playTaskComplete();
+      }
+    } catch (error) {
+      // Error handled by mutation
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await deleteTask.mutateAsync(taskId);
+      
+      // If this was the active task, reset timer
+      if (activeTaskId === taskId) {
+        setActiveTaskId(null);
+        setIsRunning(false);
+        setTimer(0);
+      }
+    } catch (error) {
+      // Error handled by mutation
+    }
+  };
+
+  const startTimer = (taskId: string) => {
+    if (activeTaskId && activeTaskId !== taskId) {
+      // Stop current timer first
+      setIsRunning(false);
+      setTimer(0);
+    }
+    
     setActiveTaskId(taskId);
     setTimer(0);
     setIsRunning(true);
     soundService.playClick();
   };
 
-  const completeTask = (taskId: string) => {
-    const task = quickTasks.find(t => t.id === taskId);
-    if (!task) return;
+  const stopTimer = () => {
+    setIsRunning(false);
+  };
 
-    const updatedTasks = quickTasks.map(t => 
-      t.id === taskId 
-        ? { 
-            ...t, 
-            isCompleted: true, 
-            completedAt: new Date(),
-            actualDuration: activeTaskId === taskId ? timer : undefined
-          }
-        : t
+  const resetTimer = () => {
+    setIsRunning(false);
+    setTimer(0);
+    setActiveTaskId(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Spinner size="lg" />
+      </div>
     );
-
-    saveQuickTasks(updatedTasks);
-    
-    if (activeTaskId === taskId) {
-      setActiveTaskId(null);
-      setIsRunning(false);
-      setTimer(0);
-    }
-
-    soundService.playTaskComplete();
-  };
-
-  const deleteTask = (taskId: string) => {
-    const updatedTasks = quickTasks.filter(t => t.id !== taskId);
-    saveQuickTasks(updatedTasks);
-    
-    if (activeTaskId === taskId) {
-      setActiveTaskId(null);
-      setIsRunning(false);
-      setTimer(0);
-    }
-  };
-
-  const convertToQuickTask = async (task: Task) => {
-    const quickTask: QuickTask = {
-      id: `quick-${task.id}`,
-      title: task.title,
-      isCompleted: false,
-      estimatedDuration: 120,
-    };
-
-    const updatedTasks = [...quickTasks, quickTask];
-    saveQuickTasks(updatedTasks);
-
-    // Optionally mark the original task as completed
-    await updateTaskMutation.mutateAsync({
-      id: task.id,
-      updates: { completed: true, completedAt: new Date() }
-    });
-  };
+  }
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -183,18 +185,8 @@ export function TwoMinuteRule() {
     return 'text-red-600';
   };
 
-  const activeTasks = quickTasks.filter(t => !t.isCompleted);
-  const completedTasks = quickTasks.filter(t => t.isCompleted);
   const potentialTasks = getPotentialTwoMinuteTasks();
-
-  // Calculate stats
-  const totalCompleted = completedTasks.length;
-  const averageTime = completedTasks.length > 0 
-    ? completedTasks.reduce((sum, task) => sum + (task.actualDuration || 120), 0) / completedTasks.length
-    : 0;
-  const tasksUnderTwoMinutes = completedTasks.filter(task => 
-    (task.actualDuration || 120) <= 120
-  ).length;
+  const activeTask = activeTasks.find(t => t.id === activeTaskId);
 
   return (
     <div className="space-y-6">
@@ -211,12 +203,12 @@ export function TwoMinuteRule() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Completed Today</p>
-              <p className="text-2xl font-bold">{totalCompleted}</p>
+              <p className="text-2xl font-bold">{stats?.tasksCompletedToday || 0}</p>
             </div>
             <CheckCircle className="h-8 w-8 text-success" />
           </div>
@@ -225,26 +217,53 @@ export function TwoMinuteRule() {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Average Time</p>
-              <p className="text-2xl font-bold">{formatTime(Math.round(averageTime))}</p>
+              <p className="text-sm text-muted-foreground">Completion Rate</p>
+              <p className="text-2xl font-bold">{stats?.completionRate.toFixed(0) || 0}%</p>
             </div>
-            <Clock className="h-8 w-8 text-info" />
+            <TrendingUp className="h-8 w-8 text-info" />
           </div>
         </Card>
         
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Under 2 Min</p>
-              <p className="text-2xl font-bold">{tasksUnderTwoMinutes}/{totalCompleted}</p>
+              <p className="text-sm text-muted-foreground">Avg Time</p>
+              <p className="text-2xl font-bold">{stats?.averageCompletionTime.toFixed(1) || 0}m</p>
             </div>
-            <TrendingUp className="h-8 w-8 text-focus" />
+            <Clock className="h-8 w-8 text-focus" />
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Current Streak</p>
+              <p className="text-2xl font-bold">{streak}</p>
+            </div>
+            <Flame className="h-8 w-8 text-orange-500" />
           </div>
         </Card>
       </div>
 
+      {/* Insights */}
+      {insights.length > 0 && (
+        <Card className="p-4">
+          <h3 className="text-sm font-semibold mb-3 flex items-center">
+            <Zap className="h-4 w-4 mr-2 text-blue-500" />
+            Insights
+          </h3>
+          <div className="space-y-2">
+            {insights.map((insight, index) => (
+              <div key={index} className="text-sm p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                {insight}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Active Timer */}
-      {activeTaskId && (
+      {activeTaskId && activeTask && (
         <Card className="p-6 border-info/30 bg-info/5 dark:bg-info/10">
           <div className="text-center">
             <div className="mb-4">
@@ -257,9 +276,7 @@ export function TwoMinuteRule() {
             </div>
             
             <div className="mb-4">
-              <h3 className="text-sm font-medium">
-                {quickTasks.find(t => t.id === activeTaskId)?.title}
-              </h3>
+              <h3 className="text-sm font-medium">{activeTask.title}</h3>
             </div>
 
             <div className="flex items-center justify-center space-x-2">
@@ -274,20 +291,21 @@ export function TwoMinuteRule() {
               </Button>
               
               <Button
-                onClick={() => completeTask(activeTaskId)}
+                onClick={() => handleCompleteTask(activeTaskId)}
                 className="bg-green-600 hover:bg-green-700"
+                disabled={completeTask.isPending}
               >
-                <CheckCircle className="h-4 w-4 mr-2" />
+                {completeTask.isPending ? (
+                  <Spinner size="sm" className="mr-2" />
+                ) : (
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                )}
                 Complete
               </Button>
               
               <Button
                 variant="outline"
-                onClick={() => {
-                  setActiveTaskId(null);
-                  setIsRunning(false);
-                  setTimer(0);
-                }}
+                onClick={resetTimer}
               >
                 Stop
               </Button>
@@ -298,7 +316,7 @@ export function TwoMinuteRule() {
 
       {/* Quick Task Input */}
       <Card className="p-4">
-        <div className="flex items-center space-token-2">
+        <div className="flex items-center space-x-2">
           <Input
             placeholder="Add a quick task (something that takes < 2 minutes)..."
             value={newTaskTitle}
@@ -312,9 +330,16 @@ export function TwoMinuteRule() {
           />
           <Button
             onClick={createQuickTask}
-            disabled={!newTaskTitle.trim()}
+            disabled={!newTaskTitle.trim() || quickAdd.isPending}
           >
-            Add
+            {quickAdd.isPending ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <Plus className="h-4 w-4 mr-2" />
+                Add
+              </>
+            )}
           </Button>
         </div>
       </Card>
@@ -337,9 +362,14 @@ export function TwoMinuteRule() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => convertToQuickTask(task)}
+                  onClick={() => quickAdd.mutate({
+                    title: task.title,
+                    category: 'converted',
+                    priority: 'medium'
+                  })}
+                  disabled={quickAdd.isPending}
                 >
-                  Do Now
+                  {quickAdd.isPending ? <Spinner size="sm" /> : 'Convert'}
                 </Button>
               </div>
             ))}
@@ -376,8 +406,9 @@ export function TwoMinuteRule() {
                       </span>
                       <Button
                         size="sm"
-                        onClick={() => completeTask(task.id)}
+                        onClick={() => handleCompleteTask(task.id)}
                         className="bg-green-600 hover:bg-green-700"
+                        disabled={completeTask.isPending}
                       >
                         <CheckCircle className="h-3 w-3" />
                       </Button>
@@ -386,7 +417,7 @@ export function TwoMinuteRule() {
                     <>
                       <Button
                         size="sm"
-                        onClick={() => startTask(task.id)}
+                        onClick={() => startTimer(task.id)}
                         disabled={activeTaskId !== null}
                       >
                         Start
@@ -394,7 +425,8 @@ export function TwoMinuteRule() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => deleteTask(task.id)}
+                        onClick={() => handleDeleteTask(task.id)}
+                        disabled={deleteTask.isPending}
                       >
                         <X className="h-3 w-3" />
                       </Button>
@@ -410,44 +442,6 @@ export function TwoMinuteRule() {
           </div>
         )}
       </Card>
-
-      {/* Completed Tasks */}
-      {completedTasks.length > 0 && (
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold flex items-center">
-              <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-              Completed ({completedTasks.length})
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowCompleted(!showCompleted)}
-            >
-              {showCompleted ? 'Hide' : 'Show'}
-            </Button>
-          </div>
-          
-          {showCompleted && (
-            <div className="space-y-2">
-              {completedTasks
-                .sort((a, b) => (b.completedAt?.getTime() || 0) - (a.completedAt?.getTime() || 0))
-                .slice(0, 10)
-                .map((task) => (
-                  <div key={task.id} className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <span className="flex-1 text-sm line-through text-muted-foreground">{task.title}</span>
-                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                      {task.actualDuration && (
-                        <span className="font-mono">{formatTime(task.actualDuration)}</span>
-                      )}
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                    </div>
-                  </div>
-                ))}
-            </div>
-          )}
-        </Card>
-      )}
     </div>
   );
 }

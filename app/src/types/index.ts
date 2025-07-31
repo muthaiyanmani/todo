@@ -33,6 +33,7 @@ export interface TaskList {
   isDefault: boolean;
   isShared: boolean;
   sharedWith?: string[];
+  order: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -67,6 +68,7 @@ export interface Task {
   estimatedTime?: number;
   nextReviewDate?: Date;
   assignedTo?: string;
+  tags?: string[];
 }
 
 export interface Subtask {

@@ -199,12 +199,14 @@ export function Sidebar() {
                 if (name?.trim()) {
                   const { addTaskList } = useAppStore.getState();
                   const { user } = useAuthStore.getState();
+                  const { taskLists } = useAppStore.getState();
                   addTaskList({
                     userId: user?.id || 'anonymous',
                     name: name.trim(),
                     color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                     isDefault: false,
                     isShared: false,
+                    order: taskLists.length + 1,
                   });
                 }
               }}
@@ -249,7 +251,7 @@ export function Sidebar() {
                 onClick={() => {
                   const name = prompt('Enter list name:');
                   if (name?.trim()) {
-                    const { addTaskList } = useAppStore.getState();
+                    const { addTaskList, taskLists } = useAppStore.getState();
                     const { user } = useAuthStore.getState();
                     addTaskList({
                       userId: user?.id || 'anonymous',
@@ -257,6 +259,7 @@ export function Sidebar() {
                       color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                       isDefault: false,
                       isShared: false,
+                      order: taskLists.length + 1,
                     });
                   }
                 }}

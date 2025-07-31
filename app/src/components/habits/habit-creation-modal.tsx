@@ -139,6 +139,7 @@ export function HabitCreationModal({ isOpen, onClose, habit }: HabitCreationModa
           targetQuantity: data.trackQuantity ? data.targetQuantity : undefined,
           isPublic: data.isPublic,
           shareWithFriends: data.shareWithFriends,
+          showInDashboard: true,
         },
       };
 

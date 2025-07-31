@@ -31,6 +31,7 @@ export interface HabitSettings {
   targetQuantity?: number;
   isPublic: boolean;
   shareWithFriends: boolean;
+  showInDashboard: boolean;
 }
 
 export interface Habit {
@@ -52,17 +53,19 @@ export interface Habit {
   longestStreak: number;
   completionRate: number; // percentage
   lastCompletedDate?: Date;
+  tags?: string[];
 }
 
 export interface HabitEntry {
   id: string;
   habitId: string;
   userId: string;
-  date: Date;
+  date: string;
   completed: boolean;
   completionType: CompletionType;
   quantity?: number;
   notes?: string;
+  unit?: string;
   completedAt?: Date;
   mood?: 1 | 2 | 3 | 4 | 5; // optional mood tracking
   createdAt: Date;

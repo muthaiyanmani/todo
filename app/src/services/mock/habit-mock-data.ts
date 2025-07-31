@@ -74,7 +74,8 @@ export const mockHabits: Habit[] = [
       quantityUnit: 'minutes',
       targetQuantity: 10,
       isPublic: true,
-      shareWithFriends: true
+      shareWithFriends: true,
+      showInDashboard: true,
     },
     currentStreak: 7,
     longestStreak: 15,
@@ -107,7 +108,8 @@ export const mockHabits: Habit[] = [
       quantityUnit: 'pages',
       targetQuantity: 30,
       isPublic: false,
-      shareWithFriends: true
+      shareWithFriends: true,
+      showInDashboard: true,
     },
     currentStreak: 12,
     longestStreak: 21,
@@ -140,7 +142,8 @@ export const mockHabits: Habit[] = [
       quantityUnit: 'minutes',
       targetQuantity: 60,
       isPublic: true,
-      shareWithFriends: true
+      shareWithFriends: true,
+      showInDashboard: true,
     },
     currentStreak: 4,
     longestStreak: 8,
@@ -171,7 +174,8 @@ export const mockHabits: Habit[] = [
       quantityUnit: 'glasses',
       targetQuantity: 8,
       isPublic: false,
-      shareWithFriends: false
+      shareWithFriends: false,
+      showInDashboard: true,
     },
     currentStreak: 10,
     longestStreak: 10,
